@@ -406,6 +406,32 @@ describe('TbxMatBannerComponent', () => {
 
             expect(fixture.componentInstance.closeIcon()).toBeNull();
         });
+
+        it('should return null from resolveIcon when resolver is undefined', () => {
+            const fixture = createFixture(buildData());
+            const component = fixture.componentInstance;
+
+            const result = component.resolveActionIcon({
+                icon: 'test',
+                actionIconResolverService: undefined,
+            });
+            expect(result).toBeNull();
+        });
+
+        it('should return null from resolveIcon when key is undefined with valid resolver', () => {
+            const fixture = createFixture(buildData());
+            const component = fixture.componentInstance;
+
+            // resolver present but icon (key) is undefined — hits !key branch
+            const result = component.resolveActionIcon({
+                icon: undefined,
+                actionIconResolverService: {
+                    iconType: TbxMatIconType.Font,
+                    resolve: () => 'test',
+                },
+            });
+            expect(result).toBeNull();
+        });
     });
 
     describe('inline mode', () => {
@@ -436,6 +462,62 @@ describe('TbxMatBannerComponent', () => {
             fixture.detectChanges();
             return fixture;
         }
+
+        it('should use fallback defaults when optional inputs are not set', () => {
+            TestBed.configureTestingModule({
+                imports: [TbxMatBannerComponent],
+                providers: [
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                        }),
+                    },
+                ],
+            });
+
+            const fixture = TestBed.createComponent(TbxMatBannerComponent);
+            fixture.componentInstance.type = TbxMatSeverityLevel.Success;
+            // message, actionsGroup not set — should fall back to '' and []
+            fixture.detectChanges();
+
+            const data = fixture.componentInstance.resolvedData();
+            expect(data.message).toBe('');
+            expect(data.actionsGroup).toEqual([]);
+        });
+
+        it('should default checkbox defaultValue to false when omitted', () => {
+            TestBed.configureTestingModule({
+                imports: [TbxMatBannerComponent],
+                providers: [
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                        }),
+                    },
+                ],
+            });
+
+            const fixture = TestBed.createComponent(TbxMatBannerComponent);
+            fixture.componentInstance.type = TbxMatSeverityLevel.Warning;
+            fixture.componentInstance.message = 'Test';
+            fixture.componentInstance.actionsGroup = [
+                { type: 'checkbox', key: 'check', label: 'Check' },
+                { type: 'button', key: 'ok', label: 'OK' },
+            ];
+            fixture.detectChanges();
+
+            expect(fixture.componentInstance.getControlValue('check')).toBe(false);
+        });
 
         it('should render from inputs when no overlay data is injected', () => {
             const fixture = createInlineFixture();

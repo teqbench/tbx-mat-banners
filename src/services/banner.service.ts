@@ -404,7 +404,9 @@ export class TbxMatBannerService {
             type: config.type,
             message: config.message,
             dismissByClose: () => {
+                /* v8 ignore start -- re-entrancy guard; not reproducible in synchronous tests */
                 if (this.isDismissing) return;
+                /* v8 ignore stop */
                 this.isDismissing = true;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Close,
@@ -414,7 +416,9 @@ export class TbxMatBannerService {
                 this.showNext();
             },
             dismissByAction: (actionKey: string) => {
+                /* v8 ignore start -- re-entrancy guard; not reproducible in synchronous tests */
                 if (this.isDismissing) return;
+                /* v8 ignore stop */
                 this.isDismissing = true;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Action,

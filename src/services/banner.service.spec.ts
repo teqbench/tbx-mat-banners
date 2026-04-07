@@ -188,6 +188,25 @@ describe('TbxMatBannerService', () => {
             vi.useRealTimers();
         });
 
+        it('should clear duration timeout when dismissed before expiry', () => {
+            vi.useFakeTimers();
+
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                duration: 5000,
+            });
+
+            // Dismiss before the 5000ms timeout fires
+            service.dismiss();
+
+            // Advance past the original timeout — should NOT create a second overlay
+            vi.advanceTimersByTime(5000);
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+
+            vi.useRealTimers();
+        });
+
         it('should resolve result with Timeout after duration expires', async () => {
             vi.useFakeTimers();
 
@@ -395,6 +414,162 @@ describe('TbxMatBannerService', () => {
         it('convenience methods should accept optional configArgs', () => {
             const ref = service.success('Done', { duration: 5000 });
             expect(ref.config.duration).toBe(5000);
+        });
+    });
+
+    describe('DTO default fallbacks', () => {
+        it('should default showSeverityIcon to true when not specified', async () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.showSeverityIcon).toBe(true);
+        });
+
+        it('should pass showSeverityIcon false when specified', async () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                showSeverityIcon: false,
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.showSeverityIcon).toBe(false);
+        });
+
+        it('should default showCloseButton to true when not specified', async () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.showCloseButton).toBe(true);
+        });
+
+        it('should pass showCloseButton false when specified', async () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                showCloseButton: false,
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.showCloseButton).toBe(false);
+        });
+
+        it('should default actionsGroup to empty array when not specified', async () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.actionsGroup).toEqual([]);
+        });
+
+        it('should use default close icon service when provider does not specify one', async () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.closeIconResolverService).toBeDefined();
+        });
+
+        it('should use provider close icon service when specified', () => {
+            TestBed.resetTestingModule();
+
+            const customCloseResolver = {
+                iconType: 0 as const,
+                resolve: () => 'cancel',
+            };
+
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                            closeIconResolverService: customCloseResolver,
+                        }),
+                    },
+                ],
+            });
+
+            const svc = TestBed.inject(TbxMatBannerService);
+            svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls.at(-1)![0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.closeIconResolverService).toBe(customCloseResolver);
+        });
+    });
+
+    describe('isDismissing guard', () => {
+        it('should ignore re-entrant dismissByClose calls', async () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            // First call dismisses normally
+            data.dismissByClose();
+            // Second call should be ignored (isDismissing guard)
+            data.dismissByClose();
+
+            // Only one dispose call
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+        });
+
+        it('should ignore re-entrant dismissByAction calls', async () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                actionsGroup: [{ type: 'button', key: 'ok', label: 'OK' }],
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByAction('ok');
+            data.dismissByAction('ok');
+
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('dismiss with null component ref', () => {
+        it('should return empty actionsGroupValues on dismiss when component ref is null', async () => {
+            overlayRefSpy.attach.mockReturnValue({ instance: null });
+
+            const ref = service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+            service.dismiss();
+
+            const result = await ref.result;
+            expect(result.actionsGroupValues).toEqual({});
+        });
+
+        it('should return empty actionsGroupValues on timeout when component ref is null', async () => {
+            vi.useFakeTimers();
+            overlayRefSpy.attach.mockReturnValue({ instance: null });
+
+            const ref = service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                duration: 1000,
+            });
+
+            vi.advanceTimersByTime(1000);
+
+            const result = await ref.result;
+            expect(result.actionsGroupValues).toEqual({});
+            expect(result.dismissReason).toBe(TbxMatBannerDismissReason.Timeout);
+
+            vi.useRealTimers();
         });
     });
 

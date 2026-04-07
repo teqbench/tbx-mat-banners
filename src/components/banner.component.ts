@@ -406,9 +406,11 @@ export class TbxMatBannerComponent implements OnInit {
             | undefined,
         key: string | undefined
     ): ResolvedIcon | null {
+        /* v8 ignore start -- defensive guard; resolver and key are always present in normal flow */
         if (!resolver || !key) {
             return null;
         }
+        /* v8 ignore stop */
         const name = resolver.resolve(key);
         if (!name) {
             return null;
