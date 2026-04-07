@@ -74,7 +74,6 @@ interface ResolvedIcon {
  * ```typescript
  * // In template:
  * // <tbx-mat-banner [type]="severityLevel" [message]="'Hello'" (dismissed)="onDismiss($event)" />
- * // TbxMatBannerComponent is a hypothetical inline usage
  * ```
  *
  * @category Components

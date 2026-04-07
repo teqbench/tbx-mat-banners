@@ -62,6 +62,14 @@ describe('TbxMatBannerComponent', () => {
         });
     });
 
+    describe('host panel class', () => {
+        it('should return empty string for unknown severity type', () => {
+            const fixture = createFixture(buildData({ type: 'unknown-type' as TbxMatSeverityLevel }));
+
+            expect(fixture.componentInstance.hostPanelClass).toBe('');
+        });
+    });
+
     describe('severity icon', () => {
         const cases: Array<[TbxMatSeverityLevel, string]> = [
             [TbxMatSeverityLevel.Success, 'check_circle'],

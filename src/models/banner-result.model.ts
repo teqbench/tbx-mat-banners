@@ -6,10 +6,10 @@ import { type TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.e
  * @remarks
  * Resolved by the {@link TbxMatBannerRef.result} promise when a
  * banner is dismissed for any reason — user action, timeout, or
- * programmatic dismissal. The {@link dismissReason} property indicates
+ * programmatic dismissal. The `dismissReason` property indicates
  * which trigger caused the dismissal. When an action button triggered
- * the dismissal, {@link actionKey} identifies the button. Form control
- * values from the actions group are collected in {@link actionsGroupValues}.
+ * the dismissal, `actionKey` identifies the button. Form control
+ * values from the actions group are collected in `actionsGroupValues`.
  *
  * @usage
  * Await the result promise from any {@link TbxMatBannerService} method

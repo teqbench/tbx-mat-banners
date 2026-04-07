@@ -1,7 +1,14 @@
 /**
  * Individual option within a {@link TbxMatBannerActionRadioGroup}
  *
+ * @example
+ * ```typescript
+ * { label: 'Low', value: 'low' }
+ * ```
+ *
  * @category Models
+ * @displayName Banner Radio Option
+ * @order 7
  * @since 1.0.0
  *
  * @public

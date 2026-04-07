@@ -60,6 +60,7 @@ import type { TbxMatBannerProviderConfig } from '../models/banner-provider-confi
  * ```
  *
  * @category Tokens
+ * @displayName Banner Provider Config Token
  * @since 1.0.0
  * @related TbxMatBannerProviderConfig
  * @related TbxMatBannerSeverityFontIconService

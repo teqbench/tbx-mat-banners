@@ -1,7 +1,14 @@
 /**
  * Individual option within a {@link TbxMatBannerActionToggleGroup}
  *
+ * @example
+ * ```typescript
+ * { label: 'JSON', value: 'json' }
+ * ```
+ *
  * @category Models
+ * @displayName Banner Toggle Option
+ * @order 8
  * @since 1.0.0
  *
  * @public

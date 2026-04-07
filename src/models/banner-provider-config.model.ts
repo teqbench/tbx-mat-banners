@@ -56,6 +56,8 @@ import type { TbxMatSeverityResolver, TbxMatSeverityLevel } from '@teqbench/tbx-
  * ```
  *
  * @category Models
+ * @displayName Banner Provider Config
+ * @order 9
  * @since 1.0.0
  * @related TBX_MAT_BANNER_PROVIDER_CONFIG
  * @related TbxMatBannerSeverityFontIconService

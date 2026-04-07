@@ -27,6 +27,8 @@ import { type TbxMatBannerConfig } from '../models/banner-config.model';
  * ```
  *
  * @category Types
+ * @displayName Banner Config Args
+ * @order 3
  * @since 1.0.0
  * @related TbxMatBannerConfig
  * @related TbxMatBannerService
