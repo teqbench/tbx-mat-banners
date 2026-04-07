@@ -168,7 +168,7 @@ class BannerIconVariantsHarnessComponent {
 // ─── Meta ────────────────────────────────────────────────────────────────────
 
 const meta: Meta<BannerIconVariantsHarnessComponent> = {
-    title: 'Banners/Font Icon Variants',
+    title: 'Banners/Overlay Font Icon Variants',
     component: BannerIconVariantsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerIconVariantsHarnessComponent] })],
 };

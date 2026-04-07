@@ -142,7 +142,7 @@ class BannerSvgIconsHarnessComponent {
 // ─── Meta ────────────────────────────────────────────────────────────────────
 
 const meta: Meta<BannerSvgIconsHarnessComponent> = {
-    title: 'Banners/SVG Icons',
+    title: 'Banners/Overlay SVG Icons',
     component: BannerSvgIconsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerSvgIconsHarnessComponent] }), withSvgIcons()],
 };

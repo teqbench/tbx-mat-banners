@@ -94,6 +94,67 @@ html {
     --tbx-mat-banner-action-icon-state-layer-color: var(--mat-sys-inverse-primary);
     --tbx-mat-banner-close-icon-color: var(--mat-sys-inverse-primary);
     --tbx-mat-banner-close-icon-state-layer-color: var(--mat-sys-inverse-primary);
+
+    /* ── Text button ── */
+    --mat-button-text-label-text-color: var(--mat-sys-inverse-primary);
+    --mat-button-text-state-layer-color: var(--mat-sys-inverse-on-surface);
+
+    /* ── Outlined button — label and border use inverse-primary to match text button ── */
+    --mat-button-outlined-label-text-color: var(--mat-sys-inverse-primary);
+    --mat-button-outlined-outline-color: var(--mat-sys-inverse-primary);
+    --mat-button-outlined-state-layer-color: var(--mat-sys-inverse-on-surface);
+
+    /* ── Checkbox — control uses inverse-primary to match outlined button ── */
+    --mat-checkbox-selected-checkmark-color: var(--mat-sys-inverse-surface, #333);
+    --mat-checkbox-selected-focus-icon-color: var(--mat-sys-inverse-primary);
+    --mat-checkbox-selected-hover-icon-color: var(--mat-sys-inverse-primary);
+    --mat-checkbox-selected-icon-color: var(--mat-sys-inverse-primary);
+    --mat-checkbox-unselected-focus-icon-color: var(--mat-sys-inverse-primary);
+    --mat-checkbox-unselected-hover-icon-color: var(--mat-sys-inverse-primary);
+    --mat-checkbox-unselected-icon-color: var(--mat-sys-inverse-primary);
+    --mat-checkbox-label-text-color: var(--mat-sys-inverse-on-surface, #fff);
+
+    /* ── Slide toggle — control uses inverse-primary to match outlined button ── */
+    --mat-slide-toggle-label-text-color: var(--mat-sys-inverse-on-surface, #fff);
+    --mat-slide-toggle-selected-track-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-selected-hover-track-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-selected-focus-track-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-selected-pressed-track-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-selected-handle-color: var(--mat-sys-inverse-surface, #333);
+    --mat-slide-toggle-selected-hover-handle-color: var(--mat-sys-inverse-surface, #333);
+    --mat-slide-toggle-selected-focus-handle-color: var(--mat-sys-inverse-surface, #333);
+    --mat-slide-toggle-selected-pressed-handle-color: var(--mat-sys-inverse-surface, #333);
+    --mat-slide-toggle-selected-icon-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-unselected-track-color: color-mix(in srgb, var(--mat-sys-inverse-primary) 30%, transparent);
+    --mat-slide-toggle-unselected-hover-track-color: color-mix(in srgb, var(--mat-sys-inverse-primary) 40%, transparent);
+    --mat-slide-toggle-unselected-focus-track-color: color-mix(in srgb, var(--mat-sys-inverse-primary) 30%, transparent);
+    --mat-slide-toggle-unselected-pressed-track-color: color-mix(in srgb, var(--mat-sys-inverse-primary) 40%, transparent);
+    --mat-slide-toggle-unselected-handle-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-unselected-hover-handle-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-unselected-focus-handle-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-unselected-pressed-handle-color: var(--mat-sys-inverse-primary);
+    --mat-slide-toggle-unselected-icon-color: var(--mat-sys-inverse-surface, #333);
+    --mat-slide-toggle-track-outline-color: color-mix(in srgb, var(--mat-sys-inverse-primary) 50%, transparent);
+
+    /* ── Radio — control uses inverse-primary to match outlined button ── */
+    --mat-radio-checked-ripple-color: var(--mat-sys-inverse-primary);
+    --mat-radio-ripple-color: var(--mat-sys-inverse-primary);
+    --mat-radio-selected-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-selected-hover-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-selected-focus-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-selected-pressed-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-unselected-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-unselected-hover-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-unselected-focus-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-unselected-pressed-icon-color: var(--mat-sys-inverse-primary);
+    --mat-radio-label-text-color: var(--mat-sys-inverse-on-surface, #fff);
+
+    /* ── Button toggle group — control uses inverse-primary to match outlined button ── */
+    --mat-button-toggle-text-color: var(--mat-sys-inverse-primary);
+    --mat-button-toggle-selected-state-text-color: var(--mat-sys-inverse-surface, #333);
+    --mat-button-toggle-selected-state-background-color: var(--mat-sys-inverse-primary);
+    --mat-button-toggle-divider-color: color-mix(in srgb, var(--mat-sys-inverse-primary) 40%, transparent);
+    --mat-button-toggle-state-layer-color: var(--mat-sys-inverse-primary);
 }
 
 /* ── Severity panel mixin ──────────────────────────────────────────────────── */

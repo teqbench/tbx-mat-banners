@@ -337,7 +337,7 @@ class BannerActionsHarnessComponent {
 }
 
 const meta: Meta<BannerActionsHarnessComponent> = {
-    title: 'Banners/Actions Group',
+    title: 'Banners/Overlay Actions Group',
     component: BannerActionsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerActionsHarnessComponent] })],
     argTypes: {

@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, inject, Input, type OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, HostBinding, inject, Input, type OnInit, Output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -16,6 +16,16 @@ import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { TbxMatBannerCloseFontIconService } from '../services/banner-close-font-icon.service';
 import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE } from '../constants/banner.constants';
+
+/** Panel CSS class mapping for inline banners. */
+const PANEL_CLASS_MAP: Readonly<Record<string, string>> = {
+    default: 'tbx-mat-banner-panel-default',
+    success: 'tbx-mat-banner-panel-success',
+    error: 'tbx-mat-banner-panel-error',
+    warning: 'tbx-mat-banner-panel-warning',
+    information: 'tbx-mat-banner-panel-information',
+    help: 'tbx-mat-banner-panel-help',
+};
 
 /** Resolved icon ready for template rendering. */
 interface ResolvedIcon {
@@ -275,6 +285,13 @@ export class TbxMatBannerComponent implements OnInit {
 
     /** Default button appearance constant for template use. */
     readonly defaultButtonAppearance = BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE;
+
+    /** Apply severity panel class to host element for inline mode styling. */
+    @HostBinding('class')
+    get hostPanelClass(): string {
+        const type = this.resolvedData().type;
+        return PANEL_CLASS_MAP[type] ?? '';
+    }
 
     // ── Inline mode inputs ──
 
