@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.6.2...v0.7.0) (2026-04-07)
+
+
+### Features
+
+* **banner:** add actions group stories and fix form control tokens ([e56a759](https://github.com/teqbench/tbx-mat-banners/commit/e56a759a090f3616f36ca80c0a3cb5161f8333d8))
+* **banner:** add icon variant stories ([36cf51a](https://github.com/teqbench/tbx-mat-banners/commit/36cf51a62b4526453b250c104095fdade93f38b0))
+* **banner:** add inline story, fix default severity control theming ([6adcb27](https://github.com/teqbench/tbx-mat-banners/commit/6adcb27685db335328920c70e07d5b68b239b427))
+* **banner:** implement banner component and service ([67b9ee5](https://github.com/teqbench/tbx-mat-banners/commit/67b9ee5ebcfc703cd67a597dc84edc442d4d6cf7))
+* **banner:** implement banner component and service ([de234bc](https://github.com/teqbench/tbx-mat-banners/commit/de234bc5d425d594139507cd96da808ed577a799))
+* **banner:** rename to Font Icon Variants, add SVG icon stories ([25e0d5b](https://github.com/teqbench/tbx-mat-banners/commit/25e0d5bb4593fc463786cc77cdf5eea302497fab))
+
 ## [0.6.2](https://github.com/teqbench/teqbench.dev.templates.tbx-package/compare/v0.6.1...v0.6.2) (2026-04-03)
 
 
