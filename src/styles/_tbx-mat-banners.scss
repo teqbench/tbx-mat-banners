@@ -231,7 +231,11 @@ html {
     --mat-slide-toggle-unselected-track-color: color-mix(in srgb, #{$text} 30%, transparent);
     --mat-slide-toggle-unselected-hover-track-color: color-mix(in srgb, #{$text} 40%, transparent);
     --mat-slide-toggle-unselected-focus-track-color: color-mix(in srgb, #{$text} 30%, transparent);
-    --mat-slide-toggle-unselected-pressed-track-color: color-mix(in srgb, #{$text} 40%, transparent);
+    --mat-slide-toggle-unselected-pressed-track-color: color-mix(
+        in srgb,
+        #{$text} 40%,
+        transparent
+    );
     --mat-slide-toggle-unselected-handle-color: #{$text};
     --mat-slide-toggle-unselected-hover-handle-color: #{$text};
     --mat-slide-toggle-unselected-focus-handle-color: #{$text};
