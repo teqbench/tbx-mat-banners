@@ -4,7 +4,7 @@ This file provides guidance for [Claude Code ↗](https://github.com/anthropics/
 
 ## Package Overview
 
-<!-- TODO: Describe what this package does and its primary use case -->
+An opinionated [Angular ↗](https://angular.dev) banner component and service with severity-leveled display, an actions group supporting buttons and form controls, and both overlay ([CDK Overlay ↗](https://material.angular.dev/cdk/overlay/api)) and inline display modes.
 
 This is a `@teqbench` [npm ↗](https://www.npmjs.com) package built with [TypeScript ↗](https://www.typescriptlang.org).
 
@@ -40,7 +40,7 @@ This is a `@teqbench` [npm ↗](https://www.npmjs.com) package built with [TypeS
 ## Publishing
 
 - Packages are published to [GitHub Packages ↗](https://github.com/orgs/teqbench/packages) (`@teqbench` scope) via the release workflow.
-- Coverage thresholds are enforced in CI: 80% lines/functions/statements, 75% branches, per file. Lines guarded by `/* v8 ignore next */` are excluded from [V8 ↗](https://v8.dev) coverage collection (used by [Vitest ↗](https://vitest.dev)). This pragma marks code that is unreachable in the test environment (e.g., SSR `window` guards).
+- Coverage thresholds are enforced in CI: 80% lines/functions/statements, 75% branches, per file. Lines guarded by `/* v8 ignore next */` or `/* v8 ignore start */` / `/* v8 ignore stop */` blocks are excluded from [V8 ↗](https://v8.dev) coverage collection (used by [Vitest ↗](https://vitest.dev)). These pragmas mark code that is unreachable in the test environment (e.g., re-entrancy guards, defensive null checks).
 - **Build tooling:** [ng-packagr ↗](https://github.com/ng-packagr/ng-packagr) is used to build [Angular ↗](https://angular.dev) Package Format (APF) output. It uses bundler module resolution internally, so source files use extensionless relative imports (e.g., `'./foo.service'`). The `ng-package.json` at the repo root configures the entry point and output directory. [ng-packagr ↗](https://github.com/ng-packagr/ng-packagr) generates its own `package.json` inside `dist/` with the correct APF entry points (`fesm2022/`, etc.). The release workflow publishes from `dist/` directly (`npm publish ./dist`), so consumers resolve against [ng-packagr ↗](https://github.com/ng-packagr/ng-packagr)'s generated `package.json`. The root `package.json` does not need `main`, `types`, or `exports` fields.
 
 ## TSDoc Convention
@@ -271,4 +271,50 @@ Follow [**Conventional Commits** ↗](https://www.conventionalcommits.org) stric
 - Never modify CI workflow files without explicit instruction.
 - Never modify `release-please-config.json`, `.release-please-manifest.json`, or `CHANGELOG.md`.
 
-<!-- TODO: Add package-specific guidance below -->
+## Package-Specific Guidance
+
+### Architecture
+
+- **Overlay mode:** `TbxMatBannerService` creates full-width banners via [CDK Overlay ↗](https://material.angular.dev/cdk/overlay/api). FIFO queue, one banner at a time. Does NOT use [MatSnackBar ↗](https://material.angular.dev/components/snack-bar/api).
+- **Inline mode:** `TbxMatBannerComponent` placed directly in a consumer's template. No service involved — consumer controls visibility via `@if` or signal bindings. Emits `(dismissed)` output events.
+- **Severity styling:** Panel classes (`.tbx-mat-banner-panel-{severity}`) are applied to the CDK overlay pane (overlay mode) or the component host element via `@HostBinding` (inline mode). Styles are in `src/styles/_tbx-mat-banners.scss` — consumers import this partial into their global stylesheet.
+
+### Actions Group
+
+The actions group supports a discriminated union of control types (`TbxMatBannerActionsGroupControl`):
+
+- `'button'` — dismisses the banner on click, result includes `actionKey`
+- `'checkbox'`, `'toggle'`, `'radio-group'`, `'toggle-group'` — form controls whose values are collected into `actionsGroupValues` on dismiss
+
+The component template splits these into two containers: `.tbx-mat-banner-controls` (input controls, left-aligned) and `.tbx-mat-banner-buttons` (action buttons, right-aligned). This split enables the responsive two-row layout.
+
+### Responsive Layout
+
+Uses CSS grid with `container-type: inline-size` and a `@container (max-width: 600px)` query:
+
+- **Wide:** `[icon+message] [actions] [close]` on a single row
+- **Narrow:** `[icon+message] [close]` on row 1, `[controls-left] [buttons-right]` on row 2
+
+The close button is always pinned to the top-right (separate grid item from the actions group).
+
+### Duration
+
+Default is `0` (indefinite). This is different from `@teqbench/tbx-mat-notifications` which defaults to 10000ms. Banners are designed for persistent messages.
+
+### Dismiss Flow
+
+The service's `resolveAndCleanup()` method sets `_isActive` to `false` before `showNext()` chains the next banner. This prevents the `isActive` signal from getting stuck at `true` after overlay disposal.
+
+### Icon Services
+
+Same pattern as `@teqbench/tbx-mat-notifications` — extends `TbxMatSeverityFontIconService` / `TbxMatSeveritySvgIconService` from `@teqbench/tbx-mat-severity-icons`. Registers identical ligatures (check_circle, error, warning_amber, info, help) and SVG markup (Small Flat Vectors, PD license).
+
+### Storybook
+
+Stories are in `src/components/*.stories.ts`. Run with `npm run storybook`. Stories cover:
+
+- Overlay: basic severity triggers, queue demo, position top/bottom
+- Overlay Actions Group: all control types across all severity levels
+- Overlay Font Icon Variants: default, large, state transition, pulse
+- Overlay SVG Icons: default and large
+- Inline: all severity levels, action buttons, mixed controls, no-close, no-icon

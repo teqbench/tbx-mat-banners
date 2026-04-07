@@ -41,6 +41,9 @@ yarn-error.log
 **/Thumbs.db
 **/__MACOSX/
 
+# Storybook
+storybook-static/
+
 # Testing
 /coverage/
 report.json

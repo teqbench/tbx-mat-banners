@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-This is a template repository for `@teqbench` [npm ↗](https://www.npmjs.com) packages. The latest version on `main` is the only supported version.
+`@teqbench/tbx-mat-banners` is a `@teqbench` [npm ↗](https://www.npmjs.com) package. The latest version on `main` is the only supported version.
 
 | Version | Supported |
 | ------- | --------- |
@@ -12,8 +12,6 @@ This is a template repository for `@teqbench` [npm ↗](https://www.npmjs.com) p
 ## Reporting a Vulnerability
 
 **Please do not report security vulnerabilities through public GitHub issues.**
-
-<!-- TODO when cloning: if the cloned repo is public, replace the email link below with a GitHub Security Advisory link pointing to your repository's /security/advisories/new page -->
 
 To report a vulnerability, email [info@teqbench.dev](mailto:info@teqbench.dev). This keeps the report private until a fix is available.
 
