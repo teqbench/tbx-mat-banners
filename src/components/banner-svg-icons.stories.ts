@@ -1,12 +1,16 @@
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
-import { moduleMetadata } from '@storybook/angular';
+import { applicationConfig, moduleMetadata } from '@storybook/angular';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { TbxMatBannerService } from '../services/banner.service';
+import { TbxMatBannerSeveritySvgIconService } from '../services/banner-severity-svg-icon.service';
+import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 
 // ─── CSS Custom Property Overrides ───────────────────────────────────────────
 
-const STYLE_TAG_ID = 'tbx-banner-icon-story-overrides';
+const STYLE_TAG_ID = 'tbx-banner-svg-story-overrides';
 
 function withCustomProperties(css: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,60 +36,30 @@ const LARGE_ICON_CSS = `
     }
 `;
 
-const STATE_TRANSITION_CSS = `
-    @keyframes tbx-banner-icon-fill {
-        from { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        to   { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    }
-    .tbx-mat-banner-overlay-panel .material-symbols-rounded {
-        animation: tbx-banner-icon-fill 0.3s ease-in-out 0.15s forwards;
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-`;
+// ─── SVG Provider Decorator ──────────────────────────────────────────────────
 
-const LARGE_ICON_STATE_TRANSITION_CSS = `
-    html {
-        --tbx-mat-banner-icon-size: 3rem;
-    }
-    @keyframes tbx-banner-icon-fill {
-        from { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        to   { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    }
-    .tbx-mat-banner-overlay-panel .material-symbols-rounded {
-        animation: tbx-banner-icon-fill 0.3s ease-in-out 0.15s forwards;
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-`;
-
-const PULSE_CSS = `
-    @keyframes tbx-banner-icon-pulse {
-        from { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        to   { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    }
-    .tbx-mat-banner-overlay-panel .tbx-mat-banner-icon {
-        animation: tbx-banner-icon-pulse 1s ease-in-out infinite alternate;
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-`;
-
-const LARGE_ICON_PULSE_CSS = `
-    html {
-        --tbx-mat-banner-icon-size: 3rem;
-    }
-    @keyframes tbx-banner-icon-pulse {
-        from { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        to   { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    }
-    .tbx-mat-banner-overlay-panel .tbx-mat-banner-icon {
-        animation: tbx-banner-icon-pulse 1s ease-in-out infinite alternate;
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-`;
+function withSvgIcons() {
+    return applicationConfig({
+        providers: [
+            provideAnimationsAsync(),
+            {
+                provide: MAT_ICON_DEFAULT_OPTIONS,
+                useValue: { fontSet: 'material-symbols-rounded' },
+            },
+            {
+                provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                useFactory: () => ({
+                    severityIconResolverService: new TbxMatBannerSeveritySvgIconService(),
+                }),
+            },
+        ],
+    });
+}
 
 // ─── Harness Component ───────────────────────────────────────────────────────
 
 @Component({
-    selector: 'tbx-banner-icon-variants-harness',
+    selector: 'tbx-banner-svg-icons-harness',
     imports: [MatButtonModule],
     template: `
         <div class="harness">
@@ -134,7 +108,7 @@ const LARGE_ICON_PULSE_CSS = `
         }
     `,
 })
-class BannerIconVariantsHarnessComponent {
+class BannerSvgIconsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly verticalPosition = input<'top' | 'bottom'>('top');
 
@@ -167,41 +141,21 @@ class BannerIconVariantsHarnessComponent {
 
 // ─── Meta ────────────────────────────────────────────────────────────────────
 
-const meta: Meta<BannerIconVariantsHarnessComponent> = {
-    title: 'Banners/Font Icon Variants',
-    component: BannerIconVariantsHarnessComponent,
-    decorators: [moduleMetadata({ imports: [BannerIconVariantsHarnessComponent] })],
+const meta: Meta<BannerSvgIconsHarnessComponent> = {
+    title: 'Banners/SVG Icons',
+    component: BannerSvgIconsHarnessComponent,
+    decorators: [moduleMetadata({ imports: [BannerSvgIconsHarnessComponent] }), withSvgIcons()],
 };
 
 export default meta;
-type Story = StoryObj<BannerIconVariantsHarnessComponent>;
+type Story = StoryObj<BannerSvgIconsHarnessComponent>;
 
-export const DefaultIcons: Story = {
-    name: 'Default Icons',
+export const Default: Story = {
+    name: 'Default SVG Icons',
     decorators: [withDefaultProperties()],
 };
 
-export const LargeIcons: Story = {
-    name: 'Large Icons',
+export const Large: Story = {
+    name: 'Large SVG Icons',
     decorators: [withCustomProperties(LARGE_ICON_CSS)],
-};
-
-export const StateTransition: Story = {
-    name: 'State Transition',
-    decorators: [withCustomProperties(STATE_TRANSITION_CSS)],
-};
-
-export const LargeStateTransition: Story = {
-    name: 'Large + State Transition',
-    decorators: [withCustomProperties(LARGE_ICON_STATE_TRANSITION_CSS)],
-};
-
-export const Pulse: Story = {
-    name: 'Pulse',
-    decorators: [withCustomProperties(PULSE_CSS)],
-};
-
-export const LargePulse: Story = {
-    name: 'Large + Pulse',
-    decorators: [withCustomProperties(LARGE_ICON_PULSE_CSS)],
 };
