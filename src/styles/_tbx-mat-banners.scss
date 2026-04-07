@@ -206,28 +206,60 @@ html {
         transparent
     );
 
-    /* ── Form control overrides ── */
-    --mdc-checkbox-selected-checkmark-color: #{$bg};
-    --mdc-checkbox-selected-focus-icon-color: #{$text};
-    --mdc-checkbox-selected-hover-icon-color: #{$text};
-    --mdc-checkbox-selected-icon-color: #{$text};
-    --mdc-checkbox-selected-pressed-icon-color: #{$text};
-    --mdc-checkbox-unselected-focus-icon-color: #{$text};
-    --mdc-checkbox-unselected-hover-icon-color: #{$text};
-    --mdc-checkbox-unselected-icon-color: #{$text};
+    /* ── Checkbox ── */
+    --mat-checkbox-selected-checkmark-color: #{$bg};
+    --mat-checkbox-selected-focus-icon-color: #{$text};
+    --mat-checkbox-selected-hover-icon-color: #{$text};
+    --mat-checkbox-selected-icon-color: #{$text};
+    --mat-checkbox-selected-pressed-state-layer-color: #{$text};
+    --mat-checkbox-unselected-focus-icon-color: #{$text};
+    --mat-checkbox-unselected-hover-icon-color: #{$text};
+    --mat-checkbox-unselected-icon-color: #{$text};
     --mat-checkbox-label-text-color: #{$text};
 
+    /* ── Slide toggle ── */
     --mat-slide-toggle-label-text-color: #{$text};
+    --mat-slide-toggle-selected-track-color: #{$text};
+    --mat-slide-toggle-selected-hover-track-color: #{$text};
+    --mat-slide-toggle-selected-focus-track-color: #{$text};
+    --mat-slide-toggle-selected-pressed-track-color: #{$text};
+    --mat-slide-toggle-selected-handle-color: #{$bg};
+    --mat-slide-toggle-selected-hover-handle-color: #{$bg};
+    --mat-slide-toggle-selected-focus-handle-color: #{$bg};
+    --mat-slide-toggle-selected-pressed-handle-color: #{$bg};
+    --mat-slide-toggle-selected-icon-color: #{$text};
+    --mat-slide-toggle-unselected-track-color: color-mix(in srgb, #{$text} 30%, transparent);
+    --mat-slide-toggle-unselected-hover-track-color: color-mix(in srgb, #{$text} 40%, transparent);
+    --mat-slide-toggle-unselected-focus-track-color: color-mix(in srgb, #{$text} 30%, transparent);
+    --mat-slide-toggle-unselected-pressed-track-color: color-mix(in srgb, #{$text} 40%, transparent);
+    --mat-slide-toggle-unselected-handle-color: #{$text};
+    --mat-slide-toggle-unselected-hover-handle-color: #{$text};
+    --mat-slide-toggle-unselected-focus-handle-color: #{$text};
+    --mat-slide-toggle-unselected-pressed-handle-color: #{$text};
+    --mat-slide-toggle-unselected-icon-color: #{$bg};
+    --mat-slide-toggle-track-outline-color: color-mix(in srgb, #{$text} 50%, transparent);
 
+    /* ── Radio ── */
     --mat-radio-checked-ripple-color: #{$text};
-    --mdc-radio-selected-icon-color: #{$text};
-    --mdc-radio-selected-hover-icon-color: #{$text};
-    --mdc-radio-selected-focus-icon-color: #{$text};
-    --mdc-radio-selected-pressed-icon-color: #{$text};
-    --mdc-radio-unselected-icon-color: #{$text};
-    --mdc-radio-unselected-hover-icon-color: #{$text};
-    --mdc-radio-unselected-focus-icon-color: #{$text};
+    --mat-radio-ripple-color: #{$text};
+    --mat-radio-selected-icon-color: #{$text};
+    --mat-radio-selected-hover-icon-color: #{$text};
+    --mat-radio-selected-focus-icon-color: #{$text};
+    --mat-radio-selected-pressed-icon-color: #{$text};
+    --mat-radio-unselected-icon-color: #{$text};
+    --mat-radio-unselected-hover-icon-color: #{$text};
+    --mat-radio-unselected-focus-icon-color: #{$text};
+    --mat-radio-unselected-pressed-icon-color: #{$text};
     --mat-radio-label-text-color: #{$text};
+
+    /* ── Button toggle group ── */
+    --mat-button-toggle-text-color: #{$text};
+    --mat-button-toggle-selected-state-text-color: #{$bg};
+    --mat-button-toggle-selected-state-background-color: #{$text};
+    --mat-button-toggle-divider-color: color-mix(in srgb, #{$text} 40%, transparent);
+    --mat-button-toggle-disabled-state-text-color: color-mix(in srgb, #{$text} 40%, transparent);
+    --mat-button-toggle-state-layer-color: #{$text};
+    --mat-button-toggle-hover-state-layer-opacity: 0.15;
 }
 
 .tbx-mat-banner-panel-success {
