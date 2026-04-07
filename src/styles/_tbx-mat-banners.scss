@@ -1,0 +1,278 @@
+@use '@angular/material' as mat;
+
+/* ━━━ Banner Color Tokens ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * Default banner colors follow universal UX conventions:
+ * success = green, error = red, warning = amber, information = blue, help = blue
+ *
+ * These are intentionally NOT tied to --mat-sys-* palette tokens because
+ * severity colors must be immediately recognizable regardless of theme.
+ *
+ * The "default" severity level applies NO color overrides — it inherits
+ * whatever the current Material theme provides.
+ *
+ * Themes can optionally override these via html[data-theme="id"] blocks.
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+html {
+    /* Success — green */
+    --tbx-mat-banner-success-background: #2e7d32;
+    --tbx-mat-banner-success-text: #ffffff;
+
+    /* Error — red */
+    --tbx-mat-banner-error-background: #c62828;
+    --tbx-mat-banner-error-text: #ffffff;
+
+    /* Warning — amber */
+    --tbx-mat-banner-warning-background: #f9a825;
+    --tbx-mat-banner-warning-text: #ffffff;
+
+    /* Information — blue */
+    --tbx-mat-banner-information-background: #1565c0;
+    --tbx-mat-banner-information-text: #ffffff;
+
+    /* Help — blue (lighter) */
+    --tbx-mat-banner-help-background: #1976d2;
+    --tbx-mat-banner-help-text: #ffffff;
+}
+
+/* ━━━ Action Button Opacity Tokens ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * Centralized opacity values used by action button variants within severity
+ * panels. Defined once here so downstream consumers can override them
+ * without touching individual severity classes.
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+html {
+    --tbx-mat-banner-action-text-opacity: 0.8;
+
+    --tbx-mat-banner-action-filled-container-opacity: var(--tbx-mat-banner-action-text-opacity);
+    --tbx-mat-banner-action-tonal-container-opacity: 0.55;
+
+    --tbx-mat-banner-action-outlined-opacity: var(--tbx-mat-banner-action-text-opacity);
+    --tbx-mat-banner-action-elevated-opacity: var(--tbx-mat-banner-action-text-opacity);
+    --tbx-mat-banner-action-icon-opacity: var(--tbx-mat-banner-action-text-opacity);
+    --tbx-mat-banner-close-icon-opacity: var(--tbx-mat-banner-action-text-opacity);
+
+    --tbx-mat-banner-action-filled-hover-state-layer-opacity: 0.3;
+    --tbx-mat-banner-action-tonal-hover-state-layer-opacity: var(
+        --tbx-mat-banner-action-filled-hover-state-layer-opacity
+    );
+}
+
+/* ━━━ Overlay Panel Base ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * Applied to the CDK overlay panel. Ensures full-width display.
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.tbx-mat-banner-overlay-panel {
+    width: 100%;
+    font-family: var(--mat-sys-body-large-font, Roboto, sans-serif);
+    font-size: var(--mat-sys-body-large-size, 0.875rem);
+    line-height: var(--mat-sys-body-large-line-height, 1.25rem);
+    letter-spacing: var(--mat-sys-body-large-tracking, 0.0178571429em);
+    box-shadow: var(
+        --tbx-mat-banner-overlay-shadow,
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
+        0 1px 10px 0 rgba(0, 0, 0, 0.12)
+    );
+
+    /* Bottom-positioned banners cast shadow upward */
+    &.tbx-mat-banner-position-bottom {
+        box-shadow: var(
+            --tbx-mat-banner-overlay-shadow,
+            0 -2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 -4px 5px 0 rgba(0, 0, 0, 0.14),
+            0 -1px 10px 0 rgba(0, 0, 0, 0.12)
+        );
+    }
+}
+
+/* ━━━ Panel Styles ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * Applied to the CDK overlay panel via panelClass.
+ *
+ * Button variant token mapping is identical to the notification package:
+ * each severity panel class overrides color tokens for all six button
+ * variants (text, filled, tonal, outlined, elevated, icon).
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── Default severity ──────────────────────────────────────────────────────── */
+.tbx-mat-banner-panel-default {
+    background-color: var(--mat-snack-bar-container-color, var(--mat-sys-inverse-surface, #333));
+    color: var(--mat-snack-bar-supporting-text-color, var(--mat-sys-inverse-on-surface, #fff));
+    --tbx-mat-banner-action-icon-color: var(--mat-sys-inverse-primary);
+    --tbx-mat-banner-action-icon-state-layer-color: var(--mat-sys-inverse-primary);
+    --tbx-mat-banner-close-icon-color: var(--mat-sys-inverse-primary);
+    --tbx-mat-banner-close-icon-state-layer-color: var(--mat-sys-inverse-primary);
+}
+
+/* ── Severity panel mixin ──────────────────────────────────────────────────── */
+@mixin _severity-panel($bg, $text) {
+    background-color: $bg;
+    color: $text;
+
+    /* ── Icon button color tokens ── */
+    --tbx-mat-banner-action-icon-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-action-icon-opacity) * 100%),
+        transparent
+    );
+    --tbx-mat-banner-action-icon-state-layer-color: #{$text};
+    --tbx-mat-banner-close-icon-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-close-icon-opacity) * 100%),
+        transparent
+    );
+    --tbx-mat-banner-close-icon-state-layer-color: #{$text};
+
+    /* ── Text button ── */
+    --mat-button-text-label-text-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-action-text-opacity) * 100%),
+        transparent
+    );
+    --mat-button-text-state-layer-color: #{$text};
+    --mat-button-text-ripple-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
+        transparent
+    );
+
+    /* ── Filled button ── */
+    --mat-button-filled-container-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-action-filled-container-opacity) * 100%),
+        transparent
+    );
+    --mat-button-filled-label-text-color: #{$bg};
+    --mat-button-filled-state-layer-color: #{$bg};
+    --mat-button-filled-hover-state-layer-opacity: var(
+        --tbx-mat-banner-action-filled-hover-state-layer-opacity
+    );
+    --mat-button-filled-ripple-color: color-mix(
+        in srgb,
+        #{$bg} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
+        transparent
+    );
+
+    /* ── Tonal button ── */
+    --mat-button-tonal-container-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-action-tonal-container-opacity) * 100%),
+        transparent
+    );
+    --mat-button-tonal-label-text-color: #{$bg};
+    --mat-button-tonal-state-layer-color: #{$bg};
+    --mat-button-tonal-hover-state-layer-opacity: var(
+        --tbx-mat-banner-action-tonal-hover-state-layer-opacity
+    );
+    --mat-button-tonal-ripple-color: color-mix(
+        in srgb,
+        #{$bg} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
+        transparent
+    );
+
+    /* ── Outlined button ── */
+    --mat-button-outlined-label-text-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-action-outlined-opacity) * 100%),
+        transparent
+    );
+    --mat-button-outlined-outline-color: #{$text};
+    --mat-button-outlined-state-layer-color: #{$text};
+    --mat-button-outlined-ripple-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
+        transparent
+    );
+
+    /* ── Elevated (protected) button ── */
+    --mat-button-protected-label-text-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--tbx-mat-banner-action-elevated-opacity) * 100%),
+        transparent
+    );
+    --mat-button-protected-container-color: #{$bg};
+    --mat-button-protected-state-layer-color: #{$text};
+    --mat-button-protected-container-elevation-shadow: var(--mat-sys-level1);
+    --mat-button-protected-hover-container-elevation-shadow: var(--mat-sys-level2);
+    --mat-button-protected-focus-container-elevation-shadow: var(--mat-sys-level1);
+    --mat-button-protected-pressed-container-elevation-shadow: var(--mat-sys-level1);
+    --mat-button-protected-ripple-color: color-mix(
+        in srgb,
+        #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
+        transparent
+    );
+
+    /* ── Form control overrides ── */
+    --mdc-checkbox-selected-checkmark-color: #{$bg};
+    --mdc-checkbox-selected-focus-icon-color: #{$text};
+    --mdc-checkbox-selected-hover-icon-color: #{$text};
+    --mdc-checkbox-selected-icon-color: #{$text};
+    --mdc-checkbox-selected-pressed-icon-color: #{$text};
+    --mdc-checkbox-unselected-focus-icon-color: #{$text};
+    --mdc-checkbox-unselected-hover-icon-color: #{$text};
+    --mdc-checkbox-unselected-icon-color: #{$text};
+    --mat-checkbox-label-text-color: #{$text};
+
+    --mat-slide-toggle-label-text-color: #{$text};
+
+    --mat-radio-checked-ripple-color: #{$text};
+    --mdc-radio-selected-icon-color: #{$text};
+    --mdc-radio-selected-hover-icon-color: #{$text};
+    --mdc-radio-selected-focus-icon-color: #{$text};
+    --mdc-radio-selected-pressed-icon-color: #{$text};
+    --mdc-radio-unselected-icon-color: #{$text};
+    --mdc-radio-unselected-hover-icon-color: #{$text};
+    --mdc-radio-unselected-focus-icon-color: #{$text};
+    --mat-radio-label-text-color: #{$text};
+}
+
+.tbx-mat-banner-panel-success {
+    @include _severity-panel(
+        var(--tbx-mat-banner-success-background),
+        var(--tbx-mat-banner-success-text)
+    );
+}
+
+.tbx-mat-banner-panel-error {
+    @include _severity-panel(
+        var(--tbx-mat-banner-error-background),
+        var(--tbx-mat-banner-error-text)
+    );
+}
+
+.tbx-mat-banner-panel-warning {
+    @include _severity-panel(
+        var(--tbx-mat-banner-warning-background),
+        var(--tbx-mat-banner-warning-text)
+    );
+}
+
+.tbx-mat-banner-panel-information {
+    @include _severity-panel(
+        var(--tbx-mat-banner-information-background),
+        var(--tbx-mat-banner-information-text)
+    );
+}
+
+.tbx-mat-banner-panel-help {
+    @include _severity-panel(
+        var(--tbx-mat-banner-help-background),
+        var(--tbx-mat-banner-help-text)
+    );
+}
+
+/* ── Icon button overrides ────────────────────────────────────────────────── */
+
+.tbx-mat-banner-action-icon-button.mat-mdc-icon-button {
+    --mat-icon-button-icon-color: var(--tbx-mat-banner-action-icon-color);
+    --mat-icon-button-state-layer-color: var(--tbx-mat-banner-action-icon-state-layer-color);
+}
+
+.tbx-mat-banner-close-icon-button.mat-mdc-icon-button {
+    --mat-icon-button-icon-color: var(--tbx-mat-banner-close-icon-color);
+    --mat-icon-button-state-layer-color: var(--tbx-mat-banner-close-icon-state-layer-color);
+}
