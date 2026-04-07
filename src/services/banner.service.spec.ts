@@ -2,10 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
-import {
-    TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-    TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-} from '@teqbench/tbx-mat-icons';
+import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED } from '@teqbench/tbx-mat-icons';
 import { TbxMatBannerService } from './banner.service';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';

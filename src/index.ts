@@ -51,14 +51,8 @@ export type { TbxMatBannerProviderConfig } from './models/banner-provider-config
 export type { TbxMatBannerActionButton } from './models/banner-action-button.model';
 export type { TbxMatBannerActionCheckbox } from './models/banner-action-checkbox.model';
 export type { TbxMatBannerActionToggle } from './models/banner-action-toggle.model';
-export type {
-    TbxMatBannerActionRadioGroup,
-    TbxMatBannerRadioOption,
-} from './models/banner-action-radio-group.model';
-export type {
-    TbxMatBannerActionToggleGroup,
-    TbxMatBannerToggleOption,
-} from './models/banner-action-toggle-group.model';
+export type { TbxMatBannerActionRadioGroup, TbxMatBannerRadioOption } from './models/banner-action-radio-group.model';
+export type { TbxMatBannerActionToggleGroup, TbxMatBannerToggleOption } from './models/banner-action-toggle-group.model';
 export type { TbxMatBannerRef } from './models/banner-ref.model';
 export type { TbxMatBannerResult } from './models/banner-result.model';
 

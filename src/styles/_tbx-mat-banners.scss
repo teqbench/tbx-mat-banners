@@ -55,9 +55,7 @@ html {
     --tbx-mat-banner-close-icon-opacity: var(--tbx-mat-banner-action-text-opacity);
 
     --tbx-mat-banner-action-filled-hover-state-layer-opacity: 0.3;
-    --tbx-mat-banner-action-tonal-hover-state-layer-opacity: var(
-        --tbx-mat-banner-action-filled-hover-state-layer-opacity
-    );
+    --tbx-mat-banner-action-tonal-hover-state-layer-opacity: var(--tbx-mat-banner-action-filled-hover-state-layer-opacity);
 }
 
 /* ━━━ Overlay Panel Base ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -71,21 +69,11 @@ html {
     font-size: var(--mat-sys-body-large-size, 0.875rem);
     line-height: var(--mat-sys-body-large-line-height, 1.25rem);
     letter-spacing: var(--mat-sys-body-large-tracking, 0.0178571429em);
-    box-shadow: var(
-        --tbx-mat-banner-overlay-shadow,
-        0 2px 4px -1px rgba(0, 0, 0, 0.2),
-        0 4px 5px 0 rgba(0, 0, 0, 0.14),
-        0 1px 10px 0 rgba(0, 0, 0, 0.12)
-    );
+    box-shadow: var(--tbx-mat-banner-overlay-shadow, 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12));
 
     /* Bottom-positioned banners cast shadow upward */
     &.tbx-mat-banner-position-bottom {
-        box-shadow: var(
-            --tbx-mat-banner-overlay-shadow,
-            0 -2px 4px -1px rgba(0, 0, 0, 0.2),
-            0 -4px 5px 0 rgba(0, 0, 0, 0.14),
-            0 -1px 10px 0 rgba(0, 0, 0, 0.12)
-        );
+        box-shadow: var(--tbx-mat-banner-overlay-shadow, 0 -2px 4px -1px rgba(0, 0, 0, 0.2), 0 -4px 5px 0 rgba(0, 0, 0, 0.14), 0 -1px 10px 0 rgba(0, 0, 0, 0.12));
     }
 }
 
@@ -114,97 +102,45 @@ html {
     color: $text;
 
     /* ── Icon button color tokens ── */
-    --tbx-mat-banner-action-icon-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-action-icon-opacity) * 100%),
-        transparent
-    );
+    --tbx-mat-banner-action-icon-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-action-icon-opacity) * 100%), transparent);
     --tbx-mat-banner-action-icon-state-layer-color: #{$text};
-    --tbx-mat-banner-close-icon-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-close-icon-opacity) * 100%),
-        transparent
-    );
+    --tbx-mat-banner-close-icon-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-close-icon-opacity) * 100%), transparent);
     --tbx-mat-banner-close-icon-state-layer-color: #{$text};
 
     /* ── Text button ── */
-    --mat-button-text-label-text-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-action-text-opacity) * 100%),
-        transparent
-    );
+    --mat-button-text-label-text-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-action-text-opacity) * 100%), transparent);
     --mat-button-text-state-layer-color: #{$text};
-    --mat-button-text-ripple-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
-        transparent
-    );
+    --mat-button-text-ripple-color: color-mix(in srgb, #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent);
 
     /* ── Filled button ── */
-    --mat-button-filled-container-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-action-filled-container-opacity) * 100%),
-        transparent
-    );
+    --mat-button-filled-container-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-action-filled-container-opacity) * 100%), transparent);
     --mat-button-filled-label-text-color: #{$bg};
     --mat-button-filled-state-layer-color: #{$bg};
-    --mat-button-filled-hover-state-layer-opacity: var(
-        --tbx-mat-banner-action-filled-hover-state-layer-opacity
-    );
-    --mat-button-filled-ripple-color: color-mix(
-        in srgb,
-        #{$bg} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
-        transparent
-    );
+    --mat-button-filled-hover-state-layer-opacity: var(--tbx-mat-banner-action-filled-hover-state-layer-opacity);
+    --mat-button-filled-ripple-color: color-mix(in srgb, #{$bg} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent);
 
     /* ── Tonal button ── */
-    --mat-button-tonal-container-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-action-tonal-container-opacity) * 100%),
-        transparent
-    );
+    --mat-button-tonal-container-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-action-tonal-container-opacity) * 100%), transparent);
     --mat-button-tonal-label-text-color: #{$bg};
     --mat-button-tonal-state-layer-color: #{$bg};
-    --mat-button-tonal-hover-state-layer-opacity: var(
-        --tbx-mat-banner-action-tonal-hover-state-layer-opacity
-    );
-    --mat-button-tonal-ripple-color: color-mix(
-        in srgb,
-        #{$bg} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
-        transparent
-    );
+    --mat-button-tonal-hover-state-layer-opacity: var(--tbx-mat-banner-action-tonal-hover-state-layer-opacity);
+    --mat-button-tonal-ripple-color: color-mix(in srgb, #{$bg} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent);
 
     /* ── Outlined button ── */
-    --mat-button-outlined-label-text-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-action-outlined-opacity) * 100%),
-        transparent
-    );
+    --mat-button-outlined-label-text-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-action-outlined-opacity) * 100%), transparent);
     --mat-button-outlined-outline-color: #{$text};
     --mat-button-outlined-state-layer-color: #{$text};
-    --mat-button-outlined-ripple-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
-        transparent
-    );
+    --mat-button-outlined-ripple-color: color-mix(in srgb, #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent);
 
     /* ── Elevated (protected) button ── */
-    --mat-button-protected-label-text-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--tbx-mat-banner-action-elevated-opacity) * 100%),
-        transparent
-    );
+    --mat-button-protected-label-text-color: color-mix(in srgb, #{$text} calc(var(--tbx-mat-banner-action-elevated-opacity) * 100%), transparent);
     --mat-button-protected-container-color: #{$bg};
     --mat-button-protected-state-layer-color: #{$text};
     --mat-button-protected-container-elevation-shadow: var(--mat-sys-level1);
     --mat-button-protected-hover-container-elevation-shadow: var(--mat-sys-level2);
     --mat-button-protected-focus-container-elevation-shadow: var(--mat-sys-level1);
     --mat-button-protected-pressed-container-elevation-shadow: var(--mat-sys-level1);
-    --mat-button-protected-ripple-color: color-mix(
-        in srgb,
-        #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%),
-        transparent
-    );
+    --mat-button-protected-ripple-color: color-mix(in srgb, #{$text} calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent);
 
     /* ── Checkbox ── */
     --mat-checkbox-selected-checkmark-color: #{$bg};
@@ -231,11 +167,7 @@ html {
     --mat-slide-toggle-unselected-track-color: color-mix(in srgb, #{$text} 30%, transparent);
     --mat-slide-toggle-unselected-hover-track-color: color-mix(in srgb, #{$text} 40%, transparent);
     --mat-slide-toggle-unselected-focus-track-color: color-mix(in srgb, #{$text} 30%, transparent);
-    --mat-slide-toggle-unselected-pressed-track-color: color-mix(
-        in srgb,
-        #{$text} 40%,
-        transparent
-    );
+    --mat-slide-toggle-unselected-pressed-track-color: color-mix(in srgb, #{$text} 40%, transparent);
     --mat-slide-toggle-unselected-handle-color: #{$text};
     --mat-slide-toggle-unselected-hover-handle-color: #{$text};
     --mat-slide-toggle-unselected-focus-handle-color: #{$text};
@@ -267,38 +199,23 @@ html {
 }
 
 .tbx-mat-banner-panel-success {
-    @include _severity-panel(
-        var(--tbx-mat-banner-success-background),
-        var(--tbx-mat-banner-success-text)
-    );
+    @include _severity-panel(var(--tbx-mat-banner-success-background), var(--tbx-mat-banner-success-text));
 }
 
 .tbx-mat-banner-panel-error {
-    @include _severity-panel(
-        var(--tbx-mat-banner-error-background),
-        var(--tbx-mat-banner-error-text)
-    );
+    @include _severity-panel(var(--tbx-mat-banner-error-background), var(--tbx-mat-banner-error-text));
 }
 
 .tbx-mat-banner-panel-warning {
-    @include _severity-panel(
-        var(--tbx-mat-banner-warning-background),
-        var(--tbx-mat-banner-warning-text)
-    );
+    @include _severity-panel(var(--tbx-mat-banner-warning-background), var(--tbx-mat-banner-warning-text));
 }
 
 .tbx-mat-banner-panel-information {
-    @include _severity-panel(
-        var(--tbx-mat-banner-information-background),
-        var(--tbx-mat-banner-information-text)
-    );
+    @include _severity-panel(var(--tbx-mat-banner-information-background), var(--tbx-mat-banner-information-text));
 }
 
 .tbx-mat-banner-panel-help {
-    @include _severity-panel(
-        var(--tbx-mat-banner-help-background),
-        var(--tbx-mat-banner-help-text)
-    );
+    @include _severity-panel(var(--tbx-mat-banner-help-background), var(--tbx-mat-banner-help-text));
 }
 
 /* ── Icon button overrides ────────────────────────────────────────────────── */

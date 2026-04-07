@@ -68,9 +68,7 @@ const fontIconResolver = {
             <div class="button-group">
                 <button mat-flat-button (click)="banner.dismissAll()">Dismiss All</button>
             </div>
-            <p class="state">
-                Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}
-            </p>
+            <p class="state">Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}</p>
 
             @if (lastResult()) {
                 <div class="result-panel">
@@ -127,10 +125,7 @@ class BannerActionsHarnessComponent {
 
     private show(message: string, actionsGroup: TbxMatBannerActionsGroupControl[]): void {
         const level = this.severity();
-        const method = this.banner[level as keyof TbxMatBannerService] as (
-            msg: string,
-            args?: object
-        ) => { result: Promise<TbxMatBannerResult> };
+        const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => { result: Promise<TbxMatBannerResult> };
         const ref = method.call(this.banner, message, { actionsGroup });
         ref.result.then((result: TbxMatBannerResult) => this.lastResult.set(result));
     }

@@ -1,15 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import {
-    ChangeDetectionStrategy,
-    Component,
-    computed,
-    EventEmitter,
-    inject,
-    Input,
-    type OnInit,
-    Output,
-    signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, inject, Input, type OnInit, Output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -87,16 +77,7 @@ interface ResolvedIcon {
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'tbx-mat-banner',
-    imports: [
-        NgTemplateOutlet,
-        FormsModule,
-        MatButtonModule,
-        MatIconModule,
-        MatCheckboxModule,
-        MatSlideToggleModule,
-        MatRadioModule,
-        MatButtonToggleModule,
-    ],
+    imports: [NgTemplateOutlet, FormsModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule, MatRadioModule, MatButtonToggleModule],
     template: `
         <!-- Shared icon template — handles font ligature vs SVG branching -->
         <ng-template #tbxNgIconTemplate let-icon="icon" let-class="class">
@@ -111,155 +92,141 @@ interface ResolvedIcon {
 
         <div class="tbx-mat-banner-label">
             @if (resolvedData().showSeverityIcon) {
-                <ng-container
-                    *ngTemplateOutlet="
-                        tbxNgIconTemplate;
-                        context: {
-                            icon: severityIcon(),
-                            class: 'tbx-mat-banner-icon',
-                        }
-                    "
-                ></ng-container>
+                <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: severityIcon(), class: 'tbx-mat-banner-icon' }"></ng-container>
             }
             <span>{{ resolvedData().message }}</span>
         </div>
-        @if (resolvedData().actionsGroup.length > 0 || resolvedData().showCloseButton) {
+
+        @if (resolvedData().showCloseButton) {
+            <button mat-icon-button class="tbx-mat-banner-close-icon-button" (click)="onCloseClick()" aria-label="Dismiss banner">
+                <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: closeIcon() }"></ng-container>
+            </button>
+        }
+
+        @if (resolvedData().actionsGroup.length > 0) {
             <div class="tbx-mat-banner-actions">
-                @for (control of resolvedData().actionsGroup; track control.key) {
-                    @switch (control.type) {
-                        @case ('button') {
+                <div class="tbx-mat-banner-controls">
+                    @for (control of resolvedData().actionsGroup; track control.key) {
+                        @switch (control.type) {
+                            @case ('checkbox') {
+                                <mat-checkbox [checked]="getControlValue(control.key)" (change)="setControlValue(control.key, $event.checked)">{{ control.label }}</mat-checkbox>
+                            }
+                            @case ('toggle') {
+                                <mat-slide-toggle [checked]="getControlValue(control.key)" (change)="setControlValue(control.key, $event.checked)">{{ control.label }}</mat-slide-toggle>
+                            }
+                            @case ('radio-group') {
+                                <mat-radio-group [value]="getControlValue(control.key)" (change)="setControlValue(control.key, $event.value)">
+                                    @for (option of control.options; track option.value) {
+                                        <mat-radio-button [value]="option.value">{{ option.label }}</mat-radio-button>
+                                    }
+                                </mat-radio-group>
+                            }
+                            @case ('toggle-group') {
+                                <mat-button-toggle-group [multiple]="control.multiple ?? false" [value]="getControlValue(control.key)" (change)="setControlValue(control.key, $event.value)">
+                                    @for (option of control.options; track option.value) {
+                                        <mat-button-toggle [value]="option.value">
+                                            @if (option.icon) {
+                                                <mat-icon aria-hidden="true">{{ option.icon }}</mat-icon>
+                                            } @else {
+                                                {{ option.label }}
+                                            }
+                                        </mat-button-toggle>
+                                    }
+                                </mat-button-toggle-group>
+                            }
+                        }
+                    }
+                </div>
+                <div class="tbx-mat-banner-buttons">
+                    @for (control of resolvedData().actionsGroup; track control.key) {
+                        @if (control.type === 'button') {
                             @if (control.appearance === 'icon') {
-                                <button
-                                    mat-icon-button
-                                    class="tbx-mat-banner-action-icon-button"
-                                    (click)="onActionClick(control.key)"
-                                    [attr.aria-label]="control.label"
-                                >
-                                    <ng-container
-                                        *ngTemplateOutlet="
-                                            tbxNgIconTemplate;
-                                            context: { icon: resolveActionIcon(control) }
-                                        "
-                                    ></ng-container>
+                                <button mat-icon-button class="tbx-mat-banner-action-icon-button" (click)="onActionClick(control.key)" [attr.aria-label]="control.label">
+                                    <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: resolveActionIcon(control) }"></ng-container>
                                 </button>
                             } @else {
                                 @let icon = resolveActionIcon(control);
-                                <button
-                                    class="tbx-mat-banner-action-button"
-                                    [matButton]="control.appearance ?? defaultButtonAppearance"
-                                    (click)="onActionClick(control.key)"
-                                >
+                                <button class="tbx-mat-banner-action-button" [matButton]="control.appearance ?? defaultButtonAppearance" (click)="onActionClick(control.key)">
                                     @if ((control.iconPosition ?? 'before') === 'before') {
-                                        <ng-container
-                                            ngProjectAs="mat-icon:not([iconPositionEnd])"
-                                            *ngTemplateOutlet="
-                                                tbxNgIconTemplate;
-                                                context: { icon: icon }
-                                            "
-                                        ></ng-container>
+                                        <ng-container ngProjectAs="mat-icon:not([iconPositionEnd])" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
                                     }
 
                                     {{ control.label }}
 
                                     @if (control.iconPosition === 'after') {
-                                        <ng-container
-                                            ngProjectAs="mat-icon[iconPositionEnd]"
-                                            *ngTemplateOutlet="
-                                                tbxNgIconTemplate;
-                                                context: { icon: icon }
-                                            "
-                                        ></ng-container>
+                                        <ng-container ngProjectAs="mat-icon[iconPositionEnd]" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
                                     }
                                 </button>
                             }
                         }
-                        @case ('checkbox') {
-                            <mat-checkbox
-                                [checked]="getControlValue(control.key)"
-                                (change)="setControlValue(control.key, $event.checked)"
-                                >{{ control.label }}</mat-checkbox
-                            >
-                        }
-                        @case ('toggle') {
-                            <mat-slide-toggle
-                                [checked]="getControlValue(control.key)"
-                                (change)="setControlValue(control.key, $event.checked)"
-                                >{{ control.label }}</mat-slide-toggle
-                            >
-                        }
-                        @case ('radio-group') {
-                            <mat-radio-group
-                                [value]="getControlValue(control.key)"
-                                (change)="setControlValue(control.key, $event.value)"
-                            >
-                                @for (option of control.options; track option.value) {
-                                    <mat-radio-button [value]="option.value">{{
-                                        option.label
-                                    }}</mat-radio-button>
-                                }
-                            </mat-radio-group>
-                        }
-                        @case ('toggle-group') {
-                            <mat-button-toggle-group
-                                [multiple]="control.multiple ?? false"
-                                [value]="getControlValue(control.key)"
-                                (change)="setControlValue(control.key, $event.value)"
-                            >
-                                @for (option of control.options; track option.value) {
-                                    <mat-button-toggle [value]="option.value">
-                                        @if (option.icon) {
-                                            <mat-icon aria-hidden="true">{{
-                                                option.icon
-                                            }}</mat-icon>
-                                        } @else {
-                                            {{ option.label }}
-                                        }
-                                    </mat-button-toggle>
-                                }
-                            </mat-button-toggle-group>
-                        }
                     }
-                }
-                @if (resolvedData().showCloseButton) {
-                    <button
-                        mat-icon-button
-                        class="tbx-mat-banner-close-icon-button"
-                        (click)="onCloseClick()"
-                        aria-label="Dismiss banner"
-                    >
-                        <ng-container
-                            *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: closeIcon() }"
-                        ></ng-container>
-                    </button>
-                }
+                </div>
             </div>
         }
     `,
     styles: `
         :host {
-            display: flex;
-            flex-wrap: wrap;
+            container-type: inline-size;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            grid-template-rows: auto;
             align-items: center;
             padding: var(--tbx-mat-banner-padding, 0.5rem 1rem);
             width: 100%;
             box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
         }
 
+        /* ── Single-row layout (wide) ── */
+
         .tbx-mat-banner-label {
+            grid-column: 1;
+            grid-row: 1;
             display: flex;
             align-items: center;
             gap: var(--tbx-mat-banner-label-gap, 1rem);
-            flex-grow: 1;
             font-size: var(--tbx-mat-banner-font-size, inherit);
+            min-width: 0;
+        }
+
+        .tbx-mat-banner-label span {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tbx-mat-banner-actions {
+            grid-column: 2;
+            grid-row: 1;
             display: flex;
             align-items: center;
             gap: var(--tbx-mat-banner-actions-gap, 0.5rem);
             padding-left: var(--tbx-mat-banner-actions-padding, 1rem);
+        }
+
+        .tbx-mat-banner-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--tbx-mat-banner-controls-gap, 0.75rem);
+        }
+
+        .tbx-mat-banner-controls:empty {
+            display: none;
+        }
+
+        .tbx-mat-banner-buttons {
+            display: flex;
+            align-items: center;
+            gap: var(--tbx-mat-banner-buttons-gap, 0.5rem);
+            margin-left: auto;
+        }
+
+        .tbx-mat-banner-buttons:empty {
+            display: none;
+        }
+
+        .tbx-mat-banner-close-icon-button {
+            grid-column: 3;
+            grid-row: 1;
+            margin-left: var(--tbx-mat-banner-close-gap, 0.5rem);
         }
 
         .tbx-mat-banner-icon {
@@ -267,6 +234,38 @@ interface ResolvedIcon {
             font-size: var(--tbx-mat-banner-icon-size, 1.5rem);
             width: var(--tbx-mat-banner-icon-size, 1.5rem);
             height: var(--tbx-mat-banner-icon-size, 1.5rem);
+        }
+
+        /* ── Two-row layout (narrow) ── */
+
+        @container (max-width: 600px) {
+            :host {
+                grid-template-columns: 1fr auto;
+                grid-template-rows: auto auto;
+            }
+
+            .tbx-mat-banner-label {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .tbx-mat-banner-label span {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: unset;
+            }
+
+            .tbx-mat-banner-close-icon-button {
+                grid-column: 2;
+                grid-row: 1;
+            }
+
+            .tbx-mat-banner-actions {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                padding-left: 0;
+                padding-top: var(--tbx-mat-banner-actions-row-gap, 0.5rem);
+            }
         }
     `,
 })
@@ -319,13 +318,11 @@ export class TbxMatBannerComponent implements OnInit {
             type: this.type!,
             message: this.message ?? '',
             dismissByClose: () => this.dismissInline(TbxMatBannerDismissReason.Close),
-            dismissByAction: (actionKey: string) =>
-                this.dismissInline(TbxMatBannerDismissReason.Action, actionKey),
+            dismissByAction: (actionKey: string) => this.dismissInline(TbxMatBannerDismissReason.Action, actionKey),
             duration: this.duration ?? 0,
             showSeverityIcon: this.showSeverityIcon ?? true,
             showCloseButton: this.showCloseButton ?? true,
-            closeIconResolverService:
-                this.config.closeIconResolverService ?? this.defaultCloseIconService,
+            closeIconResolverService: this.config.closeIconResolverService ?? this.defaultCloseIconService,
             actionsGroup: this.actionsGroup ?? [],
         };
     });
@@ -333,14 +330,10 @@ export class TbxMatBannerComponent implements OnInit {
     private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
 
     /** Resolved severity icon. */
-    readonly severityIcon = computed(() =>
-        this.resolveIcon(this.config.severityIconResolverService, this.resolvedData().type)
-    );
+    readonly severityIcon = computed(() => this.resolveIcon(this.config.severityIconResolverService, this.resolvedData().type));
 
     /** Resolved close button icon. */
-    readonly closeIcon = computed(() =>
-        this.resolveIcon(this.resolvedData().closeIconResolverService, 'close')
-    );
+    readonly closeIcon = computed(() => this.resolveIcon(this.resolvedData().closeIconResolverService, 'close'));
 
     ngOnInit(): void {
         // Initialize form control values from defaultValue
@@ -400,12 +393,7 @@ export class TbxMatBannerComponent implements OnInit {
     }
 
     /** Resolve an icon from a resolver service. */
-    private resolveIcon(
-        resolver:
-            | { readonly iconType: TbxMatIconType; resolve(key: string): string | undefined }
-            | undefined,
-        key: string | undefined
-    ): ResolvedIcon | null {
+    private resolveIcon(resolver: { readonly iconType: TbxMatIconType; resolve(key: string): string | undefined } | undefined, key: string | undefined): ResolvedIcon | null {
         /* v8 ignore start -- defensive guard; resolver and key are always present in normal flow */
         if (!resolver || !key) {
             return null;

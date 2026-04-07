@@ -365,20 +365,8 @@ export class TbxMatBannerService {
 
         // Build panel classes
         const consumerPanelClass = config.panelClass;
-        const positionClass =
-            config.verticalPosition === 'bottom'
-                ? 'tbx-mat-banner-position-bottom'
-                : 'tbx-mat-banner-position-top';
-        const mergedPanelClass: string[] = [
-            'tbx-mat-banner-overlay-panel',
-            positionClass,
-            PANEL_CLASS_MAP[config.type],
-            ...(Array.isArray(consumerPanelClass)
-                ? consumerPanelClass
-                : consumerPanelClass
-                  ? [consumerPanelClass]
-                  : []),
-        ];
+        const positionClass = config.verticalPosition === 'bottom' ? 'tbx-mat-banner-position-bottom' : 'tbx-mat-banner-position-top';
+        const mergedPanelClass: string[] = ['tbx-mat-banner-overlay-panel', positionClass, PANEL_CLASS_MAP[config.type], ...(Array.isArray(consumerPanelClass) ? consumerPanelClass : consumerPanelClass ? [consumerPanelClass] : [])];
 
         // Create overlay
         const positionStrategy = this.overlay.position().global().centerHorizontally();
@@ -431,8 +419,7 @@ export class TbxMatBannerService {
             duration,
             showSeverityIcon: config.showSeverityIcon ?? true,
             showCloseButton: config.showCloseButton ?? true,
-            closeIconResolverService:
-                this.providerConfig.closeIconResolverService ?? this.defaultCloseIconService,
+            closeIconResolverService: this.providerConfig.closeIconResolverService ?? this.defaultCloseIconService,
             actionsGroup: config.actionsGroup ?? [],
         };
 

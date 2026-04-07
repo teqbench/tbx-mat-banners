@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import {
-    TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-    TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-} from '@teqbench/tbx-mat-icons';
+import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED } from '@teqbench/tbx-mat-icons';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 
@@ -81,8 +78,7 @@ describe('TbxMatBannerSeverityFontIconService', () => {
                 providers: [
                     {
                         provide: TbxMatBannerSeverityFontIconService,
-                        useFactory: () =>
-                            new TbxMatBannerSeverityFontIconService('material-symbols-outlined'),
+                        useFactory: () => new TbxMatBannerSeverityFontIconService('material-symbols-outlined'),
                     },
                 ],
             });

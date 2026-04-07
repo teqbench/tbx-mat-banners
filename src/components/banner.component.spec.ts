@@ -2,11 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
-import {
-    TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-    TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-    TbxMatIconType,
-} from '@teqbench/tbx-mat-icons';
+import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED, TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { TbxMatBannerSeverityFontIconService } from '../services/banner-severity-font-icon.service';
@@ -103,18 +99,14 @@ describe('TbxMatBannerComponent', () => {
         it('should render close button when showCloseButton is true', () => {
             const fixture = createFixture(buildData({ showCloseButton: true }));
 
-            const closeButton = fixture.debugElement.query(
-                By.css('.tbx-mat-banner-close-icon-button')
-            );
+            const closeButton = fixture.debugElement.query(By.css('.tbx-mat-banner-close-icon-button'));
             expect(closeButton).not.toBeNull();
         });
 
         it('should not render close button when showCloseButton is false', () => {
             const fixture = createFixture(buildData({ showCloseButton: false }));
 
-            const closeButton = fixture.debugElement.query(
-                By.css('.tbx-mat-banner-close-icon-button')
-            );
+            const closeButton = fixture.debugElement.query(By.css('.tbx-mat-banner-close-icon-button'));
             expect(closeButton).toBeNull();
         });
 
@@ -122,9 +114,7 @@ describe('TbxMatBannerComponent', () => {
             const dismissByClose = vi.fn();
             const fixture = createFixture(buildData({ dismissByClose }));
 
-            const closeButton = fixture.debugElement.query(
-                By.css('.tbx-mat-banner-close-icon-button')
-            );
+            const closeButton = fixture.debugElement.query(By.css('.tbx-mat-banner-close-icon-button'));
             closeButton.nativeElement.click();
 
             expect(dismissByClose).toHaveBeenCalledOnce();
@@ -133,9 +123,7 @@ describe('TbxMatBannerComponent', () => {
         it('should have an accessible aria-label', () => {
             const fixture = createFixture(buildData());
 
-            const closeButton = fixture.debugElement.query(
-                By.css('.tbx-mat-banner-close-icon-button')
-            );
+            const closeButton = fixture.debugElement.query(By.css('.tbx-mat-banner-close-icon-button'));
             expect(closeButton.nativeElement.getAttribute('aria-label')).toBe('Dismiss banner');
         });
     });
@@ -191,9 +179,7 @@ describe('TbxMatBannerComponent', () => {
                 })
             );
 
-            const iconButton = fixture.debugElement.query(
-                By.css('.tbx-mat-banner-action-icon-button[aria-label="Delete"]')
-            );
+            const iconButton = fixture.debugElement.query(By.css('.tbx-mat-banner-action-icon-button[aria-label="Delete"]'));
             expect(iconButton).not.toBeNull();
         });
     });
@@ -531,9 +517,7 @@ describe('TbxMatBannerComponent', () => {
             const spy = vi.fn();
             fixture.componentInstance.dismissed.subscribe(spy);
 
-            const closeButton = fixture.debugElement.query(
-                By.css('.tbx-mat-banner-close-icon-button')
-            );
+            const closeButton = fixture.debugElement.query(By.css('.tbx-mat-banner-close-icon-button'));
             closeButton.nativeElement.click();
 
             expect(spy).toHaveBeenCalledWith(expect.objectContaining({ dismissReason: 'close' }));

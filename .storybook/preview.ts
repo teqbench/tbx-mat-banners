@@ -22,9 +22,7 @@ const preview: Preview = {
                 {
                     provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
                     useFactory: () => ({
-                        severityIconResolverService: new TbxMatBannerSeverityFontIconService(
-                            'material-symbols-rounded'
-                        ),
+                        severityIconResolverService: new TbxMatBannerSeverityFontIconService('material-symbols-rounded'),
                     }),
                 },
             ],

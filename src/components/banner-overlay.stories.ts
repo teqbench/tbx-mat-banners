@@ -9,10 +9,7 @@ import { TbxMatBannerService } from '../services/banner.service';
     imports: [MatButtonModule],
     template: `
         <div class="harness">
-            <p class="theme-note">
-                Theme: Angular Material prebuilt <strong>Azure Blue</strong>. Banner severity colors
-                are independent of the M3 theme palette.
-            </p>
+            <p class="theme-note">Theme: Angular Material prebuilt <strong>Azure Blue</strong>. Banner severity colors are independent of the M3 theme palette.</p>
 
             <h3>Overlay Banner Triggers</h3>
             <div class="button-group">
@@ -39,9 +36,7 @@ import { TbxMatBannerService } from '../services/banner.service';
                 <button mat-flat-button (click)="queueDemo()">Fire 6 Queued</button>
                 <button mat-flat-button (click)="banner.dismissAll()">Dismiss All</button>
             </div>
-            <p class="state">
-                Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}
-            </p>
+            <p class="state">Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}</p>
         </div>
     `,
     styles: `
@@ -93,10 +88,7 @@ class BannerOverlayHarnessComponent {
     };
 
     fire(level: string, position?: 'top' | 'bottom'): void {
-        const method = this.banner[level as keyof TbxMatBannerService] as (
-            msg: string,
-            args?: object
-        ) => void;
+        const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => void;
         method.call(this.banner, this.messages[level], {
             verticalPosition: position ?? this.verticalPosition(),
         });

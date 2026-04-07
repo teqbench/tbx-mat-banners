@@ -47,9 +47,4 @@ import { type TbxMatBannerActionToggleGroup } from '../models/banner-action-togg
  *
  * @public
  */
-export type TbxMatBannerActionsGroupControl =
-    | TbxMatBannerActionButton
-    | TbxMatBannerActionCheckbox
-    | TbxMatBannerActionToggle
-    | TbxMatBannerActionRadioGroup
-    | TbxMatBannerActionToggleGroup;
+export type TbxMatBannerActionsGroupControl = TbxMatBannerActionButton | TbxMatBannerActionCheckbox | TbxMatBannerActionToggle | TbxMatBannerActionRadioGroup | TbxMatBannerActionToggleGroup;

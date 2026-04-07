@@ -67,6 +67,4 @@ import type { TbxMatBannerProviderConfig } from '../models/banner-provider-confi
  *
  * @public
  */
-export const TBX_MAT_BANNER_PROVIDER_CONFIG = new InjectionToken<TbxMatBannerProviderConfig>(
-    'TBX_MAT_BANNER_PROVIDER_CONFIG'
-);
+export const TBX_MAT_BANNER_PROVIDER_CONFIG = new InjectionToken<TbxMatBannerProviderConfig>('TBX_MAT_BANNER_PROVIDER_CONFIG');

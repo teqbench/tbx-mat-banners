@@ -4,14 +4,7 @@ import tsdoc from 'eslint-plugin-tsdoc';
 
 export default tseslint.config(
     {
-        ignores: [
-            '.claude/',
-            '.storybook/',
-            'coverage/',
-            'dist/',
-            'node_modules/',
-            'storybook-static/',
-        ],
+        ignores: ['.claude/', '.storybook/', 'coverage/', 'dist/', 'node_modules/', 'storybook-static/'],
     },
     ...tseslint.configs.recommended,
     ...angular.configs.tsRecommended,
@@ -26,14 +19,8 @@ export default tseslint.config(
             },
         },
         rules: {
-            '@angular-eslint/directive-selector': [
-                'error',
-                { type: 'attribute', prefix: 'tbx', style: 'camelCase' },
-            ],
-            '@angular-eslint/component-selector': [
-                'error',
-                { type: 'element', prefix: 'tbx', style: 'kebab-case' },
-            ],
+            '@angular-eslint/directive-selector': ['error', { type: 'attribute', prefix: 'tbx', style: 'camelCase' }],
+            '@angular-eslint/component-selector': ['error', { type: 'element', prefix: 'tbx', style: 'kebab-case' }],
             'tsdoc/syntax': 'warn',
         },
     },
