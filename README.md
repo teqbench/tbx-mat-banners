@@ -4,6 +4,16 @@
 
 > An opinionated [Angular ↗](https://angular.dev) banner component and service. Provides `TbxMatBannerService` for overlay display via [CDK Overlay ↗](https://material.angular.dev/cdk/overlay/api) and `TbxMatBannerComponent` for inline display. Features severity-leveled methods (`success()`, `error()`, `warning()`, `information()`, `help()`), an actions group supporting buttons and form controls (checkbox, toggle, radio group, toggle group), FIFO queuing with signal-based state, indefinite duration by default, and dismiss reason tracking with collected control values.
 
+## When to use
+
+Banners are one of three message surfaces in the TeqBench component family. Choose based on the weight of the message and how much interaction it needs:
+
+- [`@teqbench/tbx-mat-notifications`](https://github.com/teqbench/tbx-mat-notifications) — small, transient messages with at most one action control. Ideally one line of text, two lines acceptable. Use notifications to acknowledge something without interrupting the user's flow.
+- **`@teqbench/tbx-mat-banners`** (this package) — wide, persistent messages with multiple action controls. Ideally one line of message text, up to three lines still acceptable. Use a banner when the message needs the user's attention and may offer a few follow-up choices.
+- [`@teqbench/tbx-mat-dialogs`](https://github.com/teqbench/tbx-mat-dialogs) — heavier, focused interactions for arbitrary content. Use a dialog when the message is long, the choices are many, or the interaction is complex.
+
+If the content you are putting in a banner is approaching the three-line limit, or if the actions group is growing beyond a handful of controls, that is a signal to escalate to a dialog instead. A banner that behaves like a miniature dialog loses the affordances of both.
+
 ## Installation
 
 Configure [npm ↗](https://www.npmjs.com) to use [GitHub Packages ↗](https://github.com/orgs/teqbench/packages) for the `@teqbench` scope:
