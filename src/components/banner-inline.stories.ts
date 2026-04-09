@@ -91,6 +91,16 @@ import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-gr
                 <p class="dismissed-note">Dismissed. <button mat-button (click)="show('controls')">Show again</button></p>
             }
 
+            <h3>Narrow Container (actions wrap to three rows)</h3>
+            <p class="theme-note">This banner is constrained to 500px so the narrow-layout container query kicks in. With enough controls + buttons, the actions row wraps — controls on one row, buttons right-aligned on the next.</p>
+            <div class="narrow-wrapper">
+                @if (!isDismissed('narrowWrap')) {
+                    <tbx-mat-banner [type]="informationLevel" message="Configure notification preferences." [actionsGroup]="narrowWrapControls" (dismissed)="onDismiss('narrowWrap', $event)" />
+                } @else {
+                    <p class="dismissed-note">Dismissed. <button mat-button (click)="show('narrowWrap')">Show again</button></p>
+                }
+            </div>
+
             <h3>No Close Button</h3>
             <tbx-mat-banner [type]="errorLevel" message="This banner cannot be dismissed by the user." [showCloseButton]="false" />
 
@@ -175,6 +185,15 @@ class BannerInlineHarnessComponent {
             ],
             defaultValue: ['email'],
         },
+        { type: 'button', key: 'save', label: 'Save', appearance: 'filled' },
+    ];
+
+    readonly narrowWrapControls: TbxMatBannerActionsGroupControl[] = [
+        { type: 'checkbox', key: 'email', label: 'Email', defaultValue: true },
+        { type: 'checkbox', key: 'sms', label: 'SMS', defaultValue: false },
+        { type: 'checkbox', key: 'push', label: 'Push', defaultValue: true },
+        { type: 'button', key: 'cancel', label: 'Cancel' },
+        { type: 'button', key: 'reset', label: 'Reset', appearance: 'outlined' },
         { type: 'button', key: 'save', label: 'Save', appearance: 'filled' },
     ];
 

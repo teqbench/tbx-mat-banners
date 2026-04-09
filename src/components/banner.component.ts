@@ -272,8 +272,15 @@ interface ResolvedIcon {
             .tbx-mat-banner-actions {
                 grid-column: 1 / -1;
                 grid-row: 2;
+                flex-wrap: wrap;
+                row-gap: var(--tbx-mat-banner-actions-row-gap, 0.5rem);
                 padding-left: 0;
                 padding-top: var(--tbx-mat-banner-actions-row-gap, 0.5rem);
+            }
+
+            .tbx-mat-banner-controls,
+            .tbx-mat-banner-buttons {
+                flex-shrink: 0;
             }
         }
     `,
