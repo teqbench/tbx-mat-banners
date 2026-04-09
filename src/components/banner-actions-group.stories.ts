@@ -78,45 +78,7 @@ const fontIconResolver = {
             }
         </div>
     `,
-    styles: `
-        .harness {
-            font-family: Roboto, sans-serif;
-            padding: 1.5rem;
-        }
-
-        h3 {
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        h3:first-of-type {
-            margin-top: 0;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .state {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-
-        .result-panel {
-            margin-top: 1rem;
-            background: #f0f4ff;
-            border-left: 3px solid #1565c0;
-            padding: 0.5rem 0.75rem;
-        }
-
-        .result-panel pre {
-            font-size: 0.8125rem;
-            margin: 0.25rem 0 0;
-            white-space: pre-wrap;
-        }
-    `,
+    styleUrl: './story-harness.css',
 })
 class BannerActionsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);

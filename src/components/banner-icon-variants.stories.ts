@@ -3,28 +3,9 @@ import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { TbxMatBannerService } from '../services/banner.service';
+import { withCustomProperties, withDefaultProperties } from './story-overrides';
 
 // ─── CSS Custom Property Overrides ───────────────────────────────────────────
-
-const STYLE_TAG_ID = 'tbx-banner-icon-story-overrides';
-
-function withCustomProperties(css: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (story: () => any) => {
-        document.getElementById(STYLE_TAG_ID)?.remove();
-        if (css) {
-            const style = document.createElement('style');
-            style.id = STYLE_TAG_ID;
-            style.textContent = css;
-            document.head.appendChild(style);
-        }
-        return story();
-    };
-}
-
-function withDefaultProperties() {
-    return withCustomProperties('');
-}
 
 const LARGE_ICON_CSS = `
     html {
@@ -107,32 +88,7 @@ const LARGE_ICON_PULSE_CSS = `
             <p class="state">Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}</p>
         </div>
     `,
-    styles: `
-        .harness {
-            font-family: Roboto, sans-serif;
-            padding: 1.5rem;
-        }
-
-        h3 {
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        h3:first-of-type {
-            margin-top: 0;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .state {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-    `,
+    styleUrl: './story-harness.css',
 })
 class BannerIconVariantsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);

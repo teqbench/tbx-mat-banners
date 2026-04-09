@@ -39,40 +39,7 @@ import { TbxMatBannerService } from '../services/banner.service';
             <p class="state">Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}</p>
         </div>
     `,
-    styles: `
-        .harness {
-            font-family: Roboto, sans-serif;
-            padding: 1.5rem;
-        }
-
-        h3 {
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        h3:first-of-type {
-            margin-top: 0;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .theme-note {
-            font-size: 0.8125rem;
-            color: #888;
-            border-left: 3px solid #ddd;
-            padding: 0.25rem 0.75rem;
-            margin: 0 0 1rem;
-        }
-
-        .state {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-    `,
+    styleUrl: './story-harness.css',
 })
 class BannerOverlayHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
