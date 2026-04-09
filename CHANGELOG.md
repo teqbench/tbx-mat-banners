@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.1](https://github.com/teqbench/tbx-mat-banners/compare/v0.7.0...v0.7.1) (2026-04-09)
+
+
+### Bug Fixes
+
+* **skills:** replace .claude/skills submodule with .shared-skills aggregator ([92fc44d](https://github.com/teqbench/tbx-mat-banners/commit/92fc44d90dfda9a8ff25aba8fff6fc63be314e10))
+* **skills:** replace .claude/skills submodule with .shared-skills aggregator ([42df414](https://github.com/teqbench/tbx-mat-banners/commit/42df414c8175b2a7cf013ee9795295760c043306))
+
 ## [0.7.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.6.2...v0.7.0) (2026-04-07)
 
 
