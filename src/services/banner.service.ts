@@ -8,6 +8,7 @@ import { type TbxMatBannerConfig } from '../models/banner-config.model';
 import { type TbxMatBannerRef } from '../models/banner-ref.model';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { type BannerDataDto } from '../models/banner-data-dto.model';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
@@ -363,6 +364,11 @@ export class TbxMatBannerService {
         const consumerPanelClass = config.panelClass;
         const positionClass = config.verticalPosition === 'bottom' ? 'tbx-mat-banner-position-bottom' : 'tbx-mat-banner-position-top';
         const mergedPanelClass: string[] = ['tbx-mat-banner-overlay-panel', positionClass, PANEL_CLASS_MAP[config.type], ...(Array.isArray(consumerPanelClass) ? consumerPanelClass : consumerPanelClass ? [consumerPanelClass] : [])];
+
+        const effectiveAnimation = config.animation ?? this.providerConfig.defaultAnimation;
+        if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
+            mergedPanelClass.push(`tbx-mat-banner-anim-${effectiveAnimation}`);
+        }
 
         // Create overlay
         const positionStrategy = this.overlay.position().global().centerHorizontally();

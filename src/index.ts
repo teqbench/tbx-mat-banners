@@ -15,6 +15,7 @@
  * - {@link TbxMatBannerRef} — returned from service methods with config and result promise.
  * - {@link TbxMatBannerResult} — dismiss result with reason, action key, and collected form values.
  * - {@link TbxMatBannerDismissReason} — enum of dismiss reasons (Action, Close, Timeout, etc.).
+ * - {@link TbxMatBannerAnimation} — enum of overlay animation modes (None, Slide, Fade).
  * - {@link TbxMatBannerConfig} — full config interface for show().
  * - {@link TbxMatBannerConfigArgs} — optional config for convenience methods.
  * - {@link TbxMatBannerActionsGroupControl} — discriminated union of all action control types.
@@ -38,6 +39,7 @@
 
 // Enums
 export { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+export { TbxMatBannerAnimation } from './enums/banner-animation.enum';
 export { TbxMatBannerDismissReason } from './enums/banner-dismiss-reason.enum';
 
 // Types

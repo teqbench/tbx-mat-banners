@@ -7,6 +7,7 @@ import { TbxMatBannerService } from './banner.service';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { BANNER_DEFAULT_DURATION_MS } from '../constants/banner.constants';
 
@@ -152,6 +153,112 @@ describe('TbxMatBannerService', () => {
             const config = overlaySpy.create.mock.calls[0][0];
             expect(config.panelClass).toContain('class-a');
             expect(config.panelClass).toContain('class-b');
+        });
+    });
+
+    describe('animation class wiring', () => {
+        it('should add tbx-mat-banner-anim-slide to panelClass when animation is Slide', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            const config = overlaySpy.create.mock.calls[0][0];
+            expect(config.panelClass).toContain('tbx-mat-banner-anim-slide');
+        });
+
+        it('should add tbx-mat-banner-anim-fade to panelClass when animation is Fade', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Fade,
+            });
+
+            const config = overlaySpy.create.mock.calls[0][0];
+            expect(config.panelClass).toContain('tbx-mat-banner-anim-fade');
+        });
+
+        it('should not add any animation class when animation is None', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.None,
+            });
+
+            const config = overlaySpy.create.mock.calls[0][0];
+            const panelClasses = config.panelClass as string[];
+            expect(panelClasses.some((c) => c.startsWith('tbx-mat-banner-anim-'))).toBe(false);
+        });
+
+        it('should not add any animation class when animation is omitted', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+            });
+
+            const config = overlaySpy.create.mock.calls[0][0];
+            const panelClasses = config.panelClass as string[];
+            expect(panelClasses.some((c) => c.startsWith('tbx-mat-banner-anim-'))).toBe(false);
+        });
+
+        it('should use provider defaultAnimation when config.animation is omitted', () => {
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                            defaultAnimation: TbxMatBannerAnimation.Slide,
+                        }),
+                    },
+                ],
+            });
+            const svc = TestBed.inject(TbxMatBannerService);
+
+            svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const config = overlaySpy.create.mock.calls[0][0];
+            expect(config.panelClass).toContain('tbx-mat-banner-anim-slide');
+        });
+
+        it('should prefer per-call config.animation over provider defaultAnimation', () => {
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                            defaultAnimation: TbxMatBannerAnimation.Fade,
+                        }),
+                    },
+                ],
+            });
+            const svc = TestBed.inject(TbxMatBannerService);
+
+            svc.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            const config = overlaySpy.create.mock.calls[0][0];
+            expect(config.panelClass).toContain('tbx-mat-banner-anim-slide');
+            expect(config.panelClass).not.toContain('tbx-mat-banner-anim-fade');
         });
     });
 
