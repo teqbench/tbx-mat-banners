@@ -394,14 +394,14 @@ Returned synchronously from all service methods.
 | [Angular CDK ↗](https://material.angular.dev/cdk)                                      | >=21.0.0 |
 | [Angular Material ↗](https://material.angular.dev)                                     | >=21.0.0 |
 | [@teqbench/tbx-mat-icons](https://github.com/teqbench/tbx-mat-icons)                   | >=4.0.0  |
-| [@teqbench/tbx-mat-severity-icons](https://github.com/teqbench/tbx-mat-severity-icons) | >=6.0.0  |
+| [@teqbench/tbx-mat-severity-icons](https://github.com/teqbench/tbx-mat-severity-icons) | >=7.0.0  |
 | [TypeScript ↗](https://www.typescriptlang.org)                                         | ~5.9.0   |
 | [Node.js ↗](https://nodejs.org)                                                        | >=24.0.0 |
 
 ## Feedback
 
-- [Report a bug](https://github.com/teqbench/tbx-mat-banners/issues/new?template=bug_report.md)
-- [Request a feature](https://github.com/teqbench/tbx-mat-banners/issues/new?template=feature_request.md)
+- [Report a bug ↗](https://github.com/teqbench/tbx-mat-banners/issues/new?template=bug_report.md)
+- [Request a feature ↗](https://github.com/teqbench/tbx-mat-banners/issues/new?template=feature_request.md)
 
 ## License
 

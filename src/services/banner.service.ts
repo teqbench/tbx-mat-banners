@@ -100,12 +100,10 @@ export class TbxMatBannerService {
     private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
     private destroyed = false;
 
-    constructor() {
-        inject(DestroyRef).onDestroy(() => {
-            this.destroyed = true;
-            this.cleanupActive();
-        });
-    }
+    private readonly _destroyCleanup = inject(DestroyRef).onDestroy(() => {
+        this.destroyed = true;
+        this.cleanupActive();
+    });
 
     /** FIFO queue of pending banners. */
     private readonly queue: QueueEntry[] = [];
