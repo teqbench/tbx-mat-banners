@@ -14,10 +14,11 @@
  *   same way on dismiss.
  * - `Fade` — fades in and out via opacity.
  *
- * Consumers can tune motion timing via the
- * `--tbx-mat-banner-anim-duration` and `--tbx-mat-banner-anim-easing`
- * CSS custom properties. Animations are automatically disabled when
- * the user has `prefers-reduced-motion: reduce` set at the OS level.
+ * Consumers can tune motion timing via four CSS custom properties:
+ * `--tbx-mat-banner-anim-enter-duration`, `--tbx-mat-banner-anim-enter-easing`,
+ * `--tbx-mat-banner-anim-exit-duration`, and `--tbx-mat-banner-anim-exit-easing`.
+ * Animations are automatically disabled when the user has
+ * `prefers-reduced-motion: reduce` set at the OS level.
  *
  * @usage
  * Set per banner via {@link TbxMatBannerConfig.animation}, or set an

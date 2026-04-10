@@ -162,10 +162,11 @@ export interface TbxMatBannerConfig {
      * - {@link TbxMatBannerAnimation.Fade} — fades in/out via opacity.
      *
      * Only applicable to overlay banners created via {@link TbxMatBannerService}.
-     * Consumers can override the default motion timing via the
-     * `--tbx-mat-banner-anim-duration` and `--tbx-mat-banner-anim-easing`
-     * CSS custom properties. Animations are automatically disabled when
-     * the user has `prefers-reduced-motion: reduce` set.
+     * Consumers can override the default motion timing via four CSS custom
+     * properties: `--tbx-mat-banner-anim-enter-duration`,
+     * `--tbx-mat-banner-anim-enter-easing`, `--tbx-mat-banner-anim-exit-duration`,
+     * and `--tbx-mat-banner-anim-exit-easing`. Animations are automatically
+     * disabled when the user has `prefers-reduced-motion: reduce` set.
      *
      * @public
      */
