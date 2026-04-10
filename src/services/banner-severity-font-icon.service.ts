@@ -55,6 +55,8 @@ import { TbxMatSeverityFontIconService, TbxMatSeverityLevel } from '@teqbench/tb
  * ```
  *
  * @category Services
+ * @displayName Severity Font Icon Service
+ * @order 2
  * @since 1.0.0
  * @related TBX_MAT_BANNER_PROVIDER_CONFIG
  * @related TbxMatBannerSeveritySvgIconService

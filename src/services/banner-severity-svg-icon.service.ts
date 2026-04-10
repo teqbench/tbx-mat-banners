@@ -66,6 +66,8 @@ const SVG_HELP =
  * ```
  *
  * @category Services
+ * @displayName Severity SVG Icon Service
+ * @order 3
  * @since 1.0.0
  * @related TBX_MAT_BANNER_PROVIDER_CONFIG
  * @related TbxMatBannerSeverityFontIconService

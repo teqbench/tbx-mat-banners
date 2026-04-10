@@ -42,6 +42,8 @@ import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-gr
  * ```
  *
  * @category Models
+ * @displayName Banner Config
+ * @order 1
  * @since 1.0.0
  * @related TbxMatBannerConfigArgs
  * @related TbxMatBannerService

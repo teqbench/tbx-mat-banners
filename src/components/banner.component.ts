@@ -72,9 +72,8 @@ interface ResolvedIcon {
  * ```
  *
  * @example Inline mode:
- * ```typescript
- * // In template:
- * // <tbx-mat-banner [type]="severityLevel" [message]="'Hello'" (dismissed)="onDismiss($event)" />
+ * ```html
+ * <tbx-mat-banner [type]="severityLevel" [message]="'Hello'" (dismissed)="onDismiss($event)" />
  * ```
  *
  * @category Components
@@ -386,7 +385,15 @@ export class TbxMatBannerComponent implements OnInit {
         }
     }
 
-    /** Get the current value of a form control by key. */
+    /**
+     * Get the current value of a form control by key
+     *
+     * @param key - The control key to look up.
+     *
+     * @returns The current value of the control, or `undefined` if the key is not registered.
+     *
+     * @public
+     */
     getControlValue(key: string): unknown {
         return this.controlValues.get(key)?.();
     }
@@ -396,7 +403,13 @@ export class TbxMatBannerComponent implements OnInit {
         this.controlValues.get(key)?.set(value);
     }
 
-    /** Collect current values from all form controls. */
+    /**
+     * Collect current values from all form controls
+     *
+     * @returns A record keyed by control key with the current value of each form control.
+     *
+     * @public
+     */
     collectActionsGroupValues(): Record<string, unknown> {
         const values: Record<string, unknown> = {};
         for (const [key, sig] of this.controlValues) {
@@ -415,7 +428,15 @@ export class TbxMatBannerComponent implements OnInit {
         this.resolvedData().dismissByClose();
     }
 
-    /** Resolve an action button icon. */
+    /**
+     * Resolve an action button icon
+     *
+     * @param control - The action button control containing an optional icon key and resolver service.
+     *
+     * @returns The resolved icon, or `null` if no icon or resolver is configured.
+     *
+     * @public
+     */
     resolveActionIcon(control: {
         icon?: string;
         actionIconResolverService?: {

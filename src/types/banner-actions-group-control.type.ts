@@ -10,7 +10,7 @@ import { type TbxMatBannerActionToggleGroup } from '../models/banner-action-togg
  * @remarks
  * Each control in a banner's `actionsGroup` array must be one of these types.
  * The `type` property serves as the discriminant for type narrowing in
- * `@switch` blocks and conditional logic.
+ * `\@switch` blocks and conditional logic.
  *
  * Controls are rendered in the slot between the banner's message and close
  * button, in array order.
