@@ -88,6 +88,11 @@ interface ResolvedIcon {
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'tbx-mat-banner',
     imports: [NgTemplateOutlet, FormsModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule, MatRadioModule, MatButtonToggleModule],
+    host: {
+        '[animate.enter]': 'resolvedData().enterAnimationClass',
+        '[animate.leave]': 'resolvedData().leaveAnimationClass',
+        '(animate.leave)': 'resolvedData().onLeaveAnimationDone?.()',
+    },
     template: `
         <!-- Shared icon template — handles font ligature vs SVG branching -->
         <ng-template #tbxNgIconTemplate let-icon="icon" let-class="class">
@@ -176,6 +181,7 @@ interface ResolvedIcon {
         :host {
             container-type: inline-size;
             display: grid;
+            box-shadow: var(--tbx-mat-banner-panel-shadow, none);
             grid-template-columns: 1fr auto auto;
             grid-template-rows: auto;
             align-items: center;
@@ -346,6 +352,9 @@ export class TbxMatBannerComponent implements OnInit {
             showCloseButton: this.showCloseButton() ?? true,
             closeIconResolverService: this.config.closeIconResolverService ?? this.defaultCloseIconService,
             actionsGroup: this.actionsGroup() ?? [],
+            enterAnimationClass: '',
+            leaveAnimationClass: '',
+            onLeaveAnimationDone: null,
         };
     });
 

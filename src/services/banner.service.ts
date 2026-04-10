@@ -16,24 +16,6 @@ import { TbxMatBannerCloseFontIconService } from './banner-close-font-icon.servi
 import { BANNER_DEFAULT_DURATION_MS } from '../constants/banner.constants';
 
 /**
- * Panel CSS class mapping for each banner severity level.
- *
- * These classes are applied to the CDK overlay panel via
- * `OverlayConfig.panelClass`. The corresponding styles are defined
- * in src/styles/_tbx-mat-banners.scss — consumers must import this
- * partial into their global stylesheet (overlay panels render
- * outside component scope).
- */
-const PANEL_CLASS_MAP: Readonly<Record<TbxMatSeverityLevel, string>> = {
-    [TbxMatSeverityLevel.Default]: 'tbx-mat-banner-panel-default',
-    [TbxMatSeverityLevel.Success]: 'tbx-mat-banner-panel-success',
-    [TbxMatSeverityLevel.Error]: 'tbx-mat-banner-panel-error',
-    [TbxMatSeverityLevel.Warning]: 'tbx-mat-banner-panel-warning',
-    [TbxMatSeverityLevel.Information]: 'tbx-mat-banner-panel-information',
-    [TbxMatSeverityLevel.Help]: 'tbx-mat-banner-panel-help',
-};
-
-/**
  * Internal queue entry. Pairs a banner config with the promise
  * resolver needed to fulfill the TbxMatBannerRef returned to
  * the consumer.
@@ -363,11 +345,18 @@ export class TbxMatBannerService {
         // Build panel classes
         const consumerPanelClass = config.panelClass;
         const positionClass = config.verticalPosition === 'bottom' ? 'tbx-mat-banner-position-bottom' : 'tbx-mat-banner-position-top';
-        const mergedPanelClass: string[] = ['tbx-mat-banner-overlay-panel', positionClass, PANEL_CLASS_MAP[config.type], ...(Array.isArray(consumerPanelClass) ? consumerPanelClass : consumerPanelClass ? [consumerPanelClass] : [])];
+        const mergedPanelClass: string[] = ['tbx-mat-banner-overlay-panel', positionClass, ...(Array.isArray(consumerPanelClass) ? consumerPanelClass : consumerPanelClass ? [consumerPanelClass] : [])];
 
         const effectiveAnimation = config.animation ?? this.providerConfig.defaultAnimation;
-        if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
-            mergedPanelClass.push(`tbx-mat-banner-anim-${effectiveAnimation}`);
+        const position = config.verticalPosition === 'bottom' ? 'bottom' : 'top';
+        let enterAnimationClass = '';
+        let leaveAnimationClass = '';
+        if (effectiveAnimation === TbxMatBannerAnimation.Slide) {
+            enterAnimationClass = `tbx-mat-banner-slide-in-${position}`;
+            leaveAnimationClass = `tbx-mat-banner-slide-out-${position}`;
+        } else if (effectiveAnimation === TbxMatBannerAnimation.Fade) {
+            enterAnimationClass = 'tbx-mat-banner-fade-in';
+            leaveAnimationClass = 'tbx-mat-banner-fade-out';
         }
 
         // Create overlay
@@ -389,42 +378,38 @@ export class TbxMatBannerService {
         const overlayRef = this.overlay.create(overlayConfig);
         this.activeOverlayRef = overlayRef;
 
+        // When animation is active, showNext is deferred to the leave animation callback
+        const hasAnimation = enterAnimationClass !== '';
+
         // Build DTO
         const data: BannerDataDto = {
             type: config.type,
             message: config.message,
             dismissByClose: () => {
                 if (this.activeOverlayRef !== overlayRef) return;
-                const result: TbxMatBannerResult = {
+                this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Close,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                };
-                if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
-                    this.animateExit(overlayRef, effectiveAnimation, result);
-                } else {
-                    this.resolveAndCleanup(result);
-                    this.showNext();
-                }
+                });
+                if (!hasAnimation) this.showNext();
             },
             dismissByAction: (actionKey: string) => {
                 if (this.activeOverlayRef !== overlayRef) return;
-                const actionResult: TbxMatBannerResult = {
+                this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Action,
                     actionKey,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                };
-                if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
-                    this.animateExit(overlayRef, effectiveAnimation, actionResult);
-                } else {
-                    this.resolveAndCleanup(actionResult);
-                    this.showNext();
-                }
+                });
+                if (!hasAnimation) this.showNext();
             },
             duration,
             showSeverityIcon: config.showSeverityIcon ?? true,
             showCloseButton: config.showCloseButton ?? true,
             closeIconResolverService: this.providerConfig.closeIconResolverService ?? this.defaultCloseIconService,
             actionsGroup: config.actionsGroup ?? [],
+            enterAnimationClass,
+            leaveAnimationClass,
+            onLeaveAnimationDone: hasAnimation ? () => this.showNext() : null,
         };
 
         // Create component portal with injected data
@@ -441,16 +426,11 @@ export class TbxMatBannerService {
         if (duration > 0) {
             this.durationTimeout = setTimeout(() => {
                 this.durationTimeout = null;
-                const timeoutResult: TbxMatBannerResult = {
+                this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Timeout,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                };
-                if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
-                    this.animateExit(overlayRef, effectiveAnimation, timeoutResult);
-                } else {
-                    this.resolveAndCleanup(timeoutResult);
-                    this.showNext();
-                }
+                });
+                if (!hasAnimation) this.showNext();
             }, duration);
         }
     }
@@ -478,47 +458,6 @@ export class TbxMatBannerService {
 
         this.activeComponentRef = null;
         this._isActive.set(false);
-    }
-
-    /**
-     * Run the exit animation, then resolve the result and clean up.
-     * Nulls activeOverlayRef immediately so the ref-comparison guard
-     * prevents re-entrant dismiss calls while the animation runs.
-     */
-    private animateExit(overlayRef: OverlayRef, animation: TbxMatBannerAnimation, result: TbxMatBannerResult): void {
-        const element = overlayRef.overlayElement;
-        element.classList.add(`tbx-mat-banner-anim-${animation}-out`);
-
-        // Null ref immediately so stale dismiss calls bail via the guard
-        this.activeOverlayRef = null;
-
-        // Resolve promise immediately — consumer shouldn't wait for the animation
-        if (!this.activeResultResolved && this.activeResultResolver) {
-            this.activeResultResolver(result);
-            this.activeResultResolver = null;
-            this.activeResultResolved = true;
-        }
-
-        if (this.durationTimeout) {
-            clearTimeout(this.durationTimeout);
-            this.durationTimeout = null;
-        }
-
-        let disposed = false;
-        const finalize = () => {
-            if (disposed) return;
-            disposed = true;
-            overlayRef.dispose();
-            this.activeComponentRef = null;
-            this._isActive.set(false);
-            this.showNext();
-        };
-
-        element.addEventListener('animationend', finalize, { once: true });
-
-        // Safety ceiling — force disposal if animationend never fires
-        // (prefers-reduced-motion, browser quirks, detached element)
-        setTimeout(finalize, 1000);
     }
 
     /** Clean up active overlay on service destroy. */
