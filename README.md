@@ -77,10 +77,33 @@ if (result.actionKey === 'update') {
 }
 ```
 
+### Overlay — with animation
+
+```typescript
+import { TbxMatBannerAnimation } from '@teqbench/tbx-mat-banners';
+
+void this.banner.success('Item saved.', { animation: TbxMatBannerAnimation.Slide });
+void this.banner.error('Connection lost.', { animation: TbxMatBannerAnimation.Fade });
+```
+
+Animation is optional and defaults to `None` (instant show/hide). Set an app-wide default via the provider config:
+
+```typescript
+{
+    provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+    useFactory: () => ({
+        severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+        defaultAnimation: TbxMatBannerAnimation.Slide,
+    }),
+},
+```
+
+Animations are automatically disabled when the user has `prefers-reduced-motion: reduce` set.
+
 ### Overlay — full control via show()
 
 ```typescript
-import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-banners';
+import { TbxMatSeverityLevel, TbxMatBannerAnimation } from '@teqbench/tbx-mat-banners';
 
 this.banner.show({
     type: TbxMatSeverityLevel.Warning,
@@ -90,21 +113,26 @@ this.banner.show({
         { type: 'button', key: 'save', label: 'Save', appearance: 'filled' },
     ],
     verticalPosition: 'top',
+    animation: TbxMatBannerAnimation.Slide,
 });
 ```
 
 ### Inline
 
-Place the component directly in your template. No service needed.
+Place the component directly in your template. No service needed. The component uses [Angular signal inputs ↗](https://angular.dev/guide/signals/inputs) — template binding syntax is unchanged.
 
 ```html
 <tbx-mat-banner
     [type]="severityLevel"
     message="This is an inline banner."
+    [showSeverityIcon]="true"
+    [showCloseButton]="true"
     [actionsGroup]="controls"
     (dismissed)="onDismiss($event)"
 />
 ```
+
+Available inputs: `type`, `message`, `duration`, `showSeverityIcon`, `showCloseButton`, `actionsGroup`. All are optional except `type`. The `(dismissed)` output emits a `TbxMatBannerResult` on dismiss. Animations are overlay-only — inline banners do not animate.
 
 ### Queue state (reactive signals)
 
@@ -180,19 +208,31 @@ Banner appearance is customizable via CSS custom properties. Set them globally o
 
 #### Layout
 
-| Property                           | Default       | Description                           |
-| ---------------------------------- | ------------- | ------------------------------------- |
-| `--tbx-mat-banner-padding`         | `0.5rem 1rem` | Host element padding                  |
-| `--tbx-mat-banner-font-size`       | `inherit`     | Message text size                     |
-| `--tbx-mat-banner-icon-size`       | `1.5rem`      | Severity icon size                    |
-| `--tbx-mat-banner-label-gap`       | `1rem`        | Gap between icon and message          |
-| `--tbx-mat-banner-actions-gap`     | `0.5rem`      | Gap between controls in actions group |
-| `--tbx-mat-banner-actions-padding` | `1rem`        | Padding before actions area           |
-| `--tbx-mat-banner-close-gap`       | `0.5rem`      | Gap between actions and close button  |
-| `--tbx-mat-banner-controls-gap`    | `0.75rem`     | Gap between input controls            |
-| `--tbx-mat-banner-buttons-gap`     | `0.5rem`      | Gap between action buttons            |
-| `--tbx-mat-banner-actions-row-gap` | `0.5rem`      | Gap between rows in narrow layout     |
-| `--tbx-mat-banner-overlay-shadow`  | M3 level 3    | Overlay panel drop shadow             |
+| Property                           | Default       | Description                                   |
+| ---------------------------------- | ------------- | --------------------------------------------- |
+| `--tbx-mat-banner-padding`         | `0.5rem 1rem` | Host element padding                          |
+| `--tbx-mat-banner-font-size`       | `inherit`     | Message text size                             |
+| `--tbx-mat-banner-icon-size`       | `1.5rem`      | Severity icon size                            |
+| `--tbx-mat-banner-label-gap`       | `1rem`        | Gap between icon and message                  |
+| `--tbx-mat-banner-actions-gap`     | `0.5rem`      | Gap between controls in actions group         |
+| `--tbx-mat-banner-actions-padding` | `1rem`        | Padding before actions area                   |
+| `--tbx-mat-banner-close-gap`       | `0.5rem`      | Gap between actions and close button          |
+| `--tbx-mat-banner-controls-gap`    | `0.75rem`     | Gap between input controls                    |
+| `--tbx-mat-banner-buttons-gap`     | `0.5rem`      | Gap between action buttons                    |
+| `--tbx-mat-banner-actions-row-gap` | `0.5rem`      | Gap between rows in narrow layout             |
+| `--tbx-mat-banner-overlay-shadow`  | M3 level 3    | Overlay panel drop shadow (consumer override) |
+| `--tbx-mat-banner-overlay-z-index` | `1000`        | Z-index of the overlay panel                  |
+
+#### Animation
+
+Effective only when `animation` is `Slide` or `Fade`. Ignored when `None`.
+
+| Property                               | Default                            | Description            |
+| -------------------------------------- | ---------------------------------- | ---------------------- |
+| `--tbx-mat-banner-anim-enter-duration` | `300ms`                            | Enter animation length |
+| `--tbx-mat-banner-anim-enter-easing`   | `cubic-bezier(0.25, 0.8, 0.25, 1)` | Enter easing curve     |
+| `--tbx-mat-banner-anim-exit-duration`  | `250ms`                            | Exit animation length  |
+| `--tbx-mat-banner-anim-exit-easing`    | `cubic-bezier(0.4, 0, 0.6, 1)`     | Exit easing curve      |
 
 #### Colors
 
@@ -316,6 +356,14 @@ Returned synchronously from all service methods.
 | `ProgrammaticDismissAll`     | `dismissAll()` called         |
 | `ProgrammaticDismissCurrent` | `dismiss()` called            |
 
+### TbxMatBannerAnimation
+
+| Value   | Description                                                              |
+| ------- | ------------------------------------------------------------------------ |
+| `None`  | No animation — instant show/hide (default)                               |
+| `Slide` | Slides in/out from the closest viewport edge based on `verticalPosition` |
+| `Fade`  | Fades in/out via opacity                                                 |
+
 ### TbxMatBannerConfig
 
 | Property           | Type                                | Default | Description                                    |
@@ -328,13 +376,15 @@ Returned synchronously from all service methods.
 | `actionsGroup`     | `TbxMatBannerActionsGroupControl[]` | -       | Array of buttons and form controls             |
 | `panelClass`       | `string \| string[]`                | -       | Additional CSS classes for the overlay panel   |
 | `verticalPosition` | `'top' \| 'bottom'`                 | `'top'` | Overlay position (overlay mode only)           |
+| `animation`        | `TbxMatBannerAnimation`             | `None`  | Enter/exit animation (overlay mode only)       |
 
 ### TbxMatBannerProviderConfig
 
-| Property                      | Type                                                                     | Default      | Description                       |
-| ----------------------------- | ------------------------------------------------------------------------ | ------------ | --------------------------------- |
-| `severityIconResolverService` | `TbxMatSeverityResolver & TbxMatIconResolver<TbxMatSeverityLevel> & ...` | -            | Severity icon resolver (required) |
-| `closeIconResolverService`    | `TbxMatIconResolver<string> & { iconType }`                              | Default font | Close button icon resolver        |
+| Property                      | Type                                                                     | Default      | Description                                                         |
+| ----------------------------- | ------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------- |
+| `severityIconResolverService` | `TbxMatSeverityResolver & TbxMatIconResolver<TbxMatSeverityLevel> & ...` | -            | Severity icon resolver (required)                                   |
+| `closeIconResolverService`    | `TbxMatIconResolver<string> & { iconType }`                              | Default font | Close button icon resolver                                          |
+| `defaultAnimation`            | `TbxMatBannerAnimation`                                                  | `None`       | App-wide default animation; per-banner `animation` takes precedence |
 
 ## Compatibility
 
