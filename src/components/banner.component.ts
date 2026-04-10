@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, HostBinding, inject, Input, type OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input, type OnInit, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -301,27 +301,27 @@ export class TbxMatBannerComponent implements OnInit {
     // ── Inline mode inputs ──
 
     /** Severity level (inline mode). */
-    @Input() type?: TbxMatSeverityLevel;
+    readonly type = input<TbxMatSeverityLevel>();
 
     /** Message text (inline mode). */
-    @Input() message?: string;
+    readonly message = input<string>();
 
     /** Display duration in milliseconds (inline mode). */
-    @Input() duration?: number;
+    readonly duration = input<number>();
 
     /** Show severity icon (inline mode). */
-    @Input() showSeverityIcon?: boolean;
+    readonly showSeverityIcon = input<boolean>();
 
     /** Show close button (inline mode). */
-    @Input() showCloseButton?: boolean;
+    readonly showCloseButton = input<boolean>();
 
     /** Actions group controls (inline mode). */
-    @Input() actionsGroup?: TbxMatBannerActionsGroupControl[];
+    readonly actionsGroup = input<TbxMatBannerActionsGroupControl[]>();
 
     // ── Inline mode outputs ──
 
     /** Emitted when the banner is dismissed (inline mode). */
-    @Output() readonly dismissed = new EventEmitter<TbxMatBannerResult>();
+    readonly dismissed = output<TbxMatBannerResult>();
 
     // ── Internal state ──
 
@@ -337,15 +337,15 @@ export class TbxMatBannerComponent implements OnInit {
             return this.overlayData;
         }
         return {
-            type: this.type!,
-            message: this.message ?? '',
+            type: this.type()!,
+            message: this.message() ?? '',
             dismissByClose: () => this.dismissInline(TbxMatBannerDismissReason.Close),
             dismissByAction: (actionKey: string) => this.dismissInline(TbxMatBannerDismissReason.Action, actionKey),
-            duration: this.duration ?? 0,
-            showSeverityIcon: this.showSeverityIcon ?? true,
-            showCloseButton: this.showCloseButton ?? true,
+            duration: this.duration() ?? 0,
+            showSeverityIcon: this.showSeverityIcon() ?? true,
+            showCloseButton: this.showCloseButton() ?? true,
             closeIconResolverService: this.config.closeIconResolverService ?? this.defaultCloseIconService,
-            actionsGroup: this.actionsGroup ?? [],
+            actionsGroup: this.actionsGroup() ?? [],
         };
     });
 
