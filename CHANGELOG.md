@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.1](https://github.com/teqbench/tbx-mat-banners/compare/v0.8.0...v0.8.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* address post-0.8.0 code review findings ([#49](https://github.com/teqbench/tbx-mat-banners/issues/49)) ([d33f318](https://github.com/teqbench/tbx-mat-banners/commit/d33f31812d1297849f34b4acd3913e5685a1aebd))
+* address post-0.8.0 code review findings ([#49](https://github.com/teqbench/tbx-mat-banners/issues/49)) ([8ac979d](https://github.com/teqbench/tbx-mat-banners/commit/8ac979de3450ba1b328bf755deda4d5638fa53bf))
+* **ci:** move vite override comment to top-level key to unbreak npm ci ([4595a84](https://github.com/teqbench/tbx-mat-banners/commit/4595a840989ff10bbba010158e32b7143db3f4f2))
+
 ## [0.8.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.7.1...v0.8.0) (2026-04-10)
 
 
