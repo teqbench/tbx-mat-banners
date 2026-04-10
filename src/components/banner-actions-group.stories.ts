@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { TbxMatIconType } from '@teqbench/tbx-mat-icons';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
@@ -83,12 +84,14 @@ const fontIconResolver = {
 class BannerActionsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly severity = input<string>('warning');
+    readonly verticalPosition = input<'top' | 'bottom'>('top');
+    readonly animation = input<TbxMatBannerAnimation>(TbxMatBannerAnimation.None);
     readonly lastResult = signal<TbxMatBannerResult | null>(null);
 
     private show(message: string, actionsGroup: TbxMatBannerActionsGroupControl[]): void {
         const level = this.severity();
         const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => { result: Promise<TbxMatBannerResult> };
-        const ref = method.call(this.banner, message, { actionsGroup });
+        const ref = method.call(this.banner, message, { actionsGroup, verticalPosition: this.verticalPosition(), animation: this.animation() });
         ref.result.then((result: TbxMatBannerResult) => this.lastResult.set(result));
     }
 
@@ -308,6 +311,16 @@ const meta: Meta<BannerActionsHarnessComponent> = {
             options: ['default', 'success', 'error', 'warning', 'information', 'help'],
             description: 'Severity level for the banner',
         },
+        verticalPosition: {
+            control: 'select',
+            options: ['top', 'bottom'],
+            description: 'Vertical position of the overlay banner',
+        },
+        animation: {
+            control: 'select',
+            options: [TbxMatBannerAnimation.None, TbxMatBannerAnimation.Slide, TbxMatBannerAnimation.Fade],
+            description: 'Enter/exit animation mode',
+        },
     },
 };
 
@@ -316,30 +329,30 @@ type Story = StoryObj<BannerActionsHarnessComponent>;
 
 export const Default: Story = {
     name: 'Default',
-    args: { severity: 'default' },
+    args: { severity: 'default', verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
 };
 
 export const Success: Story = {
     name: 'Success',
-    args: { severity: 'success' },
+    args: { severity: 'success', verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
 };
 
 export const Error: Story = {
     name: 'Error',
-    args: { severity: 'error' },
+    args: { severity: 'error', verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
 };
 
 export const Warning: Story = {
     name: 'Warning',
-    args: { severity: 'warning' },
+    args: { severity: 'warning', verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
 };
 
 export const Information: Story = {
     name: 'Information',
-    args: { severity: 'information' },
+    args: { severity: 'information', verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
 };
 
 export const Help: Story = {
     name: 'Help',
-    args: { severity: 'help' },
+    args: { severity: 'help', verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
 };

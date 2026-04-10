@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 import { TbxMatBannerSeveritySvgIconService } from '../services/banner-severity-svg-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
@@ -67,6 +68,7 @@ function withSvgIcons() {
 class BannerSvgIconsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly verticalPosition = input<'top' | 'bottom'>('top');
+    readonly animation = input<TbxMatBannerAnimation>(TbxMatBannerAnimation.None);
 
     private readonly messages: Record<string, string> = {
         default: 'This is a default banner.',
@@ -81,11 +83,12 @@ class BannerSvgIconsHarnessComponent {
         const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => void;
         method.call(this.banner, this.messages[level], {
             verticalPosition: this.verticalPosition(),
+            animation: this.animation(),
         });
     }
 
     queueAll(): void {
-        const args = { verticalPosition: this.verticalPosition() };
+        const args = { verticalPosition: this.verticalPosition(), animation: this.animation() };
         this.banner.default('Step 1: This is a default banner.', args);
         this.banner.success('Step 2: Operation completed successfully.', args);
         this.banner.error('Step 3: Something went wrong.', args);
@@ -101,6 +104,18 @@ const meta: Meta<BannerSvgIconsHarnessComponent> = {
     title: 'Banners/Overlay SVG Icons',
     component: BannerSvgIconsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerSvgIconsHarnessComponent] }), withSvgIcons()],
+    argTypes: {
+        verticalPosition: {
+            control: 'select',
+            options: ['top', 'bottom'],
+            description: 'Vertical position of the overlay banner',
+        },
+        animation: {
+            control: 'select',
+            options: [TbxMatBannerAnimation.None, TbxMatBannerAnimation.Slide, TbxMatBannerAnimation.Fade],
+            description: 'Enter/exit animation mode',
+        },
+    },
 };
 
 export default meta;
@@ -108,10 +123,12 @@ type Story = StoryObj<BannerSvgIconsHarnessComponent>;
 
 export const Default: Story = {
     name: 'Default SVG Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withDefaultProperties()],
 };
 
 export const Large: Story = {
     name: 'Large SVG Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withCustomProperties(LARGE_ICON_CSS)],
 };
