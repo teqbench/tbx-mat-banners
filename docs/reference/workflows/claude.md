@@ -74,7 +74,7 @@ Claude reads the `CLAUDE.md` file in the repo root for project-specific context.
 
 In any issue or PR comment:
 
-```
+```text
 @claude implement this feature based on the issue description
 @claude fix the bug described above
 @claude review this PR

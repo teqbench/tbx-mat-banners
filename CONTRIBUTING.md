@@ -4,7 +4,7 @@
 
 ### Node.js
 
-Install the version specified in `.nvmrc` ([Node.js ↗](https://nodejs.org) 24+). If you use [nvm ↗](https://github.com/nvm-sh/nvm):
+Install the version specified in `.nvmrc` ([Node.js ↗](https://nodejs.org)). If you use [nvm ↗](https://github.com/nvm-sh/nvm):
 
 ```bash
 nvm install
@@ -21,7 +21,7 @@ This package depends on `@teqbench` scoped packages hosted on [GitHub Packages �
     export GITHUB_TOKEN=ghp_yourTokenHere
     ```
 3. Add the auth line to your **user-level** `~/.npmrc` (not the repo `.npmrc`):
-    ```
+    ```ini
     //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
     ```
 4. Open a new terminal (or `source ~/.zshrc`) and verify: `npm ci`
@@ -34,7 +34,7 @@ If this package depends on other `@teqbench` packages, each package in the entir
 
 ## Tech Stack
 
-- **Language:** [TypeScript ↗](https://www.typescriptlang.org) 5.9+
+- **Language:** [TypeScript ↗](https://www.typescriptlang.org)
 - **Testing:** [Vitest ↗](https://vitest.dev)
 - **Linting:** [ESLint ↗](https://eslint.org) (Flat Config)
 - **Formatting:** [Prettier ↗](https://prettier.io) (enforced via pre-commit hook and CI)

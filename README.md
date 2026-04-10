@@ -315,19 +315,19 @@ Effective only when `animation` is `Slide` or `Fade`. Ignored when `None`.
 
 ### TbxMatBannerService
 
-| Method                          | Returns           | Description                                                            |
-| ------------------------------- | ----------------- | ---------------------------------------------------------------------- |
-| `success(message, config?)`     | `TbxMatBannerRef` | Show a success banner                                                  |
-| `error(message, config?)`       | `TbxMatBannerRef` | Show an error banner                                                   |
-| `warning(message, config?)`     | `TbxMatBannerRef` | Show a warning banner                                                  |
-| `information(message, config?)` | `TbxMatBannerRef` | Show an information banner                                             |
-| `help(message, config?)`        | `TbxMatBannerRef` | Show a help banner                                                     |
-| `default(message, config?)`     | `TbxMatBannerRef` | Show a default banner (no severity styling)                            |
-| `show(config)`                  | `TbxMatBannerRef` | Show a banner with full config                                         |
-| `dismiss()`                     | `void`            | Dismiss current (resolves with ProgrammaticDismissCurrent)             |
-| `dismissAll()`                  | `void`            | Dismiss current and clear queue (resolves with ProgrammaticDismissAll) |
-| `isActive()`                    | `Signal<boolean>` | Whether a banner is visible                                            |
-| `pendingCount()`                | `Signal<number>`  | Count of queued banners                                                |
+| Method                          | Returns           | Description                                                                                                |
+| ------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `success(message, config?)`     | `TbxMatBannerRef` | Show a success banner                                                                                      |
+| `error(message, config?)`       | `TbxMatBannerRef` | Show an error banner                                                                                       |
+| `warning(message, config?)`     | `TbxMatBannerRef` | Show a warning banner                                                                                      |
+| `information(message, config?)` | `TbxMatBannerRef` | Show an information banner                                                                                 |
+| `help(message, config?)`        | `TbxMatBannerRef` | Show a help banner                                                                                         |
+| `default(message, config?)`     | `TbxMatBannerRef` | Show a default banner (no severity styling)                                                                |
+| `show(config)`                  | `TbxMatBannerRef` | Show a banner with full config                                                                             |
+| `dismiss()`                     | `void`            | Dismiss the current banner; its `result` promise resolves with `ProgrammaticDismissCurrent`                |
+| `dismissAll()`                  | `void`            | Dismiss current and clear the queue; each banner's `result` promise resolves with `ProgrammaticDismissAll` |
+| `isActive()`                    | `Signal<boolean>` | Whether a banner is visible                                                                                |
+| `pendingCount()`                | `Signal<number>`  | Count of queued banners                                                                                    |
 
 ### TbxMatBannerRef
 

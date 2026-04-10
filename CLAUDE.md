@@ -10,7 +10,7 @@ This is a `@teqbench` [npm ↗](https://www.npmjs.com) package built with [TypeS
 
 ## Tech Stack
 
-- **Language:** [TypeScript ↗](https://www.typescriptlang.org) 5.9+ (strict mode, ES2022 target, bundler module resolution)
+- **Language:** [TypeScript ↗](https://www.typescriptlang.org) (strict mode, ES2022 target, bundler module resolution)
 - **Testing:** [Vitest ↗](https://vitest.dev) (globals enabled)
 - **Linting:** [ESLint ↗](https://eslint.org) flat config with [typescript-eslint ↗](https://typescript-eslint.io)
 - **Formatting:** [Prettier ↗](https://prettier.io) (enforced via pre-commit hook and CI)
