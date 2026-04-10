@@ -395,20 +395,30 @@ export class TbxMatBannerService {
             message: config.message,
             dismissByClose: () => {
                 if (this.activeOverlayRef !== overlayRef) return;
-                this.resolveAndCleanup({
+                const result: TbxMatBannerResult = {
                     dismissReason: TbxMatBannerDismissReason.Close,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                });
-                this.showNext();
+                };
+                if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
+                    this.animateExit(overlayRef, effectiveAnimation, result);
+                } else {
+                    this.resolveAndCleanup(result);
+                    this.showNext();
+                }
             },
             dismissByAction: (actionKey: string) => {
                 if (this.activeOverlayRef !== overlayRef) return;
-                this.resolveAndCleanup({
+                const actionResult: TbxMatBannerResult = {
                     dismissReason: TbxMatBannerDismissReason.Action,
                     actionKey,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                });
-                this.showNext();
+                };
+                if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
+                    this.animateExit(overlayRef, effectiveAnimation, actionResult);
+                } else {
+                    this.resolveAndCleanup(actionResult);
+                    this.showNext();
+                }
             },
             duration,
             showSeverityIcon: config.showSeverityIcon ?? true,
@@ -431,11 +441,16 @@ export class TbxMatBannerService {
         if (duration > 0) {
             this.durationTimeout = setTimeout(() => {
                 this.durationTimeout = null;
-                this.resolveAndCleanup({
+                const timeoutResult: TbxMatBannerResult = {
                     dismissReason: TbxMatBannerDismissReason.Timeout,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                });
-                this.showNext();
+                };
+                if (effectiveAnimation === TbxMatBannerAnimation.Slide || effectiveAnimation === TbxMatBannerAnimation.Fade) {
+                    this.animateExit(overlayRef, effectiveAnimation, timeoutResult);
+                } else {
+                    this.resolveAndCleanup(timeoutResult);
+                    this.showNext();
+                }
             }, duration);
         }
     }
@@ -463,6 +478,47 @@ export class TbxMatBannerService {
 
         this.activeComponentRef = null;
         this._isActive.set(false);
+    }
+
+    /**
+     * Run the exit animation, then resolve the result and clean up.
+     * Nulls activeOverlayRef immediately so the ref-comparison guard
+     * prevents re-entrant dismiss calls while the animation runs.
+     */
+    private animateExit(overlayRef: OverlayRef, animation: TbxMatBannerAnimation, result: TbxMatBannerResult): void {
+        const element = overlayRef.overlayElement;
+        element.classList.add(`tbx-mat-banner-anim-${animation}-out`);
+
+        // Null ref immediately so stale dismiss calls bail via the guard
+        this.activeOverlayRef = null;
+
+        // Resolve promise immediately — consumer shouldn't wait for the animation
+        if (!this.activeResultResolved && this.activeResultResolver) {
+            this.activeResultResolver(result);
+            this.activeResultResolver = null;
+            this.activeResultResolved = true;
+        }
+
+        if (this.durationTimeout) {
+            clearTimeout(this.durationTimeout);
+            this.durationTimeout = null;
+        }
+
+        let disposed = false;
+        const finalize = () => {
+            if (disposed) return;
+            disposed = true;
+            overlayRef.dispose();
+            this.activeComponentRef = null;
+            this._isActive.set(false);
+            this.showNext();
+        };
+
+        element.addEventListener('animationend', finalize, { once: true });
+
+        // Safety ceiling — force disposal if animationend never fires
+        // (prefers-reduced-motion, browser quirks, detached element)
+        setTimeout(finalize, 1000);
     }
 
     /** Clean up active overlay on service destroy. */

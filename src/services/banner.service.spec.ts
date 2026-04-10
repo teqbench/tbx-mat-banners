@@ -16,6 +16,7 @@ describe('TbxMatBannerService', () => {
     let overlayRefSpy: {
         attach: ReturnType<typeof vi.fn>;
         dispose: ReturnType<typeof vi.fn>;
+        overlayElement: HTMLDivElement;
     };
     let overlaySpy: {
         create: ReturnType<typeof vi.fn>;
@@ -33,6 +34,7 @@ describe('TbxMatBannerService', () => {
         overlayRefSpy = {
             attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
             dispose: vi.fn(),
+            overlayElement: document.createElement('div'),
         };
 
         const positionStrategySpy = {
@@ -259,6 +261,125 @@ describe('TbxMatBannerService', () => {
             const config = overlaySpy.create.mock.calls[0][0];
             expect(config.panelClass).toContain('tbx-mat-banner-anim-slide');
             expect(config.panelClass).not.toContain('tbx-mat-banner-anim-fade');
+        });
+    });
+
+    describe('exit animation coordination', () => {
+        it('should add the exit class to the overlay element when dismissByClose is called with Slide animation', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByClose();
+
+            expect(overlayRefSpy.overlayElement.classList.contains('tbx-mat-banner-anim-slide-out')).toBe(true);
+        });
+
+        it('should dispose the overlay after animationend fires', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByClose();
+            expect(overlayRefSpy.dispose).not.toHaveBeenCalled();
+
+            overlayRefSpy.overlayElement.dispatchEvent(new Event('animationend'));
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+        });
+
+        it('should add the exit class when dismissByAction is called with Fade animation', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Fade,
+                actionsGroup: [{ type: 'button', key: 'ok', label: 'OK' }],
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByAction('ok');
+
+            expect(overlayRefSpy.overlayElement.classList.contains('tbx-mat-banner-anim-fade-out')).toBe(true);
+            expect(overlayRefSpy.dispose).not.toHaveBeenCalled();
+        });
+
+        it('should defer disposal on timeout when animation is enabled', () => {
+            vi.useFakeTimers();
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+                duration: 1000,
+            });
+
+            vi.advanceTimersByTime(1000);
+
+            expect(overlayRefSpy.overlayElement.classList.contains('tbx-mat-banner-anim-slide-out')).toBe(true);
+            expect(overlayRefSpy.dispose).not.toHaveBeenCalled();
+
+            overlayRefSpy.overlayElement.dispatchEvent(new Event('animationend'));
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+
+            vi.useRealTimers();
+        });
+
+        it('should dispose immediately on dismissAll regardless of animation', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            service.dismissAll();
+
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+        });
+
+        it('should force disposal via safety timeout if animationend never fires', () => {
+            vi.useFakeTimers();
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByClose();
+            expect(overlayRefSpy.dispose).not.toHaveBeenCalled();
+
+            // Do NOT dispatch animationend — simulate a browser that skips the animation
+            vi.advanceTimersByTime(1000);
+
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+            vi.useRealTimers();
+        });
+
+        it('should not dispose the overlay synchronously when animation is enabled', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'Test',
+                animation: TbxMatBannerAnimation.Slide,
+            });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByClose();
+
+            expect(overlayRefSpy.dispose).not.toHaveBeenCalled();
         });
     });
 
