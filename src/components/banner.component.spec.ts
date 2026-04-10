@@ -24,6 +24,9 @@ function buildData(overrides: Partial<BannerDataDto> = {}): BannerDataDto {
             resolve: () => 'close',
         },
         actionsGroup: [],
+        enterAnimationClass: '',
+        leaveAnimationClass: '',
+        onLeaveAnimationDone: null,
         ...overrides,
     };
 }

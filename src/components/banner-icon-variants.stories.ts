@@ -2,6 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 import { withCustomProperties, withDefaultProperties } from './story-overrides';
 
@@ -93,6 +94,7 @@ const LARGE_ICON_PULSE_CSS = `
 class BannerIconVariantsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly verticalPosition = input<'top' | 'bottom'>('top');
+    readonly animation = input<TbxMatBannerAnimation>(TbxMatBannerAnimation.None);
 
     private readonly messages: Record<string, string> = {
         default: 'This is a default banner.',
@@ -107,11 +109,12 @@ class BannerIconVariantsHarnessComponent {
         const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => void;
         method.call(this.banner, this.messages[level], {
             verticalPosition: this.verticalPosition(),
+            animation: this.animation(),
         });
     }
 
     queueAll(): void {
-        const args = { verticalPosition: this.verticalPosition() };
+        const args = { verticalPosition: this.verticalPosition(), animation: this.animation() };
         this.banner.default('Step 1: This is a default banner.', args);
         this.banner.success('Step 2: Operation completed successfully.', args);
         this.banner.error('Step 3: Something went wrong.', args);
@@ -127,6 +130,18 @@ const meta: Meta<BannerIconVariantsHarnessComponent> = {
     title: 'Banners/Overlay Font Icon Variants',
     component: BannerIconVariantsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerIconVariantsHarnessComponent] })],
+    argTypes: {
+        verticalPosition: {
+            control: 'select',
+            options: ['top', 'bottom'],
+            description: 'Vertical position of the overlay banner',
+        },
+        animation: {
+            control: 'select',
+            options: [TbxMatBannerAnimation.None, TbxMatBannerAnimation.Slide, TbxMatBannerAnimation.Fade],
+            description: 'Enter/exit animation mode',
+        },
+    },
 };
 
 export default meta;
@@ -134,16 +149,19 @@ type Story = StoryObj<BannerIconVariantsHarnessComponent>;
 
 export const DefaultIcons: Story = {
     name: 'Default Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withDefaultProperties()],
 };
 
 export const LargeIcons: Story = {
     name: 'Large Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withCustomProperties(LARGE_ICON_CSS)],
 };
 
 export const StateTransition: Story = {
     name: 'State Transition',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withCustomProperties(STATE_TRANSITION_CSS)],
 };
 

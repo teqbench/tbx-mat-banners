@@ -70,11 +70,130 @@ html {
     font-size: var(--mat-sys-body-large-size, 0.875rem);
     line-height: var(--mat-sys-body-large-line-height, 1.25rem);
     letter-spacing: var(--mat-sys-body-large-tracking, 0.0178571429em);
-    box-shadow: var(--tbx-mat-banner-overlay-shadow, 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12));
+
+    /* Shadow set as a variable so the component host inherits it.
+     * The host renders the shadow (not the pane) so it animates
+     * with the enter/leave animation. */
+    --tbx-mat-banner-panel-shadow: var(--tbx-mat-banner-overlay-shadow, 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12));
 
     /* Bottom-positioned banners cast shadow upward */
     &.tbx-mat-banner-position-bottom {
-        box-shadow: var(--tbx-mat-banner-overlay-shadow, 0 -2px 4px -1px rgba(0, 0, 0, 0.2), 0 -4px 5px 0 rgba(0, 0, 0, 0.14), 0 -1px 10px 0 rgba(0, 0, 0, 0.12));
+        --tbx-mat-banner-panel-shadow: var(--tbx-mat-banner-overlay-shadow, 0 -2px 4px -1px rgba(0, 0, 0, 0.2), 0 -4px 5px 0 rgba(0, 0, 0, 0.14), 0 -1px 10px 0 rgba(0, 0, 0, 0.12));
+    }
+}
+
+/* ━━━ Overlay Animations ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * CSS keyframe animations for overlay banner enter and exit.
+ * Applied to the TbxMatBannerComponent host element via Angular's
+ * native animate.enter / animate.leave directives. Class names are
+ * computed by TbxMatBannerService and passed through the DTO.
+ *
+ * Consumer-tunable via:
+ * --tbx-mat-banner-anim-enter-duration  (default: 300ms)
+ * --tbx-mat-banner-anim-enter-easing    (default: cubic-bezier(0.25, 0.8, 0.25, 1) — deceleration)
+ * --tbx-mat-banner-anim-exit-duration   (default: 250ms)
+ * --tbx-mat-banner-anim-exit-easing     (default: cubic-bezier(0.4, 0, 0.6, 1) — standard)
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── Enter — slide ── */
+
+.tbx-mat-banner-slide-in-top {
+    animation: tbx-mat-banner-slide-in-top var(--tbx-mat-banner-anim-enter-duration, 300ms) var(--tbx-mat-banner-anim-enter-easing, cubic-bezier(0.25, 0.8, 0.25, 1));
+}
+
+.tbx-mat-banner-slide-in-bottom {
+    animation: tbx-mat-banner-slide-in-bottom var(--tbx-mat-banner-anim-enter-duration, 300ms) var(--tbx-mat-banner-anim-enter-easing, cubic-bezier(0.25, 0.8, 0.25, 1));
+}
+
+/* ── Exit — slide ── */
+
+.tbx-mat-banner-slide-out-top {
+    animation: tbx-mat-banner-slide-out-top var(--tbx-mat-banner-anim-exit-duration, 250ms) var(--tbx-mat-banner-anim-exit-easing, cubic-bezier(0.4, 0, 0.6, 1)) forwards;
+}
+
+.tbx-mat-banner-slide-out-bottom {
+    animation: tbx-mat-banner-slide-out-bottom var(--tbx-mat-banner-anim-exit-duration, 250ms) var(--tbx-mat-banner-anim-exit-easing, cubic-bezier(0.4, 0, 0.6, 1)) forwards;
+}
+
+/* ── Enter — fade ── */
+
+.tbx-mat-banner-fade-in {
+    animation: tbx-mat-banner-fade-in var(--tbx-mat-banner-anim-enter-duration, 300ms) var(--tbx-mat-banner-anim-enter-easing, cubic-bezier(0.25, 0.8, 0.25, 1));
+}
+
+/* ── Exit — fade ── */
+
+.tbx-mat-banner-fade-out {
+    animation: tbx-mat-banner-fade-out var(--tbx-mat-banner-anim-exit-duration, 250ms) var(--tbx-mat-banner-anim-exit-easing, cubic-bezier(0.4, 0, 0.6, 1)) forwards;
+}
+
+/* ── Keyframes ── */
+
+@keyframes tbx-mat-banner-slide-in-top {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes tbx-mat-banner-slide-out-top {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes tbx-mat-banner-slide-in-bottom {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes tbx-mat-banner-slide-out-bottom {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes tbx-mat-banner-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes tbx-mat-banner-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+    .tbx-mat-banner-slide-in-top,
+    .tbx-mat-banner-slide-in-bottom,
+    .tbx-mat-banner-slide-out-top,
+    .tbx-mat-banner-slide-out-bottom,
+    .tbx-mat-banner-fade-in,
+    .tbx-mat-banner-fade-out {
+        animation: none !important;
     }
 }
 
