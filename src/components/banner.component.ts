@@ -11,6 +11,7 @@ import { TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
+import { type TbxMatBannerActionButton } from '../models/banner-action-button.model';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
@@ -115,7 +116,7 @@ interface ResolvedIcon {
         @if (resolvedData().actionsGroup.length > 0) {
             <div class="tbx-mat-banner-actions">
                 <div class="tbx-mat-banner-controls">
-                    @for (control of resolvedData().actionsGroup; track control.key) {
+                    @for (control of inputControls(); track control.key) {
                         @switch (control.type) {
                             @case ('checkbox') {
                                 <mat-checkbox [checked]="getControlValue(control.key)" (change)="setControlValue(control.key, $event.checked)">{{ control.label }}</mat-checkbox>
@@ -147,26 +148,24 @@ interface ResolvedIcon {
                     }
                 </div>
                 <div class="tbx-mat-banner-buttons">
-                    @for (control of resolvedData().actionsGroup; track control.key) {
-                        @if (control.type === 'button') {
-                            @if (control.appearance === 'icon') {
-                                <button mat-icon-button class="tbx-mat-banner-action-icon-button" (click)="onActionClick(control.key)" [attr.aria-label]="control.label">
-                                    <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: resolveActionIcon(control) }"></ng-container>
-                                </button>
-                            } @else {
-                                @let icon = resolveActionIcon(control);
-                                <button class="tbx-mat-banner-action-button" [matButton]="control.appearance ?? defaultButtonAppearance" (click)="onActionClick(control.key)">
-                                    @if ((control.iconPosition ?? 'before') === 'before') {
-                                        <ng-container ngProjectAs="mat-icon:not([iconPositionEnd])" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
-                                    }
+                    @for (control of actionButtons(); track control.key) {
+                        @if (control.appearance === 'icon') {
+                            <button mat-icon-button class="tbx-mat-banner-action-icon-button" (click)="onActionClick(control.key)" [attr.aria-label]="control.label">
+                                <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: resolveActionIcon(control) }"></ng-container>
+                            </button>
+                        } @else {
+                            @let icon = resolveActionIcon(control);
+                            <button class="tbx-mat-banner-action-button" [matButton]="control.appearance ?? defaultButtonAppearance" (click)="onActionClick(control.key)">
+                                @if ((control.iconPosition ?? 'before') === 'before') {
+                                    <ng-container ngProjectAs="mat-icon:not([iconPositionEnd])" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
+                                }
 
-                                    {{ control.label }}
+                                {{ control.label }}
 
-                                    @if (control.iconPosition === 'after') {
-                                        <ng-container ngProjectAs="mat-icon[iconPositionEnd]" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
-                                    }
-                                </button>
-                            }
+                                @if (control.iconPosition === 'after') {
+                                    <ng-container ngProjectAs="mat-icon[iconPositionEnd]" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
+                                }
+                            </button>
                         }
                     }
                 </div>
@@ -349,6 +348,12 @@ export class TbxMatBannerComponent implements OnInit {
             actionsGroup: this.actionsGroup ?? [],
         };
     });
+
+    /** Input controls from the actions group (excluding action buttons). */
+    readonly inputControls = computed(() => this.resolvedData().actionsGroup.filter((c): c is Exclude<TbxMatBannerActionsGroupControl, TbxMatBannerActionButton> => c.type !== 'button'));
+
+    /** Action-button controls from the actions group (excluding input controls). */
+    readonly actionButtons = computed(() => this.resolvedData().actionsGroup.filter((c): c is TbxMatBannerActionButton => c.type === 'button'));
 
     private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
 
