@@ -139,9 +139,6 @@ export class TbxMatBannerService {
     /** Guards against double-resolution of the active result promise. */
     private activeResultResolved = false;
 
-    /** Guards against re-entrant dismiss calls (e.g., double-click on close). */
-    private isDismissing = false;
-
     /** Timeout handle for duration-based auto-dismiss. */
     private durationTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -359,7 +356,6 @@ export class TbxMatBannerService {
         this._isActive.set(true);
         this.activeResultResolver = resolveResult;
         this.activeResultResolved = false;
-        this.isDismissing = false;
 
         const duration = this.resolveDuration(config.duration);
 
@@ -392,28 +388,20 @@ export class TbxMatBannerService {
             type: config.type,
             message: config.message,
             dismissByClose: () => {
-                /* v8 ignore start -- re-entrancy guard; not reproducible in synchronous tests */
-                if (this.isDismissing) return;
-                /* v8 ignore stop */
-                this.isDismissing = true;
+                if (this.activeOverlayRef !== overlayRef) return;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Close,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
                 });
-                this.isDismissing = false;
                 this.showNext();
             },
             dismissByAction: (actionKey: string) => {
-                /* v8 ignore start -- re-entrancy guard; not reproducible in synchronous tests */
-                if (this.isDismissing) return;
-                /* v8 ignore stop */
-                this.isDismissing = true;
+                if (this.activeOverlayRef !== overlayRef) return;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Action,
                     actionKey,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
                 });
-                this.isDismissing = false;
                 this.showNext();
             },
             duration,

@@ -506,23 +506,20 @@ describe('TbxMatBannerService', () => {
         });
     });
 
-    describe('isDismissing guard', () => {
-        it('should ignore re-entrant dismissByClose calls', async () => {
+    describe('re-entrant dismiss guard', () => {
+        it('should ignore a second synchronous dismissByClose on the same banner', async () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
 
-            // First call dismisses normally
             data.dismissByClose();
-            // Second call should be ignored (isDismissing guard)
             data.dismissByClose();
 
-            // Only one dispose call
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
         });
 
-        it('should ignore re-entrant dismissByAction calls', async () => {
+        it('should ignore a second synchronous dismissByAction on the same banner', async () => {
             service.show({
                 type: TbxMatSeverityLevel.Success,
                 message: 'Test',
@@ -536,6 +533,95 @@ describe('TbxMatBannerService', () => {
             data.dismissByAction('ok');
 
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('stale banner dismiss race', () => {
+        it('dismissByAction on a superseded banner should not dismiss the now-active banner', async () => {
+            const overlayRefA = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            const overlayRefB = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            overlaySpy.create.mockReset();
+            overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
+
+            const refA = service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'A',
+                actionsGroup: [{ type: 'button', key: 'ok', label: 'OK' }],
+            });
+            const refB = service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
+
+            const portalA = overlayRefA.attach.mock.calls[0][0];
+            const dataA = portalA.injector.get(TBX_MAT_BANNER_DATA);
+
+            service.dismiss();
+
+            expect(overlayRefA.dispose).toHaveBeenCalledTimes(1);
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            // Simulate a stale queued action click firing on A's (destroyed) action button
+            dataA.dismissByAction('ok');
+
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            const resultA = await refA.result;
+            expect(resultA.dismissReason).toBe(TbxMatBannerDismissReason.ProgrammaticDismissCurrent);
+
+            const pending = Symbol('pending');
+            const raceResult = await Promise.race([refB.result, Promise.resolve(pending)]);
+            expect(raceResult).toBe(pending);
+        });
+
+        it('dismissByClose on a superseded banner should not dismiss the now-active banner', async () => {
+            // Distinct overlay refs per overlay.create call so we can tell A and B apart
+            const overlayRefA = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            const overlayRefB = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            overlaySpy.create.mockReset();
+            overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
+
+            // Show banner A (becomes active) and banner B (queued)
+            const refA = service.show({ type: TbxMatSeverityLevel.Success, message: 'A' });
+            const refB = service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
+
+            // Capture banner A's DTO while A is still active
+            const portalA = overlayRefA.attach.mock.calls[0][0];
+            const dataA = portalA.injector.get(TBX_MAT_BANNER_DATA);
+
+            // Dismiss A via a different path so banner B becomes active
+            service.dismiss();
+
+            expect(overlayRefA.dispose).toHaveBeenCalledTimes(1);
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            // Simulate a stale queued close click firing on A's (destroyed) close button
+            dataA.dismissByClose();
+
+            // Banner B must not have been dismissed by A's stale callback
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            // Banner A's promise resolved via service.dismiss()
+            const resultA = await refA.result;
+            expect(resultA.dismissReason).toBe(TbxMatBannerDismissReason.ProgrammaticDismissCurrent);
+
+            // Banner B's promise should still be pending
+            const pending = Symbol('pending');
+            const raceResult = await Promise.race([refB.result, Promise.resolve(pending)]);
+            expect(raceResult).toBe(pending);
         });
     });
 
