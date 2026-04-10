@@ -65,6 +65,7 @@ html {
 
 .tbx-mat-banner-overlay-panel {
     width: 100%;
+    z-index: var(--tbx-mat-banner-overlay-z-index, 1000);
     font-family: var(--mat-sys-body-large-font, Roboto, sans-serif);
     font-size: var(--mat-sys-body-large-size, 0.875rem);
     line-height: var(--mat-sys-body-large-line-height, 1.25rem);
