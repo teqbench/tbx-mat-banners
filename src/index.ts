@@ -24,6 +24,8 @@
  * - {@link TbxMatBannerActionToggle} — toggle control in the actions group.
  * - {@link TbxMatBannerActionRadioGroup} — radio group control in the actions group.
  * - {@link TbxMatBannerActionToggleGroup} — toggle group control in the actions group.
+ * - {@link TbxMatBannerRadioOption} — option entry for radio group controls.
+ * - {@link TbxMatBannerToggleOption} — option entry for toggle group controls.
  * - {@link TbxMatBannerProviderConfig} — icon provider config interface.
  * - {@link TBX_MAT_BANNER_PROVIDER_CONFIG} — injection token for provider configuration.
  * - {@link TbxMatBannerSeverityFontIconService} — default font-based severity icon service.

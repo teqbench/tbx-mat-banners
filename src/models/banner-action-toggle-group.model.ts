@@ -8,7 +8,7 @@
  *
  * @category Models
  * @displayName Banner Toggle Option
- * @order 8
+ * @order 9
  * @since 1.0.0
  *
  * @public
@@ -84,7 +84,7 @@ export interface TbxMatBannerToggleOption {
  *
  * @category Models
  * @displayName Banner Action Toggle Group
- * @order 8
+ * @order 10
  * @since 1.0.0
  * @related TbxMatBannerToggleOption
  * @related TbxMatBannerConfig

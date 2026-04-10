@@ -25,7 +25,7 @@ Tracks pinned dependencies that are waiting for a new version — for example, w
 
 ## Configuration
 
-The local `.yml` file passes `epic-issue-number` to the reusable workflow. This must be set to the tracking issue number during repository setup (see SETUP.md step 7).
+The local `.yml` file passes `epic-issue-number` to the reusable workflow. This must be set to the tracking issue number during repository setup.
 
 ---
 

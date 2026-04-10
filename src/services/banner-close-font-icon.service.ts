@@ -47,6 +47,7 @@ import { TbxMatFontIconService } from '@teqbench/tbx-mat-icons';
  *
  * @category Services
  * @displayName Close Font Icon Service
+ * @order 4
  * @since 1.0.0
  * @related TbxMatBannerProviderConfig
  * @related TbxMatBannerSeverityFontIconService

@@ -53,7 +53,8 @@ interface QueueEntry {
  * - `pendingCount()` — number of banners waiting in the queue
  *
  * @usage
- * Inject the service and call the convenience methods for each severity level.
+ * Inject the service and call the convenience methods for each severity level
+ * (`success()`, `error()`, `warning()`, `information()`, `help()`, `default()`).
  * Use `show()` when full control over configuration is needed. Use `dismiss()`
  * and `dismissAll()` to programmatically clear banners.
  *
@@ -100,12 +101,10 @@ export class TbxMatBannerService {
     private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
     private destroyed = false;
 
-    constructor() {
-        inject(DestroyRef).onDestroy(() => {
-            this.destroyed = true;
-            this.cleanupActive();
-        });
-    }
+    private readonly _destroyCleanup = inject(DestroyRef).onDestroy(() => {
+        this.destroyed = true;
+        this.cleanupActive();
+    });
 
     /** FIFO queue of pending banners. */
     private readonly queue: QueueEntry[] = [];

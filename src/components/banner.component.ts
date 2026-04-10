@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input, type OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, type OnInit, output, signal, type WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -72,9 +72,8 @@ interface ResolvedIcon {
  * ```
  *
  * @example Inline mode:
- * ```typescript
- * // In template:
- * // <tbx-mat-banner [type]="severityLevel" [message]="'Hello'" (dismissed)="onDismiss($event)" />
+ * ```html
+ * <tbx-mat-banner [type]="severityLevel" [message]="'Hello'" (dismissed)="onDismiss($event)" />
  * ```
  *
  * @category Components
@@ -89,6 +88,7 @@ interface ResolvedIcon {
     selector: 'tbx-mat-banner',
     imports: [NgTemplateOutlet, FormsModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule, MatRadioModule, MatButtonToggleModule],
     host: {
+        '[class]': 'hostPanelClass',
         '[animate.enter]': 'resolvedData().enterAnimationClass',
         '[animate.leave]': 'resolvedData().leaveAnimationClass',
         '(animate.leave)': 'resolvedData().onLeaveAnimationDone?.()',
@@ -139,7 +139,7 @@ interface ResolvedIcon {
                             @case ('toggle-group') {
                                 <mat-button-toggle-group [multiple]="control.multiple ?? false" [value]="getControlValue(control.key)" (change)="setControlValue(control.key, $event.value)">
                                     @for (option of control.options; track option.value) {
-                                        <mat-button-toggle [value]="option.value">
+                                        <mat-button-toggle [value]="option.value" [attr.aria-label]="option.icon ? option.label : null">
                                             @if (option.icon) {
                                                 <mat-icon aria-hidden="true">{{ option.icon }}</mat-icon>
                                             } @else {
@@ -298,7 +298,6 @@ export class TbxMatBannerComponent implements OnInit {
     readonly defaultButtonAppearance = BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE;
 
     /** Apply severity panel class to host element for inline mode styling. */
-    @HostBinding('class')
     get hostPanelClass(): string {
         const type = this.resolvedData().type;
         return PANEL_CLASS_MAP[type] ?? '';
@@ -332,7 +331,7 @@ export class TbxMatBannerComponent implements OnInit {
     // ── Internal state ──
 
     /** Writable signals for form control values, keyed by control key. */
-    private readonly controlValues = new Map<string, ReturnType<typeof signal>>();
+    private readonly controlValues = new Map<string, WritableSignal<unknown>>();
 
     /**
      * Resolved data — overlay DTO takes precedence, inline inputs as fallback.
@@ -386,7 +385,15 @@ export class TbxMatBannerComponent implements OnInit {
         }
     }
 
-    /** Get the current value of a form control by key. */
+    /**
+     * Get the current value of a form control by key
+     *
+     * @param key - The control key to look up.
+     *
+     * @returns The current value of the control, or `undefined` if the key is not registered.
+     *
+     * @public
+     */
     getControlValue(key: string): unknown {
         return this.controlValues.get(key)?.();
     }
@@ -396,7 +403,13 @@ export class TbxMatBannerComponent implements OnInit {
         this.controlValues.get(key)?.set(value);
     }
 
-    /** Collect current values from all form controls. */
+    /**
+     * Collect current values from all form controls
+     *
+     * @returns A record keyed by control key with the current value of each form control.
+     *
+     * @public
+     */
     collectActionsGroupValues(): Record<string, unknown> {
         const values: Record<string, unknown> = {};
         for (const [key, sig] of this.controlValues) {
@@ -415,7 +428,15 @@ export class TbxMatBannerComponent implements OnInit {
         this.resolvedData().dismissByClose();
     }
 
-    /** Resolve an action button icon. */
+    /**
+     * Resolve an action button icon
+     *
+     * @param control - The action button control containing an optional icon key and resolver service.
+     *
+     * @returns The resolved icon, or `null` if no icon or resolver is configured.
+     *
+     * @public
+     */
     resolveActionIcon(control: {
         icon?: string;
         actionIconResolverService?: {

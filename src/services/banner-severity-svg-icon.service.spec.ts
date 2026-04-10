@@ -29,12 +29,15 @@ describe('TbxMatBannerSeveritySvgIconService', () => {
     });
 
     describe('resolve()', () => {
-        it('should resolve all severity levels to registered icon names', () => {
-            expect(service.resolve(TbxMatSeverityLevel.Success)).toBeDefined();
-            expect(service.resolve(TbxMatSeverityLevel.Error)).toBeDefined();
-            expect(service.resolve(TbxMatSeverityLevel.Warning)).toBeDefined();
-            expect(service.resolve(TbxMatSeverityLevel.Information)).toBeDefined();
-            expect(service.resolve(TbxMatSeverityLevel.Help)).toBeDefined();
+        it('should resolve all severity levels to distinct icon names', () => {
+            const results = [service.resolve(TbxMatSeverityLevel.Success), service.resolve(TbxMatSeverityLevel.Error), service.resolve(TbxMatSeverityLevel.Warning), service.resolve(TbxMatSeverityLevel.Information), service.resolve(TbxMatSeverityLevel.Help)];
+
+            for (const name of results) {
+                expect(name).toBeTypeOf('string');
+                expect(name!.length).toBeGreaterThan(0);
+            }
+
+            expect(new Set(results).size).toBe(results.length);
         });
 
         it('should return undefined for unknown keys', () => {
