@@ -4,31 +4,13 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 import { TbxMatBannerSeveritySvgIconService } from '../services/banner-severity-svg-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
+import { withCustomProperties, withDefaultProperties } from './story-overrides';
 
 // ─── CSS Custom Property Overrides ───────────────────────────────────────────
-
-const STYLE_TAG_ID = 'tbx-banner-svg-story-overrides';
-
-function withCustomProperties(css: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (story: () => any) => {
-        document.getElementById(STYLE_TAG_ID)?.remove();
-        if (css) {
-            const style = document.createElement('style');
-            style.id = STYLE_TAG_ID;
-            style.textContent = css;
-            document.head.appendChild(style);
-        }
-        return story();
-    };
-}
-
-function withDefaultProperties() {
-    return withCustomProperties('');
-}
 
 const LARGE_ICON_CSS = `
     html {
@@ -81,36 +63,12 @@ function withSvgIcons() {
             <p class="state">Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}</p>
         </div>
     `,
-    styles: `
-        .harness {
-            font-family: Roboto, sans-serif;
-            padding: 1.5rem;
-        }
-
-        h3 {
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        h3:first-of-type {
-            margin-top: 0;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .state {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-    `,
+    styleUrl: './story-harness.css',
 })
 class BannerSvgIconsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly verticalPosition = input<'top' | 'bottom'>('top');
+    readonly animation = input<TbxMatBannerAnimation>(TbxMatBannerAnimation.None);
 
     private readonly messages: Record<string, string> = {
         default: 'This is a default banner.',
@@ -125,11 +83,12 @@ class BannerSvgIconsHarnessComponent {
         const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => void;
         method.call(this.banner, this.messages[level], {
             verticalPosition: this.verticalPosition(),
+            animation: this.animation(),
         });
     }
 
     queueAll(): void {
-        const args = { verticalPosition: this.verticalPosition() };
+        const args = { verticalPosition: this.verticalPosition(), animation: this.animation() };
         this.banner.default('Step 1: This is a default banner.', args);
         this.banner.success('Step 2: Operation completed successfully.', args);
         this.banner.error('Step 3: Something went wrong.', args);
@@ -145,6 +104,18 @@ const meta: Meta<BannerSvgIconsHarnessComponent> = {
     title: 'Banners/Overlay SVG Icons',
     component: BannerSvgIconsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerSvgIconsHarnessComponent] }), withSvgIcons()],
+    argTypes: {
+        verticalPosition: {
+            control: 'select',
+            options: ['top', 'bottom'],
+            description: 'Vertical position of the overlay banner',
+        },
+        animation: {
+            control: 'select',
+            options: [TbxMatBannerAnimation.None, TbxMatBannerAnimation.Slide, TbxMatBannerAnimation.Fade],
+            description: 'Enter/exit animation mode',
+        },
+    },
 };
 
 export default meta;
@@ -152,10 +123,12 @@ type Story = StoryObj<BannerSvgIconsHarnessComponent>;
 
 export const Default: Story = {
     name: 'Default SVG Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withDefaultProperties()],
 };
 
 export const Large: Story = {
     name: 'Large SVG Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withCustomProperties(LARGE_ICON_CSS)],
 };

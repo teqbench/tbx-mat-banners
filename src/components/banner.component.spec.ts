@@ -24,6 +24,9 @@ function buildData(overrides: Partial<BannerDataDto> = {}): BannerDataDto {
             resolve: () => 'close',
         },
         actionsGroup: [],
+        enterAnimationClass: '',
+        leaveAnimationClass: '',
+        onLeaveAnimationDone: null,
         ...overrides,
     };
 }
@@ -447,12 +450,12 @@ describe('TbxMatBannerComponent', () => {
             });
 
             const fixture = TestBed.createComponent(TbxMatBannerComponent);
-            fixture.componentInstance.type = TbxMatSeverityLevel.Warning;
-            fixture.componentInstance.message = 'Inline banner';
-            fixture.componentInstance.actionsGroup = [
+            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Warning);
+            fixture.componentRef.setInput('message', 'Inline banner');
+            fixture.componentRef.setInput('actionsGroup', [
                 { type: 'checkbox', key: 'remember', label: 'Remember', defaultValue: false },
                 { type: 'button', key: 'ok', label: 'OK' },
-            ];
+            ]);
             fixture.detectChanges();
             return fixture;
         }
@@ -475,7 +478,7 @@ describe('TbxMatBannerComponent', () => {
             });
 
             const fixture = TestBed.createComponent(TbxMatBannerComponent);
-            fixture.componentInstance.type = TbxMatSeverityLevel.Success;
+            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Success);
             // message, actionsGroup not set — should fall back to '' and []
             fixture.detectChanges();
 
@@ -502,12 +505,12 @@ describe('TbxMatBannerComponent', () => {
             });
 
             const fixture = TestBed.createComponent(TbxMatBannerComponent);
-            fixture.componentInstance.type = TbxMatSeverityLevel.Warning;
-            fixture.componentInstance.message = 'Test';
-            fixture.componentInstance.actionsGroup = [
+            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Warning);
+            fixture.componentRef.setInput('message', 'Test');
+            fixture.componentRef.setInput('actionsGroup', [
                 { type: 'checkbox', key: 'check', label: 'Check' },
                 { type: 'button', key: 'ok', label: 'OK' },
-            ];
+            ]);
             fixture.detectChanges();
 
             expect(fixture.componentInstance.getControlValue('check')).toBe(false);

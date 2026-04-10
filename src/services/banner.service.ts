@@ -8,29 +8,12 @@ import { type TbxMatBannerConfig } from '../models/banner-config.model';
 import { type TbxMatBannerRef } from '../models/banner-ref.model';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { type BannerDataDto } from '../models/banner-data-dto.model';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { TbxMatBannerCloseFontIconService } from './banner-close-font-icon.service';
 import { BANNER_DEFAULT_DURATION_MS } from '../constants/banner.constants';
-
-/**
- * Panel CSS class mapping for each banner severity level.
- *
- * These classes are applied to the CDK overlay panel via
- * `OverlayConfig.panelClass`. The corresponding styles are defined
- * in src/styles/_tbx-mat-banners.scss — consumers must import this
- * partial into their global stylesheet (overlay panels render
- * outside component scope).
- */
-const PANEL_CLASS_MAP: Readonly<Record<TbxMatSeverityLevel, string>> = {
-    [TbxMatSeverityLevel.Default]: 'tbx-mat-banner-panel-default',
-    [TbxMatSeverityLevel.Success]: 'tbx-mat-banner-panel-success',
-    [TbxMatSeverityLevel.Error]: 'tbx-mat-banner-panel-error',
-    [TbxMatSeverityLevel.Warning]: 'tbx-mat-banner-panel-warning',
-    [TbxMatSeverityLevel.Information]: 'tbx-mat-banner-panel-information',
-    [TbxMatSeverityLevel.Help]: 'tbx-mat-banner-panel-help',
-};
 
 /**
  * Internal queue entry. Pairs a banner config with the promise
@@ -138,9 +121,6 @@ export class TbxMatBannerService {
 
     /** Guards against double-resolution of the active result promise. */
     private activeResultResolved = false;
-
-    /** Guards against re-entrant dismiss calls (e.g., double-click on close). */
-    private isDismissing = false;
 
     /** Timeout handle for duration-based auto-dismiss. */
     private durationTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -359,14 +339,25 @@ export class TbxMatBannerService {
         this._isActive.set(true);
         this.activeResultResolver = resolveResult;
         this.activeResultResolved = false;
-        this.isDismissing = false;
 
         const duration = this.resolveDuration(config.duration);
 
         // Build panel classes
         const consumerPanelClass = config.panelClass;
         const positionClass = config.verticalPosition === 'bottom' ? 'tbx-mat-banner-position-bottom' : 'tbx-mat-banner-position-top';
-        const mergedPanelClass: string[] = ['tbx-mat-banner-overlay-panel', positionClass, PANEL_CLASS_MAP[config.type], ...(Array.isArray(consumerPanelClass) ? consumerPanelClass : consumerPanelClass ? [consumerPanelClass] : [])];
+        const mergedPanelClass: string[] = ['tbx-mat-banner-overlay-panel', positionClass, ...(Array.isArray(consumerPanelClass) ? consumerPanelClass : consumerPanelClass ? [consumerPanelClass] : [])];
+
+        const effectiveAnimation = config.animation ?? this.providerConfig.defaultAnimation;
+        const position = config.verticalPosition === 'bottom' ? 'bottom' : 'top';
+        let enterAnimationClass = '';
+        let leaveAnimationClass = '';
+        if (effectiveAnimation === TbxMatBannerAnimation.Slide) {
+            enterAnimationClass = `tbx-mat-banner-slide-in-${position}`;
+            leaveAnimationClass = `tbx-mat-banner-slide-out-${position}`;
+        } else if (effectiveAnimation === TbxMatBannerAnimation.Fade) {
+            enterAnimationClass = 'tbx-mat-banner-fade-in';
+            leaveAnimationClass = 'tbx-mat-banner-fade-out';
+        }
 
         // Create overlay
         const positionStrategy = this.overlay.position().global().centerHorizontally();
@@ -387,40 +378,38 @@ export class TbxMatBannerService {
         const overlayRef = this.overlay.create(overlayConfig);
         this.activeOverlayRef = overlayRef;
 
+        // When animation is active, showNext is deferred to the leave animation callback
+        const hasAnimation = enterAnimationClass !== '';
+
         // Build DTO
         const data: BannerDataDto = {
             type: config.type,
             message: config.message,
             dismissByClose: () => {
-                /* v8 ignore start -- re-entrancy guard; not reproducible in synchronous tests */
-                if (this.isDismissing) return;
-                /* v8 ignore stop */
-                this.isDismissing = true;
+                if (this.activeOverlayRef !== overlayRef) return;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Close,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
                 });
-                this.isDismissing = false;
-                this.showNext();
+                if (!hasAnimation) this.showNext();
             },
             dismissByAction: (actionKey: string) => {
-                /* v8 ignore start -- re-entrancy guard; not reproducible in synchronous tests */
-                if (this.isDismissing) return;
-                /* v8 ignore stop */
-                this.isDismissing = true;
+                if (this.activeOverlayRef !== overlayRef) return;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Action,
                     actionKey,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
                 });
-                this.isDismissing = false;
-                this.showNext();
+                if (!hasAnimation) this.showNext();
             },
             duration,
             showSeverityIcon: config.showSeverityIcon ?? true,
             showCloseButton: config.showCloseButton ?? true,
             closeIconResolverService: this.providerConfig.closeIconResolverService ?? this.defaultCloseIconService,
             actionsGroup: config.actionsGroup ?? [],
+            enterAnimationClass,
+            leaveAnimationClass,
+            onLeaveAnimationDone: hasAnimation ? () => this.showNext() : null,
         };
 
         // Create component portal with injected data
@@ -441,7 +430,7 @@ export class TbxMatBannerService {
                     dismissReason: TbxMatBannerDismissReason.Timeout,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
                 });
-                this.showNext();
+                if (!hasAnimation) this.showNext();
             }, duration);
         }
     }

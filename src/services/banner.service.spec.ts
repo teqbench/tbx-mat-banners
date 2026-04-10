@@ -7,6 +7,7 @@ import { TbxMatBannerService } from './banner.service';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { BANNER_DEFAULT_DURATION_MS } from '../constants/banner.constants';
 
@@ -15,6 +16,7 @@ describe('TbxMatBannerService', () => {
     let overlayRefSpy: {
         attach: ReturnType<typeof vi.fn>;
         dispose: ReturnType<typeof vi.fn>;
+        overlayElement: HTMLDivElement;
     };
     let overlaySpy: {
         create: ReturnType<typeof vi.fn>;
@@ -32,6 +34,7 @@ describe('TbxMatBannerService', () => {
         overlayRefSpy = {
             attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
             dispose: vi.fn(),
+            overlayElement: document.createElement('div'),
         };
 
         const positionStrategySpy = {
@@ -74,27 +77,12 @@ describe('TbxMatBannerService', () => {
             expect(overlayRefSpy.attach).toHaveBeenCalledTimes(1);
         });
 
-        it('should apply the correct panel class for each severity', () => {
-            const cases: Array<[TbxMatSeverityLevel, string]> = [
-                [TbxMatSeverityLevel.Default, 'tbx-mat-banner-panel-default'],
-                [TbxMatSeverityLevel.Success, 'tbx-mat-banner-panel-success'],
-                [TbxMatSeverityLevel.Error, 'tbx-mat-banner-panel-error'],
-                [TbxMatSeverityLevel.Warning, 'tbx-mat-banner-panel-warning'],
-                [TbxMatSeverityLevel.Information, 'tbx-mat-banner-panel-information'],
-                [TbxMatSeverityLevel.Help, 'tbx-mat-banner-panel-help'],
-            ];
+        it('should not include severity panel classes in overlay panelClass (severity is on the component host)', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'test' });
 
-            for (const [type, expectedClass] of cases) {
-                // Dismiss previous by invoking the close callback
-                if (overlaySpy.create.mock.calls.length > 0) {
-                    service.dismiss();
-                }
-
-                service.show({ type, message: 'test' });
-
-                const config = overlaySpy.create.mock.calls.at(-1)![0];
-                expect(config.panelClass).toContain(expectedClass);
-            }
+            const config = overlaySpy.create.mock.calls[0][0];
+            const panelClasses = config.panelClass as string[];
+            expect(panelClasses.some((c) => c.startsWith('tbx-mat-banner-panel-'))).toBe(false);
         });
 
         it('should use default duration (0 = indefinite) when none is provided', () => {
@@ -139,7 +127,6 @@ describe('TbxMatBannerService', () => {
 
             const config = overlaySpy.create.mock.calls[0][0];
             expect(config.panelClass).toContain('my-class');
-            expect(config.panelClass).toContain('tbx-mat-banner-panel-success');
         });
 
         it('should merge consumer panelClass array', () => {
@@ -152,6 +139,164 @@ describe('TbxMatBannerService', () => {
             const config = overlaySpy.create.mock.calls[0][0];
             expect(config.panelClass).toContain('class-a');
             expect(config.panelClass).toContain('class-b');
+        });
+    });
+
+    describe('animation class wiring', () => {
+        it('should set slide enter/leave classes in the DTO when animation is Slide', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('tbx-mat-banner-slide-in-top');
+            expect(data.leaveAnimationClass).toBe('tbx-mat-banner-slide-out-top');
+        });
+
+        it('should use bottom slide classes when verticalPosition is bottom', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide, verticalPosition: 'bottom' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('tbx-mat-banner-slide-in-bottom');
+            expect(data.leaveAnimationClass).toBe('tbx-mat-banner-slide-out-bottom');
+        });
+
+        it('should set fade enter/leave classes in the DTO when animation is Fade', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Fade });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('tbx-mat-banner-fade-in');
+            expect(data.leaveAnimationClass).toBe('tbx-mat-banner-fade-out');
+        });
+
+        it('should set empty animation classes when animation is None', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.None });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('');
+            expect(data.leaveAnimationClass).toBe('');
+        });
+
+        it('should set empty animation classes when animation is omitted', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('');
+            expect(data.leaveAnimationClass).toBe('');
+        });
+
+        it('should use provider defaultAnimation when config.animation is omitted', () => {
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                            defaultAnimation: TbxMatBannerAnimation.Slide,
+                        }),
+                    },
+                ],
+            });
+            const svc = TestBed.inject(TbxMatBannerService);
+
+            svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('tbx-mat-banner-slide-in-top');
+        });
+
+        it('should prefer per-call config.animation over provider defaultAnimation', () => {
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    {
+                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                            defaultAnimation: TbxMatBannerAnimation.Fade,
+                        }),
+                    },
+                ],
+            });
+            const svc = TestBed.inject(TbxMatBannerService);
+
+            svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.enterAnimationClass).toBe('tbx-mat-banner-slide-in-top');
+            expect(data.leaveAnimationClass).toBe('tbx-mat-banner-slide-out-top');
+        });
+    });
+
+    describe('exit animation coordination', () => {
+        it('should set onLeaveAnimationDone callback when animation is active', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.onLeaveAnimationDone).toBeTypeOf('function');
+        });
+
+        it('should set onLeaveAnimationDone to null when animation is none', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.onLeaveAnimationDone).toBeNull();
+        });
+
+        it('should not call showNext immediately on dismissByClose when animation is active', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'A', animation: TbxMatBannerAnimation.Slide });
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByClose();
+
+            // showNext was NOT called — only 1 overlay.create call (for banner A)
+            expect(overlaySpy.create).toHaveBeenCalledTimes(1);
+        });
+
+        it('should call showNext when onLeaveAnimationDone callback is invoked', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'A', animation: TbxMatBannerAnimation.Slide });
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
+
+            const portal = overlayRefSpy.attach.mock.calls[0][0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+
+            data.dismissByClose();
+            expect(overlaySpy.create).toHaveBeenCalledTimes(1);
+
+            // Simulate the leave animation completing
+            data.onLeaveAnimationDone!();
+            expect(overlaySpy.create).toHaveBeenCalledTimes(2);
+        });
+
+        it('should dispose immediately on dismissAll regardless of animation', () => {
+            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
+
+            service.dismissAll();
+
+            expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -506,23 +651,20 @@ describe('TbxMatBannerService', () => {
         });
     });
 
-    describe('isDismissing guard', () => {
-        it('should ignore re-entrant dismissByClose calls', async () => {
+    describe('re-entrant dismiss guard', () => {
+        it('should ignore a second synchronous dismissByClose on the same banner', async () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
 
-            // First call dismisses normally
             data.dismissByClose();
-            // Second call should be ignored (isDismissing guard)
             data.dismissByClose();
 
-            // Only one dispose call
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
         });
 
-        it('should ignore re-entrant dismissByAction calls', async () => {
+        it('should ignore a second synchronous dismissByAction on the same banner', async () => {
             service.show({
                 type: TbxMatSeverityLevel.Success,
                 message: 'Test',
@@ -536,6 +678,95 @@ describe('TbxMatBannerService', () => {
             data.dismissByAction('ok');
 
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('stale banner dismiss race', () => {
+        it('dismissByAction on a superseded banner should not dismiss the now-active banner', async () => {
+            const overlayRefA = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            const overlayRefB = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            overlaySpy.create.mockReset();
+            overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
+
+            const refA = service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'A',
+                actionsGroup: [{ type: 'button', key: 'ok', label: 'OK' }],
+            });
+            const refB = service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
+
+            const portalA = overlayRefA.attach.mock.calls[0][0];
+            const dataA = portalA.injector.get(TBX_MAT_BANNER_DATA);
+
+            service.dismiss();
+
+            expect(overlayRefA.dispose).toHaveBeenCalledTimes(1);
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            // Simulate a stale queued action click firing on A's (destroyed) action button
+            dataA.dismissByAction('ok');
+
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            const resultA = await refA.result;
+            expect(resultA.dismissReason).toBe(TbxMatBannerDismissReason.ProgrammaticDismissCurrent);
+
+            const pending = Symbol('pending');
+            const raceResult = await Promise.race([refB.result, Promise.resolve(pending)]);
+            expect(raceResult).toBe(pending);
+        });
+
+        it('dismissByClose on a superseded banner should not dismiss the now-active banner', async () => {
+            // Distinct overlay refs per overlay.create call so we can tell A and B apart
+            const overlayRefA = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            const overlayRefB = {
+                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                dispose: vi.fn(),
+            };
+            overlaySpy.create.mockReset();
+            overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
+
+            // Show banner A (becomes active) and banner B (queued)
+            const refA = service.show({ type: TbxMatSeverityLevel.Success, message: 'A' });
+            const refB = service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
+
+            // Capture banner A's DTO while A is still active
+            const portalA = overlayRefA.attach.mock.calls[0][0];
+            const dataA = portalA.injector.get(TBX_MAT_BANNER_DATA);
+
+            // Dismiss A via a different path so banner B becomes active
+            service.dismiss();
+
+            expect(overlayRefA.dispose).toHaveBeenCalledTimes(1);
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            // Simulate a stale queued close click firing on A's (destroyed) close button
+            dataA.dismissByClose();
+
+            // Banner B must not have been dismissed by A's stale callback
+            expect(overlayRefB.dispose).not.toHaveBeenCalled();
+            expect(service.isActive()).toBe(true);
+
+            // Banner A's promise resolved via service.dismiss()
+            const resultA = await refA.result;
+            expect(resultA.dismissReason).toBe(TbxMatBannerDismissReason.ProgrammaticDismissCurrent);
+
+            // Banner B's promise should still be pending
+            const pending = Symbol('pending');
+            const raceResult = await Promise.race([refB.result, Promise.resolve(pending)]);
+            expect(raceResult).toBe(pending);
         });
     });
 

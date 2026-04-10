@@ -1,5 +1,6 @@
 import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
 
+import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
 
 /**
@@ -149,4 +150,24 @@ export interface TbxMatBannerConfig {
      * @public
      */
     readonly verticalPosition?: 'top' | 'bottom';
+
+    /**
+     * Enter/exit animation mode for overlay display
+     *
+     * @remarks
+     * Accepts any member of {@link TbxMatBannerAnimation}:
+     *
+     * - {@link TbxMatBannerAnimation.None} — no animation (default). The banner appears and disappears instantly.
+     * - {@link TbxMatBannerAnimation.Slide} — slides in from the closest viewport edge based on `verticalPosition`, and slides out the same way on dismiss.
+     * - {@link TbxMatBannerAnimation.Fade} — fades in/out via opacity.
+     *
+     * Only applicable to overlay banners created via {@link TbxMatBannerService}.
+     * Consumers can override the default motion timing via the
+     * `--tbx-mat-banner-anim-duration` and `--tbx-mat-banner-anim-easing`
+     * CSS custom properties. Animations are automatically disabled when
+     * the user has `prefers-reduced-motion: reduce` set.
+     *
+     * @public
+     */
+    readonly animation?: TbxMatBannerAnimation;
 }

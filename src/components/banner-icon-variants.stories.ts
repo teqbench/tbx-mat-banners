@@ -2,29 +2,11 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
+import { withCustomProperties, withDefaultProperties } from './story-overrides';
 
 // ─── CSS Custom Property Overrides ───────────────────────────────────────────
-
-const STYLE_TAG_ID = 'tbx-banner-icon-story-overrides';
-
-function withCustomProperties(css: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (story: () => any) => {
-        document.getElementById(STYLE_TAG_ID)?.remove();
-        if (css) {
-            const style = document.createElement('style');
-            style.id = STYLE_TAG_ID;
-            style.textContent = css;
-            document.head.appendChild(style);
-        }
-        return story();
-    };
-}
-
-function withDefaultProperties() {
-    return withCustomProperties('');
-}
 
 const LARGE_ICON_CSS = `
     html {
@@ -107,36 +89,12 @@ const LARGE_ICON_PULSE_CSS = `
             <p class="state">Active: {{ banner.isActive() }} &middot; Pending: {{ banner.pendingCount() }}</p>
         </div>
     `,
-    styles: `
-        .harness {
-            font-family: Roboto, sans-serif;
-            padding: 1.5rem;
-        }
-
-        h3 {
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        h3:first-of-type {
-            margin-top: 0;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .state {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #666;
-        }
-    `,
+    styleUrl: './story-harness.css',
 })
 class BannerIconVariantsHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly verticalPosition = input<'top' | 'bottom'>('top');
+    readonly animation = input<TbxMatBannerAnimation>(TbxMatBannerAnimation.None);
 
     private readonly messages: Record<string, string> = {
         default: 'This is a default banner.',
@@ -151,11 +109,12 @@ class BannerIconVariantsHarnessComponent {
         const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => void;
         method.call(this.banner, this.messages[level], {
             verticalPosition: this.verticalPosition(),
+            animation: this.animation(),
         });
     }
 
     queueAll(): void {
-        const args = { verticalPosition: this.verticalPosition() };
+        const args = { verticalPosition: this.verticalPosition(), animation: this.animation() };
         this.banner.default('Step 1: This is a default banner.', args);
         this.banner.success('Step 2: Operation completed successfully.', args);
         this.banner.error('Step 3: Something went wrong.', args);
@@ -171,6 +130,18 @@ const meta: Meta<BannerIconVariantsHarnessComponent> = {
     title: 'Banners/Overlay Font Icon Variants',
     component: BannerIconVariantsHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerIconVariantsHarnessComponent] })],
+    argTypes: {
+        verticalPosition: {
+            control: 'select',
+            options: ['top', 'bottom'],
+            description: 'Vertical position of the overlay banner',
+        },
+        animation: {
+            control: 'select',
+            options: [TbxMatBannerAnimation.None, TbxMatBannerAnimation.Slide, TbxMatBannerAnimation.Fade],
+            description: 'Enter/exit animation mode',
+        },
+    },
 };
 
 export default meta;
@@ -178,16 +149,19 @@ type Story = StoryObj<BannerIconVariantsHarnessComponent>;
 
 export const DefaultIcons: Story = {
     name: 'Default Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withDefaultProperties()],
 };
 
 export const LargeIcons: Story = {
     name: 'Large Icons',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withCustomProperties(LARGE_ICON_CSS)],
 };
 
 export const StateTransition: Story = {
     name: 'State Transition',
+    args: { verticalPosition: 'top', animation: TbxMatBannerAnimation.None },
     decorators: [withCustomProperties(STATE_TRANSITION_CSS)],
 };
 

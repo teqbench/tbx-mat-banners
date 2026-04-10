@@ -1,6 +1,8 @@
 import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import type { TbxMatSeverityResolver, TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
 
+import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
+
 /**
  * Configuration for the banner component's injectable dependencies
  *
@@ -93,4 +95,17 @@ export interface TbxMatBannerProviderConfig {
     readonly closeIconResolverService?: TbxMatIconResolver<string> & {
         readonly iconType: TbxMatIconType;
     };
+
+    /**
+     * Default enter/exit animation mode for overlay banners
+     *
+     * @remarks
+     * Applied when a per-banner {@link TbxMatBannerConfig.animation} is not
+     * set. A per-banner value always wins over this default. When both are
+     * omitted, animations are disabled
+     * ({@link TbxMatBannerAnimation.None}).
+     *
+     * @public
+     */
+    readonly defaultAnimation?: TbxMatBannerAnimation;
 }
