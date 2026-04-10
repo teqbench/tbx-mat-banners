@@ -78,6 +78,108 @@ html {
     }
 }
 
+/* ━━━ Overlay Animations ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ *
+ * CSS keyframe animations for overlay banner enter and exit.
+ * Applied via panelClass by TbxMatBannerService when config.animation
+ * is set to Slide or Fade. Exit classes (-out) are added by the
+ * service's animateExit() method on dismiss.
+ *
+ * Consumer-tunable via:
+ * --tbx-mat-banner-anim-duration  (default: 300ms)
+ * --tbx-mat-banner-anim-easing    (default: cubic-bezier(0.25, 0.8, 0.25, 1))
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── Enter — slide ── */
+
+.tbx-mat-banner-anim-slide.tbx-mat-banner-position-top {
+    animation: tbx-mat-banner-slide-in-top
+        var(--tbx-mat-banner-anim-duration, 300ms)
+        var(--tbx-mat-banner-anim-easing, cubic-bezier(0.25, 0.8, 0.25, 1));
+}
+
+.tbx-mat-banner-anim-slide.tbx-mat-banner-position-bottom {
+    animation: tbx-mat-banner-slide-in-bottom
+        var(--tbx-mat-banner-anim-duration, 300ms)
+        var(--tbx-mat-banner-anim-easing, cubic-bezier(0.25, 0.8, 0.25, 1));
+}
+
+/* ── Exit — slide ── */
+
+.tbx-mat-banner-anim-slide-out.tbx-mat-banner-position-top {
+    animation: tbx-mat-banner-slide-out-top
+        var(--tbx-mat-banner-anim-duration, 300ms)
+        var(--tbx-mat-banner-anim-easing, cubic-bezier(0.25, 0.8, 0.25, 1))
+        forwards;
+}
+
+.tbx-mat-banner-anim-slide-out.tbx-mat-banner-position-bottom {
+    animation: tbx-mat-banner-slide-out-bottom
+        var(--tbx-mat-banner-anim-duration, 300ms)
+        var(--tbx-mat-banner-anim-easing, cubic-bezier(0.25, 0.8, 0.25, 1))
+        forwards;
+}
+
+/* ── Enter — fade ── */
+
+.tbx-mat-banner-anim-fade {
+    animation: tbx-mat-banner-fade-in
+        var(--tbx-mat-banner-anim-duration, 300ms)
+        var(--tbx-mat-banner-anim-easing, cubic-bezier(0.25, 0.8, 0.25, 1));
+}
+
+/* ── Exit — fade ── */
+
+.tbx-mat-banner-anim-fade-out {
+    animation: tbx-mat-banner-fade-out
+        var(--tbx-mat-banner-anim-duration, 300ms)
+        var(--tbx-mat-banner-anim-easing, cubic-bezier(0.25, 0.8, 0.25, 1))
+        forwards;
+}
+
+/* ── Keyframes ── */
+
+@keyframes tbx-mat-banner-slide-in-top {
+    from { transform: translateY(-100%); }
+    to   { transform: translateY(0); }
+}
+
+@keyframes tbx-mat-banner-slide-out-top {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-100%); }
+}
+
+@keyframes tbx-mat-banner-slide-in-bottom {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+@keyframes tbx-mat-banner-slide-out-bottom {
+    from { transform: translateY(0); }
+    to   { transform: translateY(100%); }
+}
+
+@keyframes tbx-mat-banner-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes tbx-mat-banner-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+    .tbx-mat-banner-anim-slide,
+    .tbx-mat-banner-anim-fade,
+    .tbx-mat-banner-anim-slide-out,
+    .tbx-mat-banner-anim-fade-out {
+        animation: none !important;
+    }
+}
+
 /* ━━━ Panel Styles ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *
  * Applied to the CDK overlay panel via panelClass.

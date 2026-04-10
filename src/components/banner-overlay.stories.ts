@@ -2,6 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
+import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 
 @Component({
@@ -44,6 +45,7 @@ import { TbxMatBannerService } from '../services/banner.service';
 class BannerOverlayHarnessComponent {
     readonly banner = inject(TbxMatBannerService);
     readonly verticalPosition = input<'top' | 'bottom'>('top');
+    readonly animation = input<TbxMatBannerAnimation>(TbxMatBannerAnimation.None);
 
     private readonly messages: Record<string, string> = {
         default: 'This is a default banner with no severity styling.',
@@ -58,11 +60,12 @@ class BannerOverlayHarnessComponent {
         const method = this.banner[level as keyof TbxMatBannerService] as (msg: string, args?: object) => void;
         method.call(this.banner, this.messages[level], {
             verticalPosition: position ?? this.verticalPosition(),
+            animation: this.animation(),
         });
     }
 
     queueDemo(): void {
-        const args = { verticalPosition: this.verticalPosition() };
+        const args = { verticalPosition: this.verticalPosition(), animation: this.animation() };
         this.banner.default('Step 1: This is a default banner.', args);
         this.banner.success('Step 2: Operation completed successfully.', args);
         this.banner.error('Step 3: Something went wrong.', args);
@@ -82,6 +85,11 @@ const meta: Meta<BannerOverlayHarnessComponent> = {
             options: ['top', 'bottom'],
             description: 'Default vertical position of the overlay banner',
         },
+        animation: {
+            control: 'select',
+            options: [TbxMatBannerAnimation.None, TbxMatBannerAnimation.Slide, TbxMatBannerAnimation.Fade],
+            description: 'Enter/exit animation mode',
+        },
     },
 };
 
@@ -91,5 +99,6 @@ type Story = StoryObj<BannerOverlayHarnessComponent>;
 export const Default: Story = {
     args: {
         verticalPosition: 'top',
+        animation: TbxMatBannerAnimation.None,
     },
 };
