@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.8.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.7.1...v0.8.0) (2026-04-10)
+
+
+### Features
+
+* **banner:** add animation config and wire enter class onto overlay panel ([b328af1](https://github.com/teqbench/tbx-mat-banners/commit/b328af182a2105da860c5799c068c5ab3442096e)), closes [#38](https://github.com/teqbench/tbx-mat-banners/issues/38)
+* **banner:** add CSS keyframes for overlay animations and wire Storybook control ([fe74087](https://github.com/teqbench/tbx-mat-banners/commit/fe7408740ca260376a009aa8049b4fb2ec8c8e6e)), closes [#38](https://github.com/teqbench/tbx-mat-banners/issues/38)
+* **banner:** add optional enter/exit animations for overlay banners ([fb18c05](https://github.com/teqbench/tbx-mat-banners/commit/fb18c056beb7c90fa182b5760ba8173029a2a8ba))
+* **banner:** wire exit animation coordination into dismiss and timeout paths ([3ad0dc9](https://github.com/teqbench/tbx-mat-banners/commit/3ad0dc91ba24f1042077207bfb143b68923d391f)), closes [#38](https://github.com/teqbench/tbx-mat-banners/issues/38)
+
+
+### Bug Fixes
+
+* **layout:** wrap actions group to a third row in narrow layout ([f5a3e2f](https://github.com/teqbench/tbx-mat-banners/commit/f5a3e2f705c25cfcebd7d65bb4ca33caa81f903d))
+* **layout:** wrap actions group to a third row in narrow layout ([ed2114c](https://github.com/teqbench/tbx-mat-banners/commit/ed2114c878501a09ec9e0079e8fdd0dc6564a2be)), closes [#33](https://github.com/teqbench/tbx-mat-banners/issues/33)
+* **storybook:** make inline banners dismissible and cover all control types ([44f6f03](https://github.com/teqbench/tbx-mat-banners/commit/44f6f03edca3cf7a9359b68d5b24fc53118c8e31))
+* **storybook:** make inline banners dismissible and cover all control types ([27bcee8](https://github.com/teqbench/tbx-mat-banners/commit/27bcee8f1b6cd6258d97ca42d6380d6f1ec50d55))
+* **storybook:** unblock build and prevent style override leakage ([93d4e83](https://github.com/teqbench/tbx-mat-banners/commit/93d4e83ac22444a87aa4a04269ec3c3ba5873424))
+* **storybook:** unblock build and prevent style override leakage ([30e114e](https://github.com/teqbench/tbx-mat-banners/commit/30e114ef4576a419852ca1f53e6dacf24d3dd9c3))
+* **styles:** add explicit z-index to banner overlay panel ([e0059ac](https://github.com/teqbench/tbx-mat-banners/commit/e0059ac37f924449c6d0cf781220f6161aba1c1d))
+* **styles:** add explicit z-index to banner overlay panel ([20b7a65](https://github.com/teqbench/tbx-mat-banners/commit/20b7a65fcdf38a7678550bf9b1a5c47db1305cc2)), closes [#40](https://github.com/teqbench/tbx-mat-banners/issues/40)
+
 ## [0.7.1](https://github.com/teqbench/tbx-mat-banners/compare/v0.7.0...v0.7.1) (2026-04-09)
 
 
