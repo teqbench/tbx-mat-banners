@@ -29,6 +29,7 @@
     "build-storybook": "STORYBOOK_MODE=dev storybook build -c .storybook -o storybook-dev-static",
     "build-storybook:dev": "STORYBOOK_MODE=dev storybook build -c .storybook -o storybook-dev-static",
     "build-storybook:docs": "STORYBOOK_MODE=docs storybook build -c .storybook -o storybook-docs-static",
+    "docs:api": "api-extractor run --local",
     "prepare": "husky"
   },
   "peerDependencies": {
@@ -63,6 +64,7 @@
     "@angular/material": "^21.2.4",
     "@angular/platform-browser": "^21.2.6",
     "@angular/platform-browser-dynamic": "^21.2.6",
+    "@microsoft/api-extractor": "^7.58.2",
     "@storybook/angular": "^10.3.3",
     "@teqbench/tbx-mat-icons": "^4.0.0",
     "@teqbench/tbx-mat-severity-icons": "^7.0.0",
