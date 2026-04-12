@@ -11,7 +11,7 @@ import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
  * in `app.config.ts`. Groups all banner icon customization into a single
  * provider entry.
  *
- * ### Properties
+ * #### Properties
  *
  * - **`severityIconResolverService`** — resolves severity levels to icon identifiers. Must
  *   implement `TbxMatIconResolver` from `@teqbench/tbx-mat-icons`. Use
