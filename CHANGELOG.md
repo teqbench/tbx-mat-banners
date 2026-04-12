@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.4](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.3...v0.9.4) (2026-04-12)
+
+
+### Miscellaneous Chores
+
+* **release:** force release to ship TSDoc heading-level fix ([de8e1bc](https://github.com/teqbench/tbx-mat-banners/commit/de8e1bc2d29176d8b418c00f89073010637141b2))
+
 ## [0.9.3](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.2...v0.9.3) (2026-04-12)
 
 
