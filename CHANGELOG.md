@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.3](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.2...v0.9.3) (2026-04-12)
+
+
+### Miscellaneous Chores
+
+* **release:** force release to emit CI-generated documentation artifacts ([b437377](https://github.com/teqbench/tbx-mat-banners/commit/b4373777abb06de6f5fb1e4123dee5cd237a9ccf))
+
 ## [0.9.2](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.1...v0.9.2) (2026-04-12)
 
 
