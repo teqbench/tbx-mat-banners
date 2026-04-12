@@ -43,6 +43,8 @@ yarn-error.log
 
 # Storybook
 storybook-static/
+storybook-dev-static/
+storybook-docs-static/
 
 # Testing
 /coverage/
