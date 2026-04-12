@@ -23,8 +23,12 @@
     "test:coverage": "vitest run --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "storybook": "storybook dev -p 6006 -c .storybook-dev",
+    "storybook:dev": "storybook dev -p 6006 -c .storybook-dev",
+    "storybook:docs": "storybook dev -p 6007 -c .storybook-docs",
+    "build-storybook": "storybook build -c .storybook-dev -o storybook-dev-static",
+    "build-storybook:dev": "storybook build -c .storybook-dev -o storybook-dev-static",
+    "build-storybook:docs": "storybook build -c .storybook-docs -o storybook-docs-static",
     "prepare": "husky"
   },
   "peerDependencies": {

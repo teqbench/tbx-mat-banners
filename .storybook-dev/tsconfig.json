@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowImportingTsExtensions": true
+  },
+  "include": ["../src/components/**/*.stories.ts", "../src/components/**/*.stories.mdx", "./main.ts", "./preview.ts", "../.storybook-config/**/*.ts"],
+  "exclude": ["../src/**/*.spec.ts"]
+}

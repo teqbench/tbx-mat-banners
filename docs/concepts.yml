@@ -1,0 +1,15 @@
+# Glossary rendered in the README "Concepts" section. Term -> one-line definition.
+- term: Severity level
+  definition: A classification (success, error, warning, information, help) that selects the icon and color scheme applied to a banner.
+- term: Actions group
+  definition: An ordered list of action controls — buttons and form controls — rendered inside the banner and whose values are returned on dismiss.
+- term: Dismiss reason
+  definition: The cause of a banner closing — user action, close button, timeout, or one of two programmatic paths (single or all).
+- term: Queue
+  definition: A FIFO list of pending banners. One banner is visible at a time in overlay mode; queued banners render in order as each resolves.
+- term: Provider config
+  definition: The DI-provided configuration (TBX_MAT_BANNER_PROVIDER_CONFIG) that supplies the severity icon resolver, optional close icon resolver, and default animation.
+- term: Inline mode
+  definition: Using TbxMatBannerComponent directly in a consumer template, with visibility and state controlled by the consumer rather than the service.
+- term: Overlay mode
+  definition: Using TbxMatBannerService to render a banner in a CDK Overlay above the application, positioned at the top or bottom of the viewport.
