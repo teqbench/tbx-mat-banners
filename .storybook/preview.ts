@@ -36,8 +36,18 @@ const preview: Preview = {
     ],
     parameters: {
         options: {
-            storySort: {
-                order: ['Banners', ['Overlay']],
+            // Custom sort so stories within the Banners group appear in the
+            // intended narrative order (simple → complex → customization)
+            // rather than the default alphabetical order. Mirrors the sort
+            // used by teqbench.website's embedded Storybook.
+            storySort: (a, b) => {
+                const ORDER = ['banners--inline', 'banners--overlays', 'banners--overlays-actions', 'banners--custom'];
+                const aIdx = ORDER.indexOf(a.id);
+                const bIdx = ORDER.indexOf(b.id);
+                if (aIdx === -1 && bIdx === -1) return a.id.localeCompare(b.id);
+                if (aIdx === -1) return 1;
+                if (bIdx === -1) return -1;
+                return aIdx - bIdx;
             },
         },
         controls: {
