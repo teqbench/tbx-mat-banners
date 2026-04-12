@@ -41,7 +41,7 @@ interface ResolvedIcon {
  * Renders a severity-styled banner with an optional severity icon, message,
  * actions group (buttons and form controls), and close button.
  *
- * ### Display Modes
+ * #### Display Modes
  *
  * - **Overlay mode:** Created by {@link TbxMatBannerService} via
  *   {@link https://material.angular.dev/cdk/overlay/api | CDK Overlay}.
@@ -51,14 +51,14 @@ interface ResolvedIcon {
  * - **Inline mode:** Placed directly in a consumer's template.
  *   Receives data through signal inputs and emits dismiss events via outputs.
  *
- * ### Template element order
+ * #### Template element order
  *
  * severity icon | message | actions group | close button
  *
  * All elements are optional except the message. The actions group and
  * close button render in the actions slot.
  *
- * ### Actions group rendering
+ * #### Actions group rendering
  *
  * Controls render in array order via `@switch (control.type)`. Form control
  * values are tracked internally via writable signals initialized from each

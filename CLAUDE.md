@@ -91,6 +91,10 @@ Add `@order` to any member where alphabetical sorting within its group produces 
 - `id` should appear before `createdAt` and `updatedAt` — give `id` `@order 1`.
 - Lifecycle-related properties should appear in logical sequence — use `@order` to enforce creation-before-update ordering.
 
+### Subheadings inside tag blocks
+
+Markdown subheadings authored inside `@remarks`, `@usage`, or `@example` start at `####` (H4). The downstream docs renderer (teqbench.website) wraps each tag section with its own `<h4>` label ("Remarks", "When to use", "Example"), so any `###` subheadings in the authored content render _larger_ than the tag's own label and appear as if they were sibling top-level exports rather than nested subsections. Using `####` keeps subheadings visually below their parent label.
+
 ### Comment Structure
 
 Top-level exports:

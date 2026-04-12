@@ -10,7 +10,7 @@ import { TbxMatSeverityFontIconService, TbxMatSeverityLevel } from '@teqbench/tb
  * for each severity level. The inherited `resolve()` and severity
  * methods (`success()`, `error()`, etc.) work via the registered mappings.
  *
- * ### fontSet resolution
+ * #### fontSet resolution
  *
  * The fontSet is resolved by `TbxMatFontIconService`'s fallback chain:
  *

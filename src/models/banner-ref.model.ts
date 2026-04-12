@@ -15,7 +15,7 @@ import { type TbxMatBannerResult } from './banner-result.model';
  *   the button that triggered dismissal (if applicable), and the
  *   `actionsGroupValues` record when the banner is dismissed.
  *
- * ### Fire-and-Forget Usage
+ * #### Fire-and-Forget Usage
  *
  * Consumers who do not need the dismiss result should
  * prefix the call with `void` to suppress unhandled-promise lint warnings:
