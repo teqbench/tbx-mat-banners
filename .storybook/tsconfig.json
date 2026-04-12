@@ -4,6 +4,6 @@
     "types": ["node"],
     "allowImportingTsExtensions": true
   },
-  "include": ["../src/**/*.stories.ts", "../src/**/*.stories.mdx", "./main.ts", "./preview.ts"],
+  "include": ["../src/**/*.stories.ts", "../src/**/*.stories.mdx", "./main.ts", "./preview.ts", "./manager.ts"],
   "exclude": ["../src/**/*.spec.ts"]
 }
