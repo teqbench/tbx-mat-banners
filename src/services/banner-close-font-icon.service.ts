@@ -16,7 +16,7 @@ import { TbxMatFontIconService } from '@teqbench/tbx-mat-icons';
  * from `@teqbench/tbx-mat-icons` and provide it via
  * {@link TbxMatBannerProviderConfig.closeIconResolverService}.
  *
- * ### fontSet resolution
+ * #### fontSet resolution
  *
  * The fontSet is resolved by `TbxMatFontIconService`'s fallback chain:
  *
