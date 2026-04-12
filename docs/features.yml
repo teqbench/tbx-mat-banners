@@ -1,0 +1,24 @@
+# Short, scannable feature bullets rendered in the README "At a glance" section.
+# Each entry: one short noun phrase, one-line explanation.
+- name: Two display modes
+  summary: Overlay service for fire-and-forget messages and inline component for template-driven use.
+- name: Severity-leveled API
+  summary: Convenience methods for success, error, warning, information, and help with matching icons and colors.
+- name: Actions group
+  summary: Buttons and form controls (checkbox, toggle, radio group, toggle group) in a single message.
+- name: FIFO queue
+  summary: One banner at a time, with signal-based isActive and pendingCount state.
+- name: Dismiss tracking
+  summary: Promise resolves with dismiss reason, action key, and collected form control values.
+- name: Indefinite by default
+  summary: Banners persist until dismissed; positive duration auto-dismisses, negative is treated as indefinite.
+- name: Animations
+  summary: Optional slide or fade on overlay banners; automatically disabled under prefers-reduced-motion.
+- name: Theming via CSS custom properties
+  summary: Per-severity colors, gaps, padding, shadow, and z-index exposed as CSS variables.
+- name: Pluggable icons
+  summary: Font (Material Symbols) or SVG icon resolver service via DI token.
+- name: Responsive layout
+  summary: CSS container queries reflow the actions group onto a second row on narrow viewports.
+- name: Zoneless ready
+  summary: Built for Angular 21+ zoneless applications using signal inputs.

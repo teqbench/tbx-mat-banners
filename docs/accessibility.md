@@ -1,0 +1,8 @@
+# Accessibility
+
+- **Overlay container.** Overlay banners render inside a [CDK Overlay ↗](https://material.angular.dev/cdk/overlay/api) pane positioned at the top or bottom of the viewport. The overlay is non-blocking and does not trap focus. Consumers that need screen-reader announcement of new banners should wrap the banner message in a container with `aria-live="polite"` in their application shell, or use the existing [LiveAnnouncer ↗](https://material.angular.dev/cdk/a11y/api#LiveAnnouncer) service to announce the message text alongside the banner call.
+- **Keyboard.** The close button and every control in the actions group are focusable in DOM order. `Enter` and `Space` activate buttons; form controls use their native [Angular Material ↗](https://material.angular.dev) keyboard behavior.
+- **Focus.** Focus is not moved into the banner automatically — banners are non-blocking. Consumers that need to direct attention to a banner action should call `focus()` on the control explicitly, or escalate to a dialog.
+- **Reduced motion.** When `prefers-reduced-motion: reduce` is set, the `Slide` and `Fade` animations are bypassed and banners show/hide instantly regardless of the configured animation.
+- **Color contrast.** The default severity palette meets [WCAG ↗](https://www.w3.org/WAI/standards-guidelines/wcag/) AA contrast for body text on each background. Overriding the severity CSS custom properties is the consumer's responsibility to re-verify.
+- **Icons.** Severity icons are decorative and marked `aria-hidden`; the severity meaning is carried by the message text itself, not by the icon alone.
