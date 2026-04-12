@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.8.1...v0.9.0) (2026-04-12)
+
+
+### Features
+
+* **build:** ship docs manifests in the published tarball ([f9b2cfb](https://github.com/teqbench/tbx-mat-banners/commit/f9b2cfb646be6ebce67b800e5edfe7b0c42a36aa))
+* **build:** ship docs manifests in the published tarball ([5cd1996](https://github.com/teqbench/tbx-mat-banners/commit/5cd1996391dea5db2aa23781cd4060224a4f167d))
+* **storybook:** split into dev and docs configs with shared base ([437b51b](https://github.com/teqbench/tbx-mat-banners/commit/437b51b6c4d023e8eb018695df278fe7531cef7a))
+
 ## [0.8.1](https://github.com/teqbench/tbx-mat-banners/compare/v0.8.0...v0.8.1) (2026-04-10)
 
 
