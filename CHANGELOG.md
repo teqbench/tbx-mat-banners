@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.2](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.1...v0.9.2) (2026-04-12)
+
+
+### Bug Fixes
+
+* **storybook:** restore narrative story sort in docs sidebar ([27bbad0](https://github.com/teqbench/tbx-mat-banners/commit/27bbad01dc1406e82612b83d2704c8d99af7a892))
+* **storybook:** restore narrative story sort order in docs sidebar ([d67f4d9](https://github.com/teqbench/tbx-mat-banners/commit/d67f4d93a4539ae0dbf2afc4edca3a5c8c8b9dba))
+
 ## [0.9.1](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.0...v0.9.1) (2026-04-12)
 
 
