@@ -30,7 +30,7 @@ The repo `.npmrc` already configures the `@teqbench` scope to use [GitHub Packag
 
 #### Cross-repo package access (CI)
 
-If this package depends on other `@teqbench` packages, each package in the entire dependency tree (direct and transitive) must grant this repository read access on GitHub. For each `@teqbench` package, go to **github.com/orgs/teqbench/packages/npm/\<package-name\>/settings → Manage access**, add this repository, and set the role to **Read**. [GitHub Packages ↗](https://github.com/orgs/teqbench/packages) has its own access control layer — repository and app permissions alone are not sufficient. Without this, CI will fail with `403 Forbidden` during `npm ci`. For example, if this package depends on `tbx-mat-severity-icons` which depends on `tbx-mat-icons`, you must grant read access on both packages.
+If this package depends on other `@teqbench` packages, each package in the entire dependency tree (direct and transitive) must grant this repository read access on GitHub. For each `@teqbench` package, go to **github.com/orgs/teqbench/packages/npm/\<package-name\>/settings → Manage access**, add this repository, and set the role to **Read**. [GitHub Packages ↗](https://github.com/orgs/teqbench/packages) has its own access control layer — repository and app permissions alone are not sufficient. Without this, CI will fail with `403 Forbidden` during `npm ci`. For example, if this package depends on `tbx-mat-severity-theme` which depends on `tbx-mat-icons`, you must grant read access on both packages.
 
 ## Tech Stack
 

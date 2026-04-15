@@ -8,7 +8,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { TbxMatIconType } from '@teqbench/tbx-mat-icons';
-import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { type TbxMatBannerActionButton } from '../models/banner-action-button.model';

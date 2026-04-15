@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { provideTbxMatSeverityTheme } from '@teqbench/tbx-mat-severity-theme';
 import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 import { TbxMatBannerSeveritySvgIconService } from '../services/banner-severity-svg-icon.service';
@@ -24,6 +25,7 @@ function withSvgIcons() {
     return applicationConfig({
         providers: [
             provideAnimationsAsync(),
+            provideTbxMatSeverityTheme({ invert: false, applyToRoot: true }),
             {
                 provide: MAT_ICON_DEFAULT_OPTIONS,
                 useValue: { fontSet: 'material-symbols-rounded' },

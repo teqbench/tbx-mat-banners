@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { TbxMatBannerSeveritySvgIconService } from './banner-severity-svg-icon.service';
 

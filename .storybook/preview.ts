@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/angular';
 import { applicationConfig } from '@storybook/angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { provideTbxMatSeverityTheme } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../src/tokens/banner-provider-config.token';
 import { TbxMatBannerSeverityFontIconService } from '../src/services/banner-severity-font-icon.service';
 import { removeStoryOverrideStyleTag } from '../src/components/story-overrides';
@@ -21,6 +22,7 @@ const preview: Preview = {
         applicationConfig({
             providers: [
                 provideAnimationsAsync(),
+                provideTbxMatSeverityTheme({ invert: false, applyToRoot: true }),
                 {
                     provide: MAT_ICON_DEFAULT_OPTIONS,
                     useValue: { fontSet: 'material-symbols-rounded' },

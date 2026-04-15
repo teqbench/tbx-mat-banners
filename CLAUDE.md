@@ -311,7 +311,7 @@ The service's `resolveAndCleanup()` method sets `_isActive` to `false` before `s
 
 ### Icon Services
 
-Same pattern as `@teqbench/tbx-mat-notifications` — extends `TbxMatSeverityFontIconService` / `TbxMatSeveritySvgIconService` from `@teqbench/tbx-mat-severity-icons`. Registers identical ligatures (check_circle, error, warning_amber, info, help) and SVG markup (Small Flat Vectors, PD license).
+Same pattern as `@teqbench/tbx-mat-notifications` — extends `TbxMatSeverityFontIconService` / `TbxMatSeveritySvgIconService` from `@teqbench/tbx-mat-severity-theme`. Registers the shared default ligatures and SVG icons from `TBX_MAT_SEVERITY_DEFAULT_FONT_LIGATURES` and `TBX_MAT_SEVERITY_DEFAULT_SVG_ICONS` by iterating `Object.values(TbxMatSeverityLevel)`. Both services cover all six tiers (default, success, error, warning, information, help). Inverted palette is opted into app-globally at bootstrap via `provideTbxMatSeverityTheme({ invert: true, applyToRoot: true })` — the flag affects every `@teqbench` severity-aware package simultaneously, not banners alone.
 
 ### Storybook
 
