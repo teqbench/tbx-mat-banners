@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.9.4](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.4...v0.9.4) (2026-04-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* The `@teqbench/tbx-mat-severity-icons` peer dependency is replaced by `@teqbench/tbx-mat-severity-theme` (>=8.0.0). Consumers must update their peer dependency and import `TbxMatSeverityLevel` from `@teqbench/tbx-mat-severity-theme` — the enum is no longer re-exported from `@teqbench/tbx-mat-banners`.
+
+### Features
+
+* migrate from tbx-mat-severity-icons to tbx-mat-severity-theme ([cfcf1bc](https://github.com/teqbench/tbx-mat-banners/commit/cfcf1bcaa3a6e221a70e2a68deb428f50b47ceca))
+
+
+### Miscellaneous Chores
+
+* **release:** force release to ship TSDoc heading-level fix ([75c7f25](https://github.com/teqbench/tbx-mat-banners/commit/75c7f25f69016691da4e3d8d46ffe3c21192835b))
+* **release:** force release to ship TSDoc heading-level fix ([b4fd06c](https://github.com/teqbench/tbx-mat-banners/commit/b4fd06ce258ef7b251f966adf6b02d894912b3e0))
+* **release:** force release to ship TSDoc heading-level fix ([80185a2](https://github.com/teqbench/tbx-mat-banners/commit/80185a29c9abc6a9149a5d62b1ed9c83c5d28559))
+
 ## [0.9.4](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.4...v0.9.4) (2026-04-13)
 
 
