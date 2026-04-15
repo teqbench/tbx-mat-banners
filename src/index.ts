@@ -40,7 +40,6 @@
  */
 
 // Enums
-export { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
 export { TbxMatBannerAnimation } from './enums/banner-animation.enum';
 export { TbxMatBannerDismissReason } from './enums/banner-dismiss-reason.enum';
 

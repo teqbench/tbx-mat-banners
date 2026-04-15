@@ -1,7 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
-import { moduleMetadata } from '@storybook/angular';
+import { applicationConfig, moduleMetadata } from '@storybook/angular';
+import { provideTbxMatSeverityTheme } from '@teqbench/tbx-mat-severity-theme';
 import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerService } from '../services/banner.service';
 
@@ -100,5 +101,24 @@ export const Default: Story = {
     args: {
         verticalPosition: 'top',
         animation: TbxMatBannerAnimation.None,
+    },
+};
+
+export const Inverted: Story = {
+    args: {
+        verticalPosition: 'top',
+        animation: TbxMatBannerAnimation.None,
+    },
+    decorators: [
+        applicationConfig({
+            providers: [provideTbxMatSeverityTheme({ invert: true, applyToRoot: true })],
+        }),
+    ],
+    parameters: {
+        docs: {
+            description: {
+                story: 'Inverted severity palette — white backgrounds with colored text. Wired via `provideTbxMatSeverityTheme({ invert: true, applyToRoot: true })` at bootstrap. The inversion is app-global: banners, notifications, and dialogs consuming the same shared theme invert simultaneously.',
+            },
+        },
     },
 };

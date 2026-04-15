@@ -1,5 +1,5 @@
 import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-icons';
-import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
 

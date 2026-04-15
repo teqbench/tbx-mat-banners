@@ -1,6 +1,6 @@
 # Glossary rendered in the README "Concepts" section. Term -> one-line definition.
 - term: Severity level
-  definition: A classification (success, error, warning, information, help) that selects the icon and color scheme applied to a banner.
+  definition: A classification (default, success, error, warning, information, help) that selects the icon and color scheme applied to a banner.
 - term: Actions group
   definition: An ordered list of action controls — buttons and form controls — rendered inside the banner and whose values are returned on dismiss.
 - term: Dismiss reason
