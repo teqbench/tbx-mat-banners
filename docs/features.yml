@@ -3,7 +3,7 @@
 - name: Two display modes
   summary: Overlay service for fire-and-forget messages and inline component for template-driven use.
 - name: Severity-leveled API
-  summary: Convenience methods for success, error, warning, information, and help with matching icons and colors.
+  summary: Convenience methods for default, success, error, warning, information, and help with matching icons and colors.
 - name: Actions group
   summary: Buttons and form controls (checkbox, toggle, radio group, toggle group) in a single message.
 - name: FIFO queue

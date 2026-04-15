@@ -1,4 +1,4 @@
-import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 
 import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';

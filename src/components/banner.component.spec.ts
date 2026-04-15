@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED, TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';

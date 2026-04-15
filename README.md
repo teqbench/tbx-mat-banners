@@ -32,14 +32,14 @@
 
 Two display modes are supported from a single component surface. In **overlay mode**, `TbxMatBannerService` creates banners via [CDK Overlay ↗](https://material.angular.dev/cdk/overlay/api) on a FIFO queue, one at a time, with optional slide or fade animation and programmatic dismiss. In **inline mode**, `TbxMatBannerComponent` is placed directly in a template, controlled by the consumer via bindings, and emits dismiss events.
 
-Severity (`success`, `error`, `warning`, `information`, `help`) drives both the icon and the color scheme, via dedicated CSS custom properties independent of the active [M3 ↗](https://m3.material.io) theme palette. An optional actions group accepts any mix of buttons, checkboxes, toggles, radio groups, and toggle groups; on dismiss, all collected values are returned alongside the dismiss reason and the action key that triggered it.
+Severity (`default`, `success`, `error`, `warning`, `information`, `help`) drives both the icon and the color scheme. The six CSS custom-property pairs are aliased from the shared [`@teqbench/tbx-mat-severity-theme` ↗](https://github.com/teqbench/tbx-mat-severity-theme) tokens, so the five colored tiers stay independent of the active [M3 ↗](https://m3.material.io) theme palette while the `default` tier remains theme-responsive. Applications can opt into an inverted palette (white backgrounds with colored text) across every severity-aware `@teqbench` package by calling `provideTbxMatSeverityTheme({ invert: true, applyToRoot: true })` at bootstrap — the flag applies app-wide across every `@teqbench` severity-aware package, not banners alone. An optional actions group accepts any mix of buttons, checkboxes, toggles, radio groups, and toggle groups; on dismiss, all collected values are returned alongside the dismiss reason and the action key that triggered it.
 
 The library is designed for [Angular ↗](https://angular.dev) 21+ zoneless applications, uses [signal inputs ↗](https://angular.dev/guide/signals/inputs), honors `prefers-reduced-motion`, and exposes a pluggable icon resolver so consumers can use [Material Symbols ↗](https://fonts.google.com/icons) font icons or bundled SVG icons without changing component code.
 
 ## At a glance
 
 - **Two display modes** — overlay service for fire-and-forget messages and inline component for template-driven use.
-- **Severity-leveled API** — convenience methods for success, error, warning, information, and help with matching icons and colors.
+- **Severity-leveled API** — convenience methods for default, success, error, warning, information, and help with matching icons and colors.
 - **Actions group** — buttons and form controls (checkbox, toggle, radio group, toggle group) in a single message.
 - **FIFO queue** — one banner at a time, with signal-based `isActive` and `pendingCount` state.
 - **Dismiss tracking** — promise resolves with dismiss reason, action key, and collected form control values.
@@ -250,7 +250,7 @@ providers: [
 
 ## Concepts
 
-- **Severity level** — a classification (success, error, warning, information, help) that selects the icon and color scheme applied to a banner.
+- **Severity level** — a classification (default, success, error, warning, information, help) that selects the icon and color scheme applied to a banner.
 - **Actions group** — an ordered list of action controls, buttons and form controls, rendered inside the banner and whose values are returned on dismiss.
 - **Dismiss reason** — the cause of a banner closing: user action, close button, timeout, or one of two programmatic paths (single or all).
 - **Queue** — a FIFO list of pending banners. One banner is visible at a time in overlay mode; queued banners render in order as each resolves.
@@ -459,7 +459,7 @@ Effective only when `animation` is `Slide` or `Fade`. Ignored when `None`.
 | [Angular CDK ↗](https://material.angular.dev/cdk)                                        | >=21.0.0 |
 | [Angular Material ↗](https://material.angular.dev)                                       | >=21.0.0 |
 | [@teqbench/tbx-mat-icons ↗](https://github.com/teqbench/tbx-mat-icons)                   | >=4.0.0  |
-| [@teqbench/tbx-mat-severity-icons ↗](https://github.com/teqbench/tbx-mat-severity-icons) | >=7.0.0  |
+| [@teqbench/tbx-mat-severity-theme ↗](https://github.com/teqbench/tbx-mat-severity-theme) | >=8.0.0  |
 | [TypeScript ↗](https://www.typescriptlang.org)                                           | ~5.9.0   |
 | [Node.js ↗](https://nodejs.org)                                                          | >=24.0.0 |
 
@@ -467,7 +467,7 @@ Effective only when `animation` is `Slide` or `Fade`. Ignored when `None`.
 
 - [`@teqbench/tbx-mat-notifications` ↗](https://github.com/teqbench/tbx-mat-notifications) — transient, single-action messages for lightweight acknowledgements.
 - [`@teqbench/tbx-mat-dialogs` ↗](https://github.com/teqbench/tbx-mat-dialogs) — modal dialogs for heavier, focused interactions.
-- [`@teqbench/tbx-mat-severity-icons` ↗](https://github.com/teqbench/tbx-mat-severity-icons) — severity icon resolver base services reused by this package.
+- [`@teqbench/tbx-mat-severity-theme` ↗](https://github.com/teqbench/tbx-mat-severity-theme) — severity enum, abstract icon-service bases, default icon sets, shared SCSS color tokens, and the inverted-palette provider helper consumed by this package.
 - [`@teqbench/tbx-mat-icons` ↗](https://github.com/teqbench/tbx-mat-icons) — shared icon resolver contracts and base services.
 
 ## Versioning & releases

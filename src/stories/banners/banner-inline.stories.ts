@@ -3,7 +3,7 @@ import { JsonPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TbxMatBannerComponent, type TbxMatBannerResult, type TbxMatBannerActionsGroupControl } from '../../index';
 
 @Component({

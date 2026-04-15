@@ -1,7 +1,7 @@
 import { DestroyRef, inject, Injectable, Injector, signal } from '@angular/core';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-icons';
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TbxMatBannerComponent } from '../components/banner.component';
 import { type TbxMatBannerConfigArgs } from '../types/banner-config-args.type';
 import { type TbxMatBannerConfig } from '../models/banner-config.model';
