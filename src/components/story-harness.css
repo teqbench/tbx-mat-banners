@@ -59,3 +59,54 @@ h3:first-of-type {
     max-width: 500px;
     border: 1px dashed #ccc;
 }
+
+.instructions {
+    font-size: 0.875rem;
+    color: #555;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.instructions p {
+    margin: 0 0 0.5rem;
+}
+
+.instructions p:last-child,
+.instructions ul:last-child {
+    margin-bottom: 0;
+}
+
+.instructions ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.instructions li {
+    margin-bottom: 0.125rem;
+}
+
+.instructions code {
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.instructions a {
+    color: #4338ca;
+}
+
+.story-description {
+    font-size: 0.875rem;
+    color: #333;
+    background: #f0f4ff;
+    border-left: 3px solid #1565c0;
+    padding: 0.5rem 0.75rem;
+    margin: 0 0 1rem;
+    line-height: 1.4;
+}
