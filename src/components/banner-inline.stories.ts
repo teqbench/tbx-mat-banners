@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
@@ -7,13 +7,14 @@ import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TbxMatBannerComponent } from './banner.component';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
+import { applyIconAnimation, type IconAnimation, type IconSize, SHARED_OVERLAY_ARG_TYPES } from './banner-overlay.stories.common';
 
 @Component({
     selector: 'tbx-banner-inline-harness',
     imports: [MatButtonModule, JsonPipe, TbxMatBannerComponent],
     template: `
-        <div class="harness">
-            <p class="theme-note">Inline banners are placed directly in the consumer's template. Severity panel classes are applied to the host element automatically.</p>
+        <div class="harness" [style]="iconSizeStyle()">
+            <p class="theme-note">Inline banners are placed directly in the consumer's template. Severity panel classes are applied to the host element automatically. Use the Controls panel to adjust icon size and animation across every banner on this page.</p>
 
             <h3>Severity Levels</h3>
             <div class="severity-stack">
@@ -122,6 +123,15 @@ import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-gr
     styleUrl: './story-harness.css',
 })
 class BannerInlineHarnessComponent {
+    readonly iconSize = input<IconSize>('standard');
+    readonly iconAnimation = input<IconAnimation>('none');
+
+    readonly iconSizeStyle = computed(() => {
+        const sizes: Record<IconSize, string> = { standard: '', medium: '2rem', large: '3rem' };
+        const size = sizes[this.iconSize()];
+        return size ? `--tbx-mat-banner-icon-size: ${size}` : '';
+    });
+
     readonly defaultLevel = TbxMatSeverityLevel.Default;
     readonly successLevel = TbxMatSeverityLevel.Success;
     readonly warningLevel = TbxMatSeverityLevel.Warning;
@@ -133,6 +143,10 @@ class BannerInlineHarnessComponent {
 
     readonly lastResult = signal<TbxMatBannerResult | null>(null);
     readonly lastSource = signal('');
+
+    constructor() {
+        effect(() => applyIconAnimation(this.iconAnimation()));
+    }
 
     isDismissed(key: string): boolean {
         return this.dismissedKeys().has(key);
@@ -226,9 +240,18 @@ const meta: Meta<BannerInlineHarnessComponent> = {
     title: 'Banners/Inline',
     component: BannerInlineHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerInlineHarnessComponent] })],
+    argTypes: {
+        iconSize: SHARED_OVERLAY_ARG_TYPES.iconSize,
+        iconAnimation: SHARED_OVERLAY_ARG_TYPES.iconAnimation,
+    },
 };
 
 export default meta;
 type Story = StoryObj<BannerInlineHarnessComponent>;
 
-export const Default: Story = {};
+export const Default: Story = {
+    args: {
+        iconSize: 'standard',
+        iconAnimation: 'none',
+    },
+};

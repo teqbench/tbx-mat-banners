@@ -2,10 +2,8 @@ import { Component, effect, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import { TbxMatBannerAnimation, TbxMatBannerService } from '../../index';
-
-type VerticalPosition = 'top' | 'bottom';
-type EnterExitAnimation = 'none' | 'slide' | 'fade';
+import { TbxMatBannerService } from '../../index';
+import { applyIconAnimation, applyIconSize, type EnterExitAnimation, type IconAnimation, type IconSize, mapAnimation, SHARED_OVERLAY_ARG_TYPES, type VerticalPosition } from '../../components/banner-overlay.stories.common';
 
 // Custom panel styles applied via the `panelClass` config option on the
 // banner service. The styles are injected once at the document level so they
@@ -238,6 +236,11 @@ class BannerCustomHarnessComponent {
 
     readonly verticalPosition = input<VerticalPosition>('top');
     readonly enterExitAnimation = input<EnterExitAnimation>('none');
+    readonly showSeverityIcon = input<boolean>(true);
+    readonly showCloseButton = input<boolean>(true);
+    readonly duration = input<number>(0);
+    readonly iconSize = input<IconSize>('standard');
+    readonly iconAnimation = input<IconAnimation>('none');
 
     constructor() {
         // Inject the custom panel styles once at the document level so they
@@ -251,25 +254,20 @@ class BannerCustomHarnessComponent {
             style.textContent = CUSTOM_PANEL_CSS;
             document.head.appendChild(style);
         });
+
+        effect(() => applyIconSize(this.iconSize()));
+        effect(() => applyIconAnimation(this.iconAnimation()));
     }
 
     private fire(message: string, panelClass: string): void {
         this.banner.default(message, {
             panelClass,
             verticalPosition: this.verticalPosition(),
-            animation: this.mapAnimation(),
+            animation: mapAnimation(this.enterExitAnimation()),
+            showSeverityIcon: this.showSeverityIcon(),
+            showCloseButton: this.showCloseButton(),
+            duration: this.duration(),
         });
-    }
-
-    private mapAnimation(): TbxMatBannerAnimation {
-        switch (this.enterExitAnimation()) {
-            case 'slide':
-                return TbxMatBannerAnimation.Slide;
-            case 'fade':
-                return TbxMatBannerAnimation.Fade;
-            default:
-                return TbxMatBannerAnimation.None;
-        }
     }
 
     brand(): void {
@@ -298,7 +296,10 @@ class BannerCustomHarnessComponent {
         this.banner.success('Deployment complete — repainted in teal via panel class override.', {
             panelClass: 'tbx-demo-teal-success',
             verticalPosition: this.verticalPosition(),
-            animation: this.mapAnimation(),
+            animation: mapAnimation(this.enterExitAnimation()),
+            showSeverityIcon: this.showSeverityIcon(),
+            showCloseButton: this.showCloseButton(),
+            duration: this.duration(),
         });
     }
 }
@@ -308,20 +309,7 @@ const meta: Meta<BannerCustomHarnessComponent> = {
     tags: ['banners'],
     component: BannerCustomHarnessComponent,
     decorators: [moduleMetadata({ imports: [BannerCustomHarnessComponent] })],
-    argTypes: {
-        verticalPosition: {
-            name: 'Position',
-            control: 'select',
-            options: ['top', 'bottom'],
-            description: 'Vertical position of the overlay banner',
-        },
-        enterExitAnimation: {
-            name: 'Enter/Exit Animation',
-            control: 'select',
-            options: ['none', 'slide', 'fade'],
-            description: 'Enter and exit animation mode',
-        },
-    },
+    argTypes: SHARED_OVERLAY_ARG_TYPES,
 };
 
 export default meta;
@@ -331,5 +319,10 @@ export const Custom: Story = {
     args: {
         verticalPosition: 'top',
         enterExitAnimation: 'none',
+        showSeverityIcon: true,
+        showCloseButton: true,
+        duration: 0,
+        iconSize: 'standard',
+        iconAnimation: 'none',
     },
 };
