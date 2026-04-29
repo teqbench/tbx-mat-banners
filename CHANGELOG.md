@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.0...v0.10.0) (2026-04-29)
+
+
+### Miscellaneous Chores
+
+* **release:** unstick Release Please and cut 0.10.0 ([f29297f](https://github.com/teqbench/tbx-mat-banners/commit/f29297f33215bb093750f36ea77e91987272dff8))
+
 ## [0.10.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.4...v0.10.0) (2026-04-15)
 
 
