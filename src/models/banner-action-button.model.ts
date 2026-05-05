@@ -56,6 +56,7 @@ import { type TbxMatBannerActionButtonAppearance } from '../types/banner-action-
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Action Button
  * @order 4
  * @since 1.0.0

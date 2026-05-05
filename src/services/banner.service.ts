@@ -101,10 +101,12 @@ export class TbxMatBannerService {
     private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
     private destroyed = false;
 
-    private readonly _destroyCleanup = inject(DestroyRef).onDestroy(() => {
-        this.destroyed = true;
-        this.cleanupActive();
-    });
+    constructor() {
+        inject(DestroyRef).onDestroy(() => {
+            this.destroyed = true;
+            this.cleanupActive();
+        });
+    }
 
     /** FIFO queue of pending banners. */
     private readonly queue: QueueEntry[] = [];
@@ -425,6 +427,7 @@ export class TbxMatBannerService {
         if (duration > 0) {
             this.durationTimeout = setTimeout(() => {
                 this.durationTimeout = null;
+                if (this.activeOverlayRef !== overlayRef) return;
                 this.resolveAndCleanup({
                     dismissReason: TbxMatBannerDismissReason.Timeout,
                     actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
@@ -434,15 +437,20 @@ export class TbxMatBannerService {
         }
     }
 
+    /** Clear and null the active duration timeout, if any. */
+    private clearDurationTimeout(): void {
+        if (this.durationTimeout) {
+            clearTimeout(this.durationTimeout);
+            this.durationTimeout = null;
+        }
+    }
+
     /**
      * Resolve the active result promise and clean up the overlay.
      * Guards against double-resolution.
      */
     private resolveAndCleanup(result: TbxMatBannerResult): void {
-        if (this.durationTimeout) {
-            clearTimeout(this.durationTimeout);
-            this.durationTimeout = null;
-        }
+        this.clearDurationTimeout();
 
         if (!this.activeResultResolved && this.activeResultResolver) {
             this.activeResultResolver(result);
@@ -461,10 +469,7 @@ export class TbxMatBannerService {
 
     /** Clean up active overlay on service destroy. */
     private cleanupActive(): void {
-        if (this.durationTimeout) {
-            clearTimeout(this.durationTimeout);
-            this.durationTimeout = null;
-        }
+        this.clearDurationTimeout();
         if (this.activeOverlayRef) {
             this.activeOverlayRef.dispose();
             this.activeOverlayRef = null;

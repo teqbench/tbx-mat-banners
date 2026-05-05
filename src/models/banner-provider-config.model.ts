@@ -58,6 +58,7 @@ import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Provider Config
  * @order 11
  * @since 1.0.0

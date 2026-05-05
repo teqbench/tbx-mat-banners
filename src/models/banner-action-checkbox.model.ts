@@ -18,6 +18,7 @@
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Action Checkbox
  * @order 5
  * @since 1.0.0

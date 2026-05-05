@@ -339,7 +339,7 @@ Same pattern as `@teqbench/tbx-mat-notifications` — extends `TbxMatSeverityFon
 
 ### Storybook
 
-Stories are in `src/components/*.stories.ts`. Run with `npm run storybook`. Stories cover:
+Stories live in two locations: `src/components/*.stories.ts` (component-adjacent harness stories) and `src/stories/banners/*.stories.ts` (scenario-driven stories). Run with `npm run storybook`. Stories cover:
 
 - Overlay: basic severity triggers, queue demo, position top/bottom
 - Overlay Actions Group: all control types across all severity levels

@@ -7,6 +7,7 @@
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Radio Option
  * @order 7
  * @since 1.0.0
@@ -59,6 +60,7 @@ export interface TbxMatBannerRadioOption {
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Action Radio Group
  * @order 8
  * @since 1.0.0

@@ -8,31 +8,17 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { TbxMatIconType } from '@teqbench/tbx-mat-icons';
-import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { type TbxMatBannerActionButton } from '../models/banner-action-button.model';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
+import { type BannerDataDto } from '../models/banner-data-dto.model';
+import { type ResolvedIcon } from '../models/resolved-icon.model';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { TbxMatBannerCloseFontIconService } from '../services/banner-close-font-icon.service';
-import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE } from '../constants/banner.constants';
-
-/** Panel CSS class mapping for inline banners. */
-const PANEL_CLASS_MAP: Readonly<Record<string, string>> = {
-    default: 'tbx-mat-banner-panel-default',
-    success: 'tbx-mat-banner-panel-success',
-    error: 'tbx-mat-banner-panel-error',
-    warning: 'tbx-mat-banner-panel-warning',
-    information: 'tbx-mat-banner-panel-information',
-    help: 'tbx-mat-banner-panel-help',
-};
-
-/** Resolved icon ready for template rendering. */
-interface ResolvedIcon {
-    readonly name: string;
-    readonly isSvg: boolean;
-}
+import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE, BANNER_PANEL_CLASS_MAP } from '../constants/banner.constants';
 
 /**
  * Banner content component for both inline and overlay display
@@ -89,6 +75,8 @@ interface ResolvedIcon {
     imports: [NgTemplateOutlet, FormsModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule, MatRadioModule, MatButtonToggleModule],
     host: {
         '[class]': 'hostPanelClass',
+        '[attr.role]': 'hostAriaRole',
+        '[attr.aria-live]': 'hostAriaLive',
         '[animate.enter]': 'resolvedData().enterAnimationClass',
         '[animate.leave]': 'resolvedData().leaveAnimationClass',
         '(animate.leave)': 'resolvedData().onLeaveAnimationDone?.()',
@@ -252,7 +240,7 @@ interface ResolvedIcon {
 
         /* ── Two-row layout (narrow) ── */
 
-        @container (max-width: 600px) {
+        @container (max-width: var(--tbx-mat-banner-narrow-breakpoint, 600px)) {
             :host {
                 grid-template-columns: 1fr auto;
                 grid-template-rows: auto auto;
@@ -300,7 +288,24 @@ export class TbxMatBannerComponent implements OnInit {
     /** Apply severity panel class to host element for inline mode styling. */
     get hostPanelClass(): string {
         const type = this.resolvedData().type;
-        return PANEL_CLASS_MAP[type] ?? '';
+        return BANNER_PANEL_CLASS_MAP[type] ?? '';
+    }
+
+    /**
+     * Map severity to an ARIA live-region role.
+     *
+     * `error` and `warning` use `alert` so screen readers announce the
+     * banner immediately and interrupt other speech; the remaining
+     * severities use the politer `status` role.
+     */
+    get hostAriaRole(): 'alert' | 'status' {
+        const type = this.resolvedData().type;
+        return type === TbxMatSeverityLevel.Error || type === TbxMatSeverityLevel.Warning ? 'alert' : 'status';
+    }
+
+    /** Match `aria-live` politeness to the chosen role. */
+    get hostAriaLive(): 'assertive' | 'polite' {
+        return this.hostAriaRole === 'alert' ? 'assertive' : 'polite';
     }
 
     // ── Inline mode inputs ──
@@ -337,12 +342,12 @@ export class TbxMatBannerComponent implements OnInit {
      * Resolved data — overlay DTO takes precedence, inline inputs as fallback.
      * Returns a normalized shape usable by the template.
      */
-    readonly resolvedData = computed(() => {
+    readonly resolvedData = computed<BannerDataDto>(() => {
         if (this.overlayData) {
             return this.overlayData;
         }
         return {
-            type: this.type()!,
+            type: this.type() ?? TbxMatSeverityLevel.Default,
             message: this.message() ?? '',
             dismissByClose: () => this.dismissInline(TbxMatBannerDismissReason.Close),
             dismissByAction: (actionKey: string) => this.dismissInline(TbxMatBannerDismissReason.Action, actionKey),
@@ -437,13 +442,7 @@ export class TbxMatBannerComponent implements OnInit {
      *
      * @public
      */
-    resolveActionIcon(control: {
-        icon?: string;
-        actionIconResolverService?: {
-            readonly iconType: TbxMatIconType;
-            resolve(key: string): string | undefined;
-        };
-    }): ResolvedIcon | null {
+    resolveActionIcon(control: Pick<TbxMatBannerActionButton, 'icon' | 'actionIconResolverService'>): ResolvedIcon | null {
         if (!control.icon || !control.actionIconResolverService) {
             return null;
         }

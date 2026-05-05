@@ -7,6 +7,7 @@
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Toggle Option
  * @order 9
  * @since 1.0.0
@@ -83,6 +84,7 @@ export interface TbxMatBannerToggleOption {
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Action Toggle Group
  * @order 10
  * @since 1.0.0

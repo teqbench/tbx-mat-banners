@@ -66,11 +66,46 @@ describe('TbxMatBannerComponent', () => {
     });
 
     describe('host panel class', () => {
+        const cases: Array<[TbxMatSeverityLevel, string]> = [
+            [TbxMatSeverityLevel.Default, 'tbx-mat-banner-panel-default'],
+            [TbxMatSeverityLevel.Success, 'tbx-mat-banner-panel-success'],
+            [TbxMatSeverityLevel.Error, 'tbx-mat-banner-panel-error'],
+            [TbxMatSeverityLevel.Warning, 'tbx-mat-banner-panel-warning'],
+            [TbxMatSeverityLevel.Information, 'tbx-mat-banner-panel-information'],
+            [TbxMatSeverityLevel.Help, 'tbx-mat-banner-panel-help'],
+        ];
+
+        for (const [type, expectedClass] of cases) {
+            it(`should return "${expectedClass}" for ${type}`, () => {
+                const fixture = createFixture(buildData({ type }));
+                expect(fixture.componentInstance.hostPanelClass).toBe(expectedClass);
+            });
+        }
+
         it('should return empty string for unknown severity type', () => {
             const fixture = createFixture(buildData({ type: 'unknown-type' as TbxMatSeverityLevel }));
 
             expect(fixture.componentInstance.hostPanelClass).toBe('');
         });
+    });
+
+    describe('host aria role', () => {
+        const cases: Array<[TbxMatSeverityLevel, 'alert' | 'status', 'assertive' | 'polite']> = [
+            [TbxMatSeverityLevel.Default, 'status', 'polite'],
+            [TbxMatSeverityLevel.Success, 'status', 'polite'],
+            [TbxMatSeverityLevel.Information, 'status', 'polite'],
+            [TbxMatSeverityLevel.Help, 'status', 'polite'],
+            [TbxMatSeverityLevel.Warning, 'alert', 'assertive'],
+            [TbxMatSeverityLevel.Error, 'alert', 'assertive'],
+        ];
+
+        for (const [type, role, live] of cases) {
+            it(`should map ${type} → role="${role}", aria-live="${live}"`, () => {
+                const fixture = createFixture(buildData({ type }));
+                expect(fixture.componentInstance.hostAriaRole).toBe(role);
+                expect(fixture.componentInstance.hostAriaLive).toBe(live);
+            });
+        }
     });
 
     describe('severity icon', () => {
@@ -370,7 +405,7 @@ describe('TbxMatBannerComponent', () => {
         });
     });
 
-    describe('resolveIcon edge cases', () => {
+    describe('resolveActionIcon outer-guard edge cases', () => {
         it('should return null from resolveActionIcon when no icon name', () => {
             const fixture = createFixture(
                 buildData({
@@ -432,7 +467,7 @@ describe('TbxMatBannerComponent', () => {
     });
 
     describe('inline mode', () => {
-        function createInlineFixture(): ComponentFixture<TbxMatBannerComponent> {
+        function configureInlineModule(): void {
             TestBed.configureTestingModule({
                 imports: [TbxMatBannerComponent],
                 providers: [
@@ -448,70 +483,43 @@ describe('TbxMatBannerComponent', () => {
                     },
                 ],
             });
+        }
 
+        function createInlineFixture(inputs?: Record<string, unknown>): ComponentFixture<TbxMatBannerComponent> {
+            configureInlineModule();
             const fixture = TestBed.createComponent(TbxMatBannerComponent);
-            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Warning);
-            fixture.componentRef.setInput('message', 'Inline banner');
-            fixture.componentRef.setInput('actionsGroup', [
-                { type: 'checkbox', key: 'remember', label: 'Remember', defaultValue: false },
-                { type: 'button', key: 'ok', label: 'OK' },
-            ]);
+            const resolved = inputs ?? {
+                type: TbxMatSeverityLevel.Warning,
+                message: 'Inline banner',
+                actionsGroup: [
+                    { type: 'checkbox', key: 'remember', label: 'Remember', defaultValue: false },
+                    { type: 'button', key: 'ok', label: 'OK' },
+                ],
+            };
+            for (const [key, value] of Object.entries(resolved)) {
+                fixture.componentRef.setInput(key, value);
+            }
             fixture.detectChanges();
             return fixture;
         }
 
         it('should use fallback defaults when optional inputs are not set', () => {
-            TestBed.configureTestingModule({
-                imports: [TbxMatBannerComponent],
-                providers: [
-                    {
-                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-                    },
-                    {
-                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
-                        useFactory: () => ({
-                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
-                        }),
-                    },
-                ],
-            });
-
-            const fixture = TestBed.createComponent(TbxMatBannerComponent);
-            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Success);
+            const fixture = createInlineFixture({ type: TbxMatSeverityLevel.Success });
             // message, actionsGroup not set — should fall back to '' and []
-            fixture.detectChanges();
-
             const data = fixture.componentInstance.resolvedData();
             expect(data.message).toBe('');
             expect(data.actionsGroup).toEqual([]);
         });
 
         it('should default checkbox defaultValue to false when omitted', () => {
-            TestBed.configureTestingModule({
-                imports: [TbxMatBannerComponent],
-                providers: [
-                    {
-                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-                    },
-                    {
-                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
-                        useFactory: () => ({
-                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
-                        }),
-                    },
+            const fixture = createInlineFixture({
+                type: TbxMatSeverityLevel.Warning,
+                message: 'Test',
+                actionsGroup: [
+                    { type: 'checkbox', key: 'check', label: 'Check' },
+                    { type: 'button', key: 'ok', label: 'OK' },
                 ],
             });
-
-            const fixture = TestBed.createComponent(TbxMatBannerComponent);
-            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Warning);
-            fixture.componentRef.setInput('message', 'Test');
-            fixture.componentRef.setInput('actionsGroup', [
-                { type: 'checkbox', key: 'check', label: 'Check' },
-                { type: 'button', key: 'ok', label: 'OK' },
-            ]);
-            fixture.detectChanges();
 
             expect(fixture.componentInstance.getControlValue('check')).toBe(false);
         });

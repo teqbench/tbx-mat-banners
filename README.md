@@ -397,9 +397,11 @@ Banner appearance is customizable via CSS custom properties. Set them globally o
     <dt><code>--tbx-mat-banner-actions-row-gap</code></dt>
     <dd>Gap between rows in narrow layout. Default: <code>0.5rem</code>.</dd>
     <dt><code>--tbx-mat-banner-overlay-shadow</code></dt>
-    <dd>Overlay panel drop shadow (consumer override). Default: M3 level 3.</dd>
+    <dd>Overlay panel drop shadow (consumer override). Default: a three-stop level-3 elevation (<code>0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12)</code>); bottom-positioned banners flip the y-offset signs.</dd>
     <dt><code>--tbx-mat-banner-overlay-z-index</code></dt>
     <dd>Z-index of the overlay panel. Default: <code>1000</code>.</dd>
+    <dt><code>--tbx-mat-banner-narrow-breakpoint</code></dt>
+    <dd>Container width below which the layout switches to the two-row narrow form. Default: <code>600px</code>.</dd>
 </dl>
 
 ### Animation

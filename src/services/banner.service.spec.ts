@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
-import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED } from '@teqbench/tbx-mat-icons';
+import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED, TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { TbxMatBannerService } from './banner.service';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
@@ -85,11 +85,16 @@ describe('TbxMatBannerService', () => {
             expect(panelClasses.some((c) => c.startsWith('tbx-mat-banner-panel-'))).toBe(false);
         });
 
-        it('should use default duration (0 = indefinite) when none is provided', () => {
+        it('should not arm an auto-dismiss timer when duration is omitted (default = indefinite)', () => {
+            const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+
             service.show({ type: TbxMatSeverityLevel.Information, message: 'Hello' });
 
-            // Default duration is 0 (indefinite) — no setTimeout should be set
+            // BANNER_DEFAULT_DURATION_MS is 0; the service skips setTimeout in that case.
             expect(BANNER_DEFAULT_DURATION_MS).toBe(0);
+            expect(setTimeoutSpy).not.toHaveBeenCalled();
+
+            setTimeoutSpy.mockRestore();
         });
 
         it('should return a ref with the consumer config', () => {
@@ -560,7 +565,7 @@ describe('TbxMatBannerService', () => {
     });
 
     describe('DTO default fallbacks', () => {
-        it('should default showSeverityIcon to true when not specified', async () => {
+        it('should default showSeverityIcon to true when not specified', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
@@ -568,7 +573,7 @@ describe('TbxMatBannerService', () => {
             expect(data.showSeverityIcon).toBe(true);
         });
 
-        it('should pass showSeverityIcon false when specified', async () => {
+        it('should pass showSeverityIcon false when specified', () => {
             service.show({
                 type: TbxMatSeverityLevel.Success,
                 message: 'Test',
@@ -580,7 +585,7 @@ describe('TbxMatBannerService', () => {
             expect(data.showSeverityIcon).toBe(false);
         });
 
-        it('should default showCloseButton to true when not specified', async () => {
+        it('should default showCloseButton to true when not specified', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
@@ -588,7 +593,7 @@ describe('TbxMatBannerService', () => {
             expect(data.showCloseButton).toBe(true);
         });
 
-        it('should pass showCloseButton false when specified', async () => {
+        it('should pass showCloseButton false when specified', () => {
             service.show({
                 type: TbxMatSeverityLevel.Success,
                 message: 'Test',
@@ -600,7 +605,7 @@ describe('TbxMatBannerService', () => {
             expect(data.showCloseButton).toBe(false);
         });
 
-        it('should default actionsGroup to empty array when not specified', async () => {
+        it('should default actionsGroup to empty array when not specified', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
@@ -608,7 +613,7 @@ describe('TbxMatBannerService', () => {
             expect(data.actionsGroup).toEqual([]);
         });
 
-        it('should use default close icon service when provider does not specify one', async () => {
+        it('should use default close icon service when provider does not specify one', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
@@ -620,7 +625,7 @@ describe('TbxMatBannerService', () => {
             TestBed.resetTestingModule();
 
             const customCloseResolver = {
-                iconType: 0 as const,
+                iconType: TbxMatIconType.Font,
                 resolve: () => 'cancel',
             };
 
@@ -682,18 +687,25 @@ describe('TbxMatBannerService', () => {
     });
 
     describe('stale banner dismiss race', () => {
-        it('dismissByAction on a superseded banner should not dismiss the now-active banner', async () => {
-            const overlayRefA = {
+        // Use distinct overlay refs per overlay.create call so we can tell A and B apart.
+        // Set up via beforeEach so the shared `overlaySpy.create` mock state is restored after each test.
+        let overlayRefA: { attach: ReturnType<typeof vi.fn>; dispose: ReturnType<typeof vi.fn> };
+        let overlayRefB: { attach: ReturnType<typeof vi.fn>; dispose: ReturnType<typeof vi.fn> };
+
+        beforeEach(() => {
+            overlayRefA = {
                 attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
                 dispose: vi.fn(),
             };
-            const overlayRefB = {
+            overlayRefB = {
                 attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
                 dispose: vi.fn(),
             };
             overlaySpy.create.mockReset();
             overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
+        });
 
+        it('dismissByAction on a superseded banner should not dismiss the now-active banner', async () => {
             const refA = service.show({
                 type: TbxMatSeverityLevel.Success,
                 message: 'A',
@@ -725,18 +737,6 @@ describe('TbxMatBannerService', () => {
         });
 
         it('dismissByClose on a superseded banner should not dismiss the now-active banner', async () => {
-            // Distinct overlay refs per overlay.create call so we can tell A and B apart
-            const overlayRefA = {
-                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
-                dispose: vi.fn(),
-            };
-            const overlayRefB = {
-                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
-                dispose: vi.fn(),
-            };
-            overlaySpy.create.mockReset();
-            overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
-
             // Show banner A (becomes active) and banner B (queued)
             const refA = service.show({ type: TbxMatSeverityLevel.Success, message: 'A' });
             const refB = service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });

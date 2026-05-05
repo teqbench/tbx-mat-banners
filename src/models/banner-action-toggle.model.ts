@@ -18,6 +18,7 @@
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Action Toggle
  * @order 6
  * @since 1.0.0

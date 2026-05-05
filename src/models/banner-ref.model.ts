@@ -51,6 +51,7 @@ import { type TbxMatBannerResult } from './banner-result.model';
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Ref
  * @order 2
  * @since 1.0.0

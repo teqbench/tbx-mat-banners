@@ -29,6 +29,7 @@ export default defineConfig({
                 'src/models/banner-provider-config.model.ts',
                 'src/models/banner-result.model.ts',
                 'src/models/banner-ref.model.ts',
+                'src/models/resolved-icon.model.ts',
                 // Type aliases — no runtime code
                 'src/types/banner-config-args.type.ts',
                 'src/types/banner-action-button-appearance.type.ts',
