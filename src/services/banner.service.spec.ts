@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
@@ -67,6 +67,12 @@ describe('TbxMatBannerService', () => {
         });
 
         service = TestBed.inject(TbxMatBannerService);
+    });
+
+    afterEach(() => {
+        // Guarantee real timers are restored even if a test throws between
+        // vi.useFakeTimers() and the matching vi.useRealTimers() call.
+        vi.useRealTimers();
     });
 
     describe('show()', () => {
@@ -252,12 +258,12 @@ describe('TbxMatBannerService', () => {
     });
 
     describe('exit animation coordination', () => {
-        it('should set onLeaveAnimationDone callback when animation is active', () => {
+        it('should always set onLeaveAnimationDone to null (chaining is handled inline by dismissActive, not by the leave callback)', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
-            expect(data.onLeaveAnimationDone).toBeTypeOf('function');
+            expect(data.onLeaveAnimationDone).toBeNull();
         });
 
         it('should set onLeaveAnimationDone to null when animation is none', () => {
@@ -268,7 +274,7 @@ describe('TbxMatBannerService', () => {
             expect(data.onLeaveAnimationDone).toBeNull();
         });
 
-        it('should not call showNext immediately on dismissByClose when animation is active', () => {
+        it('should chain to the next banner immediately on dismissByClose even with animation enabled (queue must not stall)', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'A', animation: TbxMatBannerAnimation.Slide });
             service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
 
@@ -277,22 +283,24 @@ describe('TbxMatBannerService', () => {
 
             data.dismissByClose();
 
-            // showNext was NOT called — only 1 overlay.create call (for banner A)
-            expect(overlaySpy.create).toHaveBeenCalledTimes(1);
+            // Banner B must be shown immediately — overlay.create called twice in total.
+            expect(overlaySpy.create).toHaveBeenCalledTimes(2);
         });
 
-        it('should call showNext when onLeaveAnimationDone callback is invoked', () => {
-            service.show({ type: TbxMatSeverityLevel.Success, message: 'A', animation: TbxMatBannerAnimation.Slide });
+        it('should chain to the next banner immediately on dismissByAction even with animation enabled', () => {
+            service.show({
+                type: TbxMatSeverityLevel.Success,
+                message: 'A',
+                animation: TbxMatBannerAnimation.Fade,
+                actionsGroup: [{ type: 'button', key: 'ok', label: 'OK' }],
+            });
             service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
 
-            data.dismissByClose();
-            expect(overlaySpy.create).toHaveBeenCalledTimes(1);
+            data.dismissByAction('ok');
 
-            // Simulate the leave animation completing
-            data.onLeaveAnimationDone!();
             expect(overlaySpy.create).toHaveBeenCalledTimes(2);
         });
 

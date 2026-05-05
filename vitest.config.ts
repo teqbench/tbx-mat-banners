@@ -34,6 +34,7 @@ export default defineConfig({
                 'src/types/banner-config-args.type.ts',
                 'src/types/banner-action-button-appearance.type.ts',
                 'src/types/banner-actions-group-control.type.ts',
+                'src/types/banner-icon-resolver.type.ts',
                 // Enums — no testable logic (pure value declarations)
                 'src/enums/banner-dismiss-reason.enum.ts',
                 // Constants — no testable logic

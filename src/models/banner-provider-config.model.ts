@@ -2,6 +2,7 @@ import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-
 import type { TbxMatSeverityResolver, TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 
 import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
 
 /**
  * Configuration for the banner component's injectable dependencies
@@ -93,9 +94,7 @@ export interface TbxMatBannerProviderConfig {
      *
      * @public
      */
-    readonly closeIconResolverService?: TbxMatIconResolver<string> & {
-        readonly iconType: TbxMatIconType;
-    };
+    readonly closeIconResolverService?: TbxMatBannerIconResolver;
 
     /**
      * Default enter/exit animation mode for overlay banners

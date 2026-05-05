@@ -1,6 +1,5 @@
-import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-icons';
-
 import { type TbxMatBannerActionButtonAppearance } from '../types/banner-action-button-appearance.type';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
 
 /**
  * Button control in a banner actions group
@@ -144,7 +143,5 @@ export interface TbxMatBannerActionButton {
      *
      * @public
      */
-    readonly actionIconResolverService?: TbxMatIconResolver<string> & {
-        readonly iconType: TbxMatIconType;
-    };
+    readonly actionIconResolverService?: TbxMatBannerIconResolver;
 }

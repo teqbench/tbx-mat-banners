@@ -78,14 +78,14 @@ describe('TbxMatBannerComponent', () => {
         for (const [type, expectedClass] of cases) {
             it(`should return "${expectedClass}" for ${type}`, () => {
                 const fixture = createFixture(buildData({ type }));
-                expect(fixture.componentInstance.hostPanelClass).toBe(expectedClass);
+                expect(fixture.componentInstance.hostPanelClass()).toBe(expectedClass);
             });
         }
 
         it('should return empty string for unknown severity type', () => {
             const fixture = createFixture(buildData({ type: 'unknown-type' as TbxMatSeverityLevel }));
 
-            expect(fixture.componentInstance.hostPanelClass).toBe('');
+            expect(fixture.componentInstance.hostPanelClass()).toBe('');
         });
     });
 
@@ -102,8 +102,8 @@ describe('TbxMatBannerComponent', () => {
         for (const [type, role, live] of cases) {
             it(`should map ${type} → role="${role}", aria-live="${live}"`, () => {
                 const fixture = createFixture(buildData({ type }));
-                expect(fixture.componentInstance.hostAriaRole).toBe(role);
-                expect(fixture.componentInstance.hostAriaLive).toBe(live);
+                expect(fixture.componentInstance.hostAriaRole()).toBe(role);
+                expect(fixture.componentInstance.hostAriaLive()).toBe(live);
             });
         }
     });

@@ -305,7 +305,7 @@ Follow [**Conventional Commits** ↗](https://www.conventionalcommits.org) stric
 
 - **Overlay mode:** `TbxMatBannerService` creates full-width banners via [CDK Overlay ↗](https://material.angular.dev/cdk/overlay/api). FIFO queue, one banner at a time. Does NOT use [MatSnackBar ↗](https://material.angular.dev/components/snack-bar/api).
 - **Inline mode:** `TbxMatBannerComponent` placed directly in a consumer's template. No service involved — consumer controls visibility via `@if` or signal bindings. Emits `(dismissed)` output events.
-- **Severity styling:** Panel classes (`.tbx-mat-banner-panel-{severity}`) are applied to the CDK overlay pane (overlay mode) or the component host element via `@HostBinding` (inline mode). Styles are in `src/styles/_tbx-mat-banners.scss` — consumers import this partial into their global stylesheet.
+- **Severity styling:** Panel classes (`.tbx-mat-banner-panel-{severity}`) are applied to the CDK overlay pane (overlay mode) or the component host element via the component's `host` metadata bound to a `computed` signal (inline mode). Styles are in `src/styles/_tbx-mat-banners.scss` — consumers import this partial into their global stylesheet.
 
 ### Actions Group
 
@@ -339,10 +339,17 @@ Same pattern as `@teqbench/tbx-mat-notifications` — extends `TbxMatSeverityFon
 
 ### Storybook
 
-Stories live in two locations: `src/components/*.stories.ts` (component-adjacent harness stories) and `src/stories/banners/*.stories.ts` (scenario-driven stories). Run with `npm run storybook`. Stories cover:
+Stories live in two locations:
 
-- Overlay: basic severity triggers, queue demo, position top/bottom
-- Overlay Actions Group: all control types across all severity levels
-- Overlay Font Icon Variants: default, large, state transition, pulse
-- Overlay SVG Icons: default and large
-- Inline: all severity levels, action buttons, mixed controls, no-close, no-icon
+- `src/components/*.stories.ts` — component-adjacent harness stories. Each file exports a single `Default` story (and a sibling `Inverted` for overlay) backed by a Storybook controls panel that toggles severity, animation, and content. The consolidation merge replaced the previous one-story-per-variant layout with controls-driven harnesses; consumers exercise variants through the Storybook UI rather than separate stories.
+- `src/stories/banners/*.stories.ts` — scenario-driven stories under the top-level `Banners` title (separate from the `Banners/...` harness titles).
+
+Files:
+
+- `banner-overlay.stories.ts` — overlay harness (`Default`, `Inverted`).
+- `banner-actions-group.stories.ts` — actions-group harness with one story per severity (`Default`, `Success`, `Error`, `Warning`, `Information`, `Help`) generated from a shared common harness.
+- `banner-icon-variants.stories.ts` — overlay font icon variants harness (single `Default` story with controls for size, state transition, and pulse).
+- `banner-svg-icons.stories.ts` — overlay SVG icons harness (single `Default` story with size control).
+- `banner-inline.stories.ts` — inline harness (single `Default` story with controls for severity, message, controls, close button, and icon).
+
+Run with `npm run storybook`.

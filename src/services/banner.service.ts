@@ -10,6 +10,8 @@ import { type TbxMatBannerResult } from '../models/banner-result.model';
 import { type BannerDataDto } from '../models/banner-data-dto.model';
 import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
+import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET } from '@teqbench/tbx-mat-icons';
+import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { TbxMatBannerCloseFontIconService } from './banner-close-font-icon.service';
@@ -98,7 +100,10 @@ export class TbxMatBannerService {
     private readonly overlay = inject(Overlay);
     private readonly injector = inject(Injector);
     private readonly providerConfig = inject(TBX_MAT_BANNER_PROVIDER_CONFIG);
-    private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
+    // Resolve the fontSet via DI here so the manually-constructed default close
+    // icon service does not run its own inject() chain (which would couple it
+    // to whatever injector context Angular happens to invoke it in).
+    private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService(inject(TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, { optional: true }) ?? inject(MAT_ICON_DEFAULT_OPTIONS, { optional: true })?.fontSet);
     private destroyed = false;
 
     constructor() {
@@ -233,6 +238,11 @@ export class TbxMatBannerService {
         });
     }
 
+    /** Shared implementation for the per-severity convenience methods. */
+    private severity(level: TbxMatSeverityLevel, message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
+        return this.show({ type: level, message, ...configArgs });
+    }
+
     /**
      * Display a success banner
      *
@@ -244,7 +254,7 @@ export class TbxMatBannerService {
      * @public
      */
     success(message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
-        return this.show({ type: TbxMatSeverityLevel.Success, message, ...configArgs });
+        return this.severity(TbxMatSeverityLevel.Success, message, configArgs);
     }
 
     /**
@@ -258,7 +268,7 @@ export class TbxMatBannerService {
      * @public
      */
     error(message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
-        return this.show({ type: TbxMatSeverityLevel.Error, message, ...configArgs });
+        return this.severity(TbxMatSeverityLevel.Error, message, configArgs);
     }
 
     /**
@@ -272,7 +282,7 @@ export class TbxMatBannerService {
      * @public
      */
     warning(message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
-        return this.show({ type: TbxMatSeverityLevel.Warning, message, ...configArgs });
+        return this.severity(TbxMatSeverityLevel.Warning, message, configArgs);
     }
 
     /**
@@ -286,7 +296,7 @@ export class TbxMatBannerService {
      * @public
      */
     information(message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
-        return this.show({ type: TbxMatSeverityLevel.Information, message, ...configArgs });
+        return this.severity(TbxMatSeverityLevel.Information, message, configArgs);
     }
 
     /**
@@ -300,7 +310,7 @@ export class TbxMatBannerService {
      * @public
      */
     help(message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
-        return this.show({ type: TbxMatSeverityLevel.Help, message, ...configArgs });
+        return this.severity(TbxMatSeverityLevel.Help, message, configArgs);
     }
 
     /**
@@ -314,7 +324,7 @@ export class TbxMatBannerService {
      * @public
      */
     default(message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
-        return this.show({ type: TbxMatSeverityLevel.Default, message, ...configArgs });
+        return this.severity(TbxMatSeverityLevel.Default, message, configArgs);
     }
 
     /**
@@ -379,30 +389,12 @@ export class TbxMatBannerService {
         const overlayRef = this.overlay.create(overlayConfig);
         this.activeOverlayRef = overlayRef;
 
-        // When animation is active, showNext is deferred to the leave animation callback
-        const hasAnimation = enterAnimationClass !== '';
-
         // Build DTO
         const data: BannerDataDto = {
             type: config.type,
             message: config.message,
-            dismissByClose: () => {
-                if (this.activeOverlayRef !== overlayRef) return;
-                this.resolveAndCleanup({
-                    dismissReason: TbxMatBannerDismissReason.Close,
-                    actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                });
-                if (!hasAnimation) this.showNext();
-            },
-            dismissByAction: (actionKey: string) => {
-                if (this.activeOverlayRef !== overlayRef) return;
-                this.resolveAndCleanup({
-                    dismissReason: TbxMatBannerDismissReason.Action,
-                    actionKey,
-                    actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                });
-                if (!hasAnimation) this.showNext();
-            },
+            dismissByClose: () => this.dismissActive(overlayRef, TbxMatBannerDismissReason.Close),
+            dismissByAction: (actionKey: string) => this.dismissActive(overlayRef, TbxMatBannerDismissReason.Action, actionKey),
             duration,
             showSeverityIcon: config.showSeverityIcon ?? true,
             showCloseButton: config.showCloseButton ?? true,
@@ -410,7 +402,7 @@ export class TbxMatBannerService {
             actionsGroup: config.actionsGroup ?? [],
             enterAnimationClass,
             leaveAnimationClass,
-            onLeaveAnimationDone: hasAnimation ? () => this.showNext() : null,
+            onLeaveAnimationDone: null,
         };
 
         // Create component portal with injected data
@@ -427,14 +419,30 @@ export class TbxMatBannerService {
         if (duration > 0) {
             this.durationTimeout = setTimeout(() => {
                 this.durationTimeout = null;
-                if (this.activeOverlayRef !== overlayRef) return;
-                this.resolveAndCleanup({
-                    dismissReason: TbxMatBannerDismissReason.Timeout,
-                    actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
-                });
-                if (!hasAnimation) this.showNext();
+                this.dismissActive(overlayRef, TbxMatBannerDismissReason.Timeout);
             }, duration);
         }
+    }
+
+    /**
+     * Dismiss the currently-active overlay if it still matches the captured ref.
+     *
+     * Consolidates the close-button, action-button, and timeout dismiss
+     * paths so all three share identical guard + resolve + chain semantics.
+     * Always calls {@link showNext} after cleanup so the queue never stalls,
+     * regardless of whether a leave animation is configured (CDK Overlay's
+     * {@link https://material.angular.dev/cdk/overlay/api | dispose()} bypasses
+     * Angular's `animate.leave` interception, so chaining via the leave-animation
+     * callback is unreliable).
+     */
+    private dismissActive(overlayRef: OverlayRef, reason: TbxMatBannerDismissReason, actionKey?: string): void {
+        if (this.activeOverlayRef !== overlayRef) return;
+        this.resolveAndCleanup({
+            dismissReason: reason,
+            actionKey,
+            actionsGroupValues: this.activeComponentRef?.collectActionsGroupValues() ?? {},
+        });
+        this.showNext();
     }
 
     /** Clear and null the active duration timeout, if any. */

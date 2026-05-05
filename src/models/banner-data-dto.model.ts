@@ -1,7 +1,7 @@
-import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
 
 /**
  * Internal DTO injected into {@link TbxMatBannerComponent} for overlay mode
@@ -41,9 +41,7 @@ export interface BannerDataDto {
     readonly showCloseButton: boolean;
 
     /** Close button icon resolver. */
-    readonly closeIconResolverService: TbxMatIconResolver<string> & {
-        readonly iconType: TbxMatIconType;
-    };
+    readonly closeIconResolverService: TbxMatBannerIconResolver;
 
     /** Actions group controls to render. */
     readonly actionsGroup: TbxMatBannerActionsGroupControl[];
