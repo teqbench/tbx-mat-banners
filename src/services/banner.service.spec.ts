@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED, TbxMatIconType } from '@teqbench/tbx-mat-icons';
+import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { TbxMatBannerService } from './banner.service';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
@@ -661,6 +662,54 @@ describe('TbxMatBannerService', () => {
             const portal = overlayRefSpy.attach.mock.calls.at(-1)![0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
             expect(data.closeIconResolverService).toBe(customCloseResolver);
+        });
+
+        it('should throw when neither TBX_MAT_FONT_ICON_DEFAULT_FONT_SET nor MAT_ICON_DEFAULT_OPTIONS is provided (covers the optional-chain undefined branch on line 106)', () => {
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED),
+                        }),
+                    },
+                ],
+            });
+
+            expect(() => TestBed.inject(TbxMatBannerService)).toThrow(/no fontSet resolved/);
+        });
+
+        it('should fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet when TBX_MAT_FONT_ICON_DEFAULT_FONT_SET is not provided', () => {
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                providers: [
+                    TbxMatBannerService,
+                    { provide: Overlay, useValue: overlaySpy },
+                    // TBX_MAT_FONT_ICON_DEFAULT_FONT_SET intentionally omitted; the
+                    // service must fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet.
+                    {
+                        provide: MAT_ICON_DEFAULT_OPTIONS,
+                        useValue: { fontSet: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED },
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED),
+                        }),
+                    },
+                ],
+            });
+
+            const svc = TestBed.inject(TbxMatBannerService);
+            svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
+
+            const portal = overlayRefSpy.attach.mock.calls.at(-1)![0];
+            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
+            expect(data.closeIconResolverService).toBeDefined();
+            expect(data.closeIconResolverService.iconType).toBe(TbxMatIconType.Font);
         });
     });
 

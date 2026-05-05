@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED, TbxMatIconType } from '@teqbench/tbx-mat-icons';
+import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { TbxMatBannerSeverityFontIconService } from '../services/banner-severity-font-icon.service';
@@ -509,6 +510,40 @@ describe('TbxMatBannerComponent', () => {
             const data = fixture.componentInstance.resolvedData();
             expect(data.message).toBe('');
             expect(data.actionsGroup).toEqual([]);
+        });
+
+        it('should default type to TbxMatSeverityLevel.Default when the type input is omitted', () => {
+            const fixture = createInlineFixture({});
+            const data = fixture.componentInstance.resolvedData();
+            expect(data.type).toBe(TbxMatSeverityLevel.Default);
+        });
+
+        it('should fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet for the default close icon when TBX_MAT_FONT_ICON_DEFAULT_FONT_SET is not provided', () => {
+            TestBed.configureTestingModule({
+                imports: [TbxMatBannerComponent],
+                providers: [
+                    // TBX_MAT_FONT_ICON_DEFAULT_FONT_SET intentionally omitted; the
+                    // component must fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet.
+                    {
+                        provide: MAT_ICON_DEFAULT_OPTIONS,
+                        useValue: { fontSet: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED },
+                    },
+                    {
+                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                        useFactory: () => ({
+                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED),
+                        }),
+                    },
+                ],
+            });
+            const fixture = TestBed.createComponent(TbxMatBannerComponent);
+            fixture.componentRef.setInput('type', TbxMatSeverityLevel.Information);
+            fixture.componentRef.setInput('message', 'Test');
+            fixture.detectChanges();
+
+            const data = fixture.componentInstance.resolvedData();
+            expect(data.closeIconResolverService).toBeDefined();
+            expect(data.closeIconResolverService.iconType).toBe(TbxMatIconType.Font);
         });
 
         it('should default checkbox defaultValue to false when omitted', () => {
