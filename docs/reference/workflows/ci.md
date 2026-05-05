@@ -58,8 +58,8 @@ The app token is used for checkout with submodules. The gist token is used to pu
 The reusable workflow performs the following steps:
 
 1. **Enforce Source Branch for Main** — PRs to `main` must come from `release/*`, `hotfix/*`, or `release-please--*` branches.
-2. **Generate App Token** — Creates a short-lived token from the `teqbench-automation` GitHub App. Skipped on [Dependabot ↗](https://docs.github.com/en/code-security/dependabot) PRs.
-3. **Checkout Code** — Full history with submodules (except [Dependabot ↗](https://docs.github.com/en/code-security/dependabot) PRs).
+2. **Generate App Token** — Creates a short-lived token from the `teqbench-automation` GitHub App.
+3. **Checkout Code** — Full history with submodules.
 4. **Setup Node** — Reads the [Node.js ↗](https://nodejs.org) version from `.nvmrc` with [npm ↗](https://www.npmjs.com) cache enabled.
 5. **Install Dependencies** — `npm ci` for deterministic builds. `GITHUB_TOKEN` authenticates with [GitHub Packages ↗](https://github.com/orgs/teqbench/packages).
 6. **Audit Dependencies** — `npm audit --audit-level=high`. Fails on high/critical vulnerabilities.
