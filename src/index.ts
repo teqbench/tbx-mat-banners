@@ -10,7 +10,7 @@
  *
  * Key exports:
  *
- * - {@link TbxMatBannerService} — inject and call success/error/warning/information/help for overlay banners.
+ * - {@link TbxMatBannerService} — inject and call success/error/warning/information/help/default for overlay banners.
  * - {@link TbxMatBannerComponent} — standalone component for inline or overlay display.
  * - {@link TbxMatBannerRef} — returned from service methods with config and result promise.
  * - {@link TbxMatBannerResult} — dismiss result with reason, action key, and collected form values.

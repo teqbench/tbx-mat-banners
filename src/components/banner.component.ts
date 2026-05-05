@@ -285,60 +285,111 @@ export class TbxMatBannerComponent implements OnInit {
     private readonly config = inject(TBX_MAT_BANNER_PROVIDER_CONFIG);
     private readonly overlayData = inject(TBX_MAT_BANNER_DATA, { optional: true });
 
-    /** Default button appearance constant for template use. */
+    /**
+     * Default button appearance constant for template use.
+     *
+     * @internal
+     */
     readonly defaultButtonAppearance = BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE;
 
-    /** Apply severity panel class to host element for inline mode styling. */
+    /**
+     * Apply severity panel class to host element for inline mode styling.
+     *
+     * @internal
+     */
     readonly hostPanelClass = computed<string>(() => BANNER_PANEL_CLASS_MAP[this.resolvedData().type] ?? '');
 
     /**
      * Map severity to an ARIA live-region role.
      *
+     * @remarks
      * `error` and `warning` use `alert` so screen readers announce the
      * banner immediately and interrupt other speech; the remaining
      * severities use the politer `status` role.
+     *
+     * @internal
      */
     readonly hostAriaRole = computed<'alert' | 'status'>(() => {
         const type = this.resolvedData().type;
         return type === TbxMatSeverityLevel.Error || type === TbxMatSeverityLevel.Warning ? 'alert' : 'status';
     });
 
-    /** Match `aria-live` politeness to the chosen role. */
+    /**
+     * Match `aria-live` politeness to the chosen role.
+     *
+     * @internal
+     */
     readonly hostAriaLive = computed<'assertive' | 'polite'>(() => (this.hostAriaRole() === 'alert' ? 'assertive' : 'polite'));
 
     // ── Inline mode inputs ──
 
-    /** Severity level (inline mode). */
+    /**
+     * Severity level (inline mode).
+     *
+     * @public
+     */
     readonly type = input<TbxMatSeverityLevel>();
 
-    /** Message text (inline mode). */
+    /**
+     * Message text (inline mode).
+     *
+     * @public
+     */
     readonly message = input<string>();
 
-    /** Display duration in milliseconds (inline mode). */
+    /**
+     * Display duration in milliseconds (inline mode).
+     *
+     * @public
+     */
     readonly duration = input<number>();
 
-    /** Show severity icon (inline mode). */
+    /**
+     * Show severity icon (inline mode).
+     *
+     * @public
+     */
     readonly showSeverityIcon = input<boolean>();
 
-    /** Show close button (inline mode). */
+    /**
+     * Show close button (inline mode).
+     *
+     * @public
+     */
     readonly showCloseButton = input<boolean>();
 
-    /** Actions group controls (inline mode). */
-    readonly actionsGroup = input<TbxMatBannerActionsGroupControl[]>();
+    /**
+     * Actions group controls (inline mode).
+     *
+     * @public
+     */
+    readonly actionsGroup = input<ReadonlyArray<TbxMatBannerActionsGroupControl>>();
 
     // ── Inline mode outputs ──
 
-    /** Emitted when the banner is dismissed (inline mode). */
+    /**
+     * Emitted when the banner is dismissed (inline mode).
+     *
+     * @public
+     */
     readonly dismissed = output<TbxMatBannerResult>();
 
     // ── Internal state ──
 
-    /** Writable signals for form control values, keyed by control key. */
+    /**
+     * Writable signals for form control values, keyed by control key.
+     *
+     * @internal
+     */
     private readonly controlValues = new Map<string, WritableSignal<unknown>>();
 
     /**
      * Resolved data — overlay DTO takes precedence, inline inputs as fallback.
+     *
+     * @remarks
      * Returns a normalized shape usable by the template.
+     *
+     * @internal
      */
     readonly resolvedData = computed<BannerDataDto>(() => {
         if (this.overlayData) {
@@ -359,27 +410,46 @@ export class TbxMatBannerComponent implements OnInit {
         };
     });
 
-    /** Input controls from the actions group (excluding action buttons). */
+    /**
+     * Input controls from the actions group (excluding action buttons).
+     *
+     * @internal
+     */
     readonly inputControls = computed(() => this.resolvedData().actionsGroup.filter((c): c is Exclude<TbxMatBannerActionsGroupControl, TbxMatBannerActionButton> => c.type !== 'button'));
 
-    /** Action-button controls from the actions group (excluding input controls). */
+    /**
+     * Action-button controls from the actions group (excluding input controls).
+     *
+     * @internal
+     */
     readonly actionButtons = computed(() => this.resolvedData().actionsGroup.filter((c): c is TbxMatBannerActionButton => c.type === 'button'));
 
     // Resolve the fontSet via DI here so the manually-constructed default close
     // icon service does not run its own inject() chain.
     private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService(inject(TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, { optional: true }) ?? inject(MAT_ICON_DEFAULT_OPTIONS, { optional: true })?.fontSet);
 
-    /** Resolved severity icon. */
+    /**
+     * Resolved severity icon.
+     *
+     * @internal
+     */
     readonly severityIcon = computed(() => this.resolveIcon(this.config.severityIconResolverService, this.resolvedData().type));
 
-    /** Resolved close button icon. */
+    /**
+     * Resolved close button icon.
+     *
+     * @internal
+     */
     readonly closeIcon = computed(() => this.resolveIcon(this.resolvedData().closeIconResolverService, 'close'));
 
     /**
      * Resolved action-button icons keyed by control key.
      *
+     * @remarks
      * Memoizes per-control icon resolution so the template doesn't
      * re-resolve icons on every change-detection pass.
+     *
+     * @internal
      */
     readonly actionIcons = computed<ReadonlyMap<string, ResolvedIcon | null>>(() => {
         const map = new Map<string, ResolvedIcon | null>();

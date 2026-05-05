@@ -10,6 +10,7 @@ import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-
  *
  * @category Types
  * @displayName Banner Icon Resolver
+ * @order 4
  * @since 1.0.0
  *
  * @public

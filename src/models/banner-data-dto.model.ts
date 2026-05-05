@@ -44,7 +44,7 @@ export interface BannerDataDto {
     readonly closeIconResolverService: TbxMatBannerIconResolver;
 
     /** Actions group controls to render. */
-    readonly actionsGroup: TbxMatBannerActionsGroupControl[];
+    readonly actionsGroup: ReadonlyArray<TbxMatBannerActionsGroupControl>;
 
     /** CSS class for the enter animation (empty string = no animation). */
     readonly enterAnimationClass: string;

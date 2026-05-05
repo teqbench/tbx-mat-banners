@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { type Provider } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
@@ -468,21 +469,32 @@ describe('TbxMatBannerComponent', () => {
     });
 
     describe('inline mode', () => {
-        function configureInlineModule(): void {
+        /**
+         * Configure the TestBed for inline-mode component tests.
+         *
+         * Set `withFontSetToken: false` for tests that intentionally omit
+         * `TBX_MAT_FONT_ICON_DEFAULT_FONT_SET` (e.g., the MAT_ICON_DEFAULT_OPTIONS
+         * fall-through test). When false, the caller is responsible for providing
+         * `MAT_ICON_DEFAULT_OPTIONS` via `extraProviders`.
+         */
+        function configureInlineModule(opts: { withFontSetToken?: boolean; extraProviders?: Provider[] } = {}): void {
+            const { withFontSetToken = true, extraProviders = [] } = opts;
+            const providers: Provider[] = [];
+            if (withFontSetToken) {
+                providers.push({
+                    provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                    useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                });
+                providers.push({
+                    provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                    useFactory: () => ({
+                        severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                    }),
+                });
+            }
             TestBed.configureTestingModule({
                 imports: [TbxMatBannerComponent],
-                providers: [
-                    {
-                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-                    },
-                    {
-                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
-                        useFactory: () => ({
-                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
-                        }),
-                    },
-                ],
+                providers: [...providers, ...extraProviders],
             });
         }
 
@@ -519,11 +531,11 @@ describe('TbxMatBannerComponent', () => {
         });
 
         it('should fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet for the default close icon when TBX_MAT_FONT_ICON_DEFAULT_FONT_SET is not provided', () => {
-            TestBed.configureTestingModule({
-                imports: [TbxMatBannerComponent],
-                providers: [
-                    // TBX_MAT_FONT_ICON_DEFAULT_FONT_SET intentionally omitted; the
-                    // component must fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet.
+            // TBX_MAT_FONT_ICON_DEFAULT_FONT_SET intentionally omitted; the
+            // component must fall through to MAT_ICON_DEFAULT_OPTIONS.fontSet.
+            configureInlineModule({
+                withFontSetToken: false,
+                extraProviders: [
                     {
                         provide: MAT_ICON_DEFAULT_OPTIONS,
                         useValue: { fontSet: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED },
@@ -542,8 +554,9 @@ describe('TbxMatBannerComponent', () => {
             fixture.detectChanges();
 
             const data = fixture.componentInstance.resolvedData();
-            const resolver = data.closeIconResolverService as TbxMatBannerCloseFontIconService;
-            expect(resolver.fontSet).toBe(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED);
+            const resolver = data.closeIconResolverService;
+            expect(resolver).toBeInstanceOf(TbxMatBannerCloseFontIconService);
+            expect((resolver as TbxMatBannerCloseFontIconService).fontSet).toBe(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED);
         });
 
         it('should default checkbox defaultValue to false when omitted', () => {

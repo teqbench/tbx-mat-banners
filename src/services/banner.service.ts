@@ -86,6 +86,7 @@ interface QueueEntry {
  * ```
  *
  * @category Services
+ * @order 1
  * @since 1.0.0
  * @related TbxMatBannerConfig
  * @related TbxMatBannerConfigArgs
@@ -238,7 +239,11 @@ export class TbxMatBannerService {
         });
     }
 
-    /** Shared implementation for the per-severity convenience methods. */
+    /**
+     * Shared implementation for the per-severity convenience methods.
+     *
+     * @internal
+     */
     private severity(level: TbxMatSeverityLevel, message: string, configArgs?: TbxMatBannerConfigArgs): TbxMatBannerRef {
         return this.show({ type: level, message, ...configArgs });
     }
@@ -329,6 +334,8 @@ export class TbxMatBannerService {
 
     /**
      * Shift the next banner off the queue and display it via CDK Overlay.
+     *
+     * @internal
      */
     private showNext(): void {
         /* v8 ignore start -- DestroyRef guard */
@@ -426,6 +433,7 @@ export class TbxMatBannerService {
     /**
      * Dismiss the currently-active overlay if it still matches the captured ref.
      *
+     * @remarks
      * Consolidates the close-button, action-button, and timeout dismiss
      * paths so all three share identical guard + resolve + chain semantics.
      * Always calls {@link showNext} after cleanup so the queue never stalls,
@@ -433,6 +441,8 @@ export class TbxMatBannerService {
      * {@link https://material.angular.dev/cdk/overlay/api | dispose()} bypasses
      * Angular's `animate.leave` interception, so chaining via the leave-animation
      * callback is unreliable).
+     *
+     * @internal
      */
     private dismissActive(overlayRef: OverlayRef, reason: TbxMatBannerDismissReason, actionKey?: string): void {
         if (this.activeOverlayRef !== overlayRef) return;
@@ -444,7 +454,11 @@ export class TbxMatBannerService {
         this.showNext();
     }
 
-    /** Clear and null the active duration timeout, if any. */
+    /**
+     * Clear and null the active duration timeout, if any.
+     *
+     * @internal
+     */
     private clearDurationTimeout(): void {
         if (this.durationTimeout) {
             clearTimeout(this.durationTimeout);
@@ -454,7 +468,11 @@ export class TbxMatBannerService {
 
     /**
      * Resolve the active result promise and clean up the overlay.
+     *
+     * @remarks
      * Guards against double-resolution.
+     *
+     * @internal
      */
     private resolveAndCleanup(result: TbxMatBannerResult): void {
         this.clearDurationTimeout();
@@ -474,7 +492,11 @@ export class TbxMatBannerService {
         this._isActive.set(false);
     }
 
-    /** Clean up active overlay on service destroy. */
+    /**
+     * Clean up active overlay on service destroy.
+     *
+     * @internal
+     */
     private cleanupActive(): void {
         this.clearDurationTimeout();
         if (this.activeOverlayRef) {
@@ -485,9 +507,13 @@ export class TbxMatBannerService {
 
     /**
      * Resolve duration from consumer config.
+     *
+     * @remarks
      * - undefined → default (BANNER_DEFAULT_DURATION_MS = 0, indefinite)
      * - zero or negative → 0 (indefinite)
      * - positive → as-is
+     *
+     * @internal
      */
     private resolveDuration(duration: number | undefined): number {
         if (duration === undefined) {

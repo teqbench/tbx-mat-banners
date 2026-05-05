@@ -128,7 +128,7 @@ export interface TbxMatBannerConfig {
      *
      * @public
      */
-    readonly actionsGroup?: TbxMatBannerActionsGroupControl[];
+    readonly actionsGroup?: ReadonlyArray<TbxMatBannerActionsGroupControl>;
 
     /**
      * Additional CSS classes applied to the overlay panel

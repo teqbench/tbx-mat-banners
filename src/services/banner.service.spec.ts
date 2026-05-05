@@ -83,8 +83,10 @@ describe('TbxMatBannerService', () => {
      * extra providers the caller needs. Returns a fresh service instance.
      *
      * Use for tests that override the provider config (custom close icon,
-     * defaultAnimation, etc.). Do NOT use for the "no fontSet" test —
-     * that one omits the font-set token on purpose.
+     * defaultAnimation, etc.). Do NOT use for tests that intentionally
+     * omit the font-set token (the throw-when-missing test and the
+     * MAT_ICON_DEFAULT_OPTIONS fall-through test) — those configure the
+     * TestBed inline because the standard provider set always supplies it.
      */
     function reconfigureServiceWith(extraProviders: ReadonlyArray<Provider>): TbxMatBannerService {
         TestBed.resetTestingModule();
@@ -342,9 +344,11 @@ describe('TbxMatBannerService', () => {
             // Dismiss before the 5000ms timeout fires
             service.dismiss();
 
-            // Advance past the original timeout — should NOT create a second overlay
+            // Advance past the original timeout — the cleared timer must not
+            // re-trigger dispose, and no second overlay must be created.
             vi.advanceTimersByTime(5000);
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
+            expect(overlaySpy.create).toHaveBeenCalledTimes(1);
         });
 
         it('should resolve result with Timeout after duration expires', async () => {
@@ -678,10 +682,11 @@ describe('TbxMatBannerService', () => {
 
             const portal = overlayRefSpy.attach.mock.calls.at(-1)![0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
-            const resolver = data.closeIconResolverService as TbxMatBannerCloseFontIconService;
+            const resolver = data.closeIconResolverService;
+            expect(resolver).toBeInstanceOf(TbxMatBannerCloseFontIconService);
             // Asserting fontSet — not just iconType — proves the fallback chain
             // actually consulted MAT_ICON_DEFAULT_OPTIONS rather than short-circuiting.
-            expect(resolver.fontSet).toBe(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED);
+            expect((resolver as TbxMatBannerCloseFontIconService).fontSet).toBe(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED);
         });
     });
 
