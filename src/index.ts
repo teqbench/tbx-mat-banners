@@ -10,7 +10,7 @@
  *
  * Key exports:
  *
- * - {@link TbxMatBannerService} — inject and call success/error/warning/information/help for overlay banners.
+ * - {@link TbxMatBannerService} — inject and call success/error/warning/information/help/default for overlay banners.
  * - {@link TbxMatBannerComponent} — standalone component for inline or overlay display.
  * - {@link TbxMatBannerRef} — returned from service methods with config and result promise.
  * - {@link TbxMatBannerResult} — dismiss result with reason, action key, and collected form values.
@@ -32,6 +32,7 @@
  * - {@link TbxMatBannerSeveritySvgIconService} — default SVG-based severity icon service.
  * - {@link TbxMatBannerCloseFontIconService} — default font-based close icon service.
  * - {@link TbxMatBannerActionButtonAppearance} — button appearance type.
+ * - {@link TbxMatBannerIconResolver} — icon resolver shape combined with the resolved icon's type.
  *
  * @see {@link https://angular.dev | Angular}
  * @see {@link https://material.angular.dev | Angular Material}
@@ -47,6 +48,7 @@ export { TbxMatBannerDismissReason } from './enums/banner-dismiss-reason.enum';
 export type { TbxMatBannerConfigArgs } from './types/banner-config-args.type';
 export type { TbxMatBannerActionButtonAppearance } from './types/banner-action-button-appearance.type';
 export type { TbxMatBannerActionsGroupControl } from './types/banner-actions-group-control.type';
+export type { TbxMatBannerIconResolver } from './types/banner-icon-resolver.type';
 
 // Models
 export type { TbxMatBannerConfig } from './models/banner-config.model';

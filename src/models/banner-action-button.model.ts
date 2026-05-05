@@ -1,6 +1,5 @@
-import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-icons';
-
 import { type TbxMatBannerActionButtonAppearance } from '../types/banner-action-button-appearance.type';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
 
 /**
  * Button control in a banner actions group
@@ -56,6 +55,7 @@ import { type TbxMatBannerActionButtonAppearance } from '../types/banner-action-
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Action Button
  * @order 4
  * @since 1.0.0
@@ -100,7 +100,6 @@ export interface TbxMatBannerActionButton {
      * @remarks
      * The resolved icon renders inside the action button. Required when
      * `appearance` is `'icon'`. Optional for other appearance values.
-     * Ignored when `appearance` is `'text'`.
      *
      * The name is passed to the `resolve()` method of the
      * `actionIconResolverService`. For font icons, this is typically the
@@ -138,12 +137,10 @@ export interface TbxMatBannerActionButton {
      *
      * @remarks
      * Required when `icon` is set and the resolved appearance renders
-     * an icon. If not provided and `icon` is set, the service logs an
-     * error and does not render the button's icon.
+     * an icon. If not provided and `icon` is set, the icon is silently
+     * omitted (the button still functions as text-only).
      *
      * @public
      */
-    readonly actionIconResolverService?: TbxMatIconResolver<string> & {
-        readonly iconType: TbxMatIconType;
-    };
+    readonly actionIconResolverService?: TbxMatBannerIconResolver;
 }

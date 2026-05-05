@@ -1,7 +1,7 @@
-import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
 
 /**
  * Internal DTO injected into {@link TbxMatBannerComponent} for overlay mode
@@ -41,19 +41,14 @@ export interface BannerDataDto {
     readonly showCloseButton: boolean;
 
     /** Close button icon resolver. */
-    readonly closeIconResolverService: TbxMatIconResolver<string> & {
-        readonly iconType: TbxMatIconType;
-    };
+    readonly closeIconResolverService: TbxMatBannerIconResolver;
 
     /** Actions group controls to render. */
-    readonly actionsGroup: TbxMatBannerActionsGroupControl[];
+    readonly actionsGroup: ReadonlyArray<TbxMatBannerActionsGroupControl>;
 
     /** CSS class for the enter animation (empty string = no animation). */
     readonly enterAnimationClass: string;
 
     /** CSS class for the leave animation (empty string = no animation). */
     readonly leaveAnimationClass: string;
-
-    /** Callback invoked when the leave animation completes. */
-    readonly onLeaveAnimationDone: (() => void) | null;
 }

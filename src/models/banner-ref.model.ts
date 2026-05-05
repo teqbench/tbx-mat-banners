@@ -6,7 +6,8 @@ import { type TbxMatBannerResult } from './banner-result.model';
  *
  * @remarks
  * Returned synchronously from all {@link TbxMatBannerService} methods
- * (`show()`, `success()`, `error()`, `warning()`, `information()`, `help()`).
+ * (`show()`, `success()`, `error()`, `warning()`, `information()`, `help()`,
+ * `default()`).
  * Contains two members:
  *
  * - `config` — the consumer-provided configuration, available immediately.
@@ -51,6 +52,7 @@ import { type TbxMatBannerResult } from './banner-result.model';
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Ref
  * @order 2
  * @since 1.0.0

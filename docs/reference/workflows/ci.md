@@ -16,10 +16,12 @@ The CI workflow is the quality gate for the repository. It runs formatting check
 
 ## Triggers
 
-| Event          | Branches      | Behavior                        |
-| -------------- | ------------- | ------------------------------- |
-| `push`         | `main`, `dev` | Full pipeline + badge gist push |
-| `pull_request` | `main`, `dev` | Full pipeline, no badge updates |
+<dl>
+    <dt><code>push</code> on <code>main</code>, <code>dev</code></dt>
+    <dd>Full pipeline + badge gist push.</dd>
+    <dt><code>pull_request</code> on <code>main</code>, <code>dev</code></dt>
+    <dd>Full pipeline, no badge updates.</dd>
+</dl>
 
 ---
 
@@ -36,12 +38,16 @@ Per-branch isolation: CI on `main` and `dev` run independently. Runs on the same
 
 ## Secrets & Variables
 
-| Name              | Type     | Scope | Purpose                                      |
-| ----------------- | -------- | ----- | -------------------------------------------- |
-| `APP_ID`          | Secret   | Repo  | GitHub App ID for generating a bot token     |
-| `APP_PRIVATE_KEY` | Secret   | Repo  | GitHub App private key                       |
-| `GIST_TOKEN`      | Secret   | Org   | PAT with `gist` scope for pushing badge data |
-| `GIST_ID`         | Variable | Org   | ID of the shared public badge gist           |
+<dl>
+    <dt><code>APP_ID</code> (Secret, Repo)</dt>
+    <dd>GitHub App ID for generating a bot token.</dd>
+    <dt><code>APP_PRIVATE_KEY</code> (Secret, Repo)</dt>
+    <dd>GitHub App private key.</dd>
+    <dt><code>GIST_TOKEN</code> (Secret, Org)</dt>
+    <dd>PAT with <code>gist</code> scope for pushing badge data.</dd>
+    <dt><code>GIST_ID</code> (Variable, Org)</dt>
+    <dd>ID of the shared public badge gist.</dd>
+</dl>
 
 The app token is used for checkout with submodules. The gist token is used to push badge JSON data to the shared gist owned by `teqbench-shields-bot`.
 
@@ -52,8 +58,8 @@ The app token is used for checkout with submodules. The gist token is used to pu
 The reusable workflow performs the following steps:
 
 1. **Enforce Source Branch for Main** — PRs to `main` must come from `release/*`, `hotfix/*`, or `release-please--*` branches.
-2. **Generate App Token** — Creates a short-lived token from the `teqbench-automation` GitHub App. Skipped on [Dependabot ↗](https://docs.github.com/en/code-security/dependabot) PRs.
-3. **Checkout Code** — Full history with submodules (except [Dependabot ↗](https://docs.github.com/en/code-security/dependabot) PRs).
+2. **Generate App Token** — Creates a short-lived token from the `teqbench-automation` GitHub App.
+3. **Checkout Code** — Full history with submodules.
 4. **Setup Node** — Reads the [Node.js ↗](https://nodejs.org) version from `.nvmrc` with [npm ↗](https://www.npmjs.com) cache enabled.
 5. **Install Dependencies** — `npm ci` for deterministic builds. `GITHUB_TOKEN` authenticates with [GitHub Packages ↗](https://github.com/orgs/teqbench/packages).
 6. **Audit Dependencies** — `npm audit --audit-level=high`. Fails on high/critical vulnerabilities.
