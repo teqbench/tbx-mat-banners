@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.10.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.0...v0.10.0) (2026-05-05)
+
+
+### Bug Fixes
+
+* address Low-severity findings from code review ([#111](https://github.com/teqbench/tbx-mat-banners/issues/111)) ([1dc3db2](https://github.com/teqbench/tbx-mat-banners/commit/1dc3db2080fe32adbd32e9662ba012f3929ed938))
+* address Medium-severity findings from code review ([#111](https://github.com/teqbench/tbx-mat-banners/issues/111)) ([c059932](https://github.com/teqbench/tbx-mat-banners/commit/c059932f99d3c45231ccc43d04e2e3e8e7f6264c))
+* address second-pass review findings ([#132](https://github.com/teqbench/tbx-mat-banners/issues/132)) ([aa85471](https://github.com/teqbench/tbx-mat-banners/commit/aa85471601e705a1ddd2f3ff4e7bc1dfcd60ac70))
+* address third-pass review findings ([#144](https://github.com/teqbench/tbx-mat-banners/issues/144)) ([499b86b](https://github.com/teqbench/tbx-mat-banners/commit/499b86b806e9f0a2d4443f1a6066460fb8431117))
+* **docs:** add Markdown Tables Convention section to CLAUDE.md ([9a25b11](https://github.com/teqbench/tbx-mat-banners/commit/9a25b11d2fd24273dfc43c3fc93bfc890a12c154))
+* **docs:** add secret-handling and private-content safety rules to CLAUDE.md ([7e20284](https://github.com/teqbench/tbx-mat-banners/commit/7e202847fde3c7d54d0b36f091e4b91056caefa3))
+* **docs:** describe docs/ as per-package pipeline inputs in CLAUDE.md ([e938fe9](https://github.com/teqbench/tbx-mat-banners/commit/e938fe97abd6ef443677fda44055ea4ba12b7477))
+* **docs:** list actual emitted APF entry-point keys in CLAUDE.md ([8a6e137](https://github.com/teqbench/tbx-mat-banners/commit/8a6e137862eb05c97a1d6dc8afce23ae3375b159))
+* **docs:** note central Renovate dependency updates in CLAUDE.md ([8a64d05](https://github.com/teqbench/tbx-mat-banners/commit/8a64d05ce7097a2439912151b3ab7d2c6f5de46c))
+* **docs:** replace markdown tables with definition lists ([bcbc450](https://github.com/teqbench/tbx-mat-banners/commit/bcbc4503d38be79446672cc7b80881962fede152))
+* package updates, conventions sweep, and 5-pass code-review polish ([03b8a6b](https://github.com/teqbench/tbx-mat-banners/commit/03b8a6b67772ed213597f363809e2d49032d037f))
+* remove dependabot artifacts after migration to renovate ([c4161ba](https://github.com/teqbench/tbx-mat-banners/commit/c4161bae88557fc8bee29e62bc317657619c703c))
+
+
+### Miscellaneous Chores
+
+* **release:** unstick Release Please and cut 0.10.0 ([f29297f](https://github.com/teqbench/tbx-mat-banners/commit/f29297f33215bb093750f36ea77e91987272dff8))
+
 ## [0.10.0](https://github.com/teqbench/tbx-mat-banners/compare/v0.9.4...v0.10.0) (2026-04-15)
 
 
