@@ -51,7 +51,4 @@ export interface BannerDataDto {
 
     /** CSS class for the leave animation (empty string = no animation). */
     readonly leaveAnimationClass: string;
-
-    /** Callback invoked when the leave animation completes. */
-    readonly onLeaveAnimationDone: (() => void) | null;
 }

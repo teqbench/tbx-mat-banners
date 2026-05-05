@@ -85,8 +85,8 @@ export interface TbxMatBannerProviderConfig {
      * Close button icon resolver — resolves the close/dismiss button icon
      *
      * @remarks
-     * Must implement `TbxMatIconResolver<string>` and expose `iconType`.
-     * When omitted, the package provides a default font-based resolver
+     * Must conform to {@link TbxMatBannerIconResolver}. When omitted, the
+     * package provides a default font-based resolver
      * ({@link TbxMatBannerCloseFontIconService}) that registers the
      * `'close'` {@link https://fonts.google.com/icons | Material Symbols}
      * ligature. Consumers who want SVG close icons must provide a custom

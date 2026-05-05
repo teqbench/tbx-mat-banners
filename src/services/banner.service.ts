@@ -402,7 +402,6 @@ export class TbxMatBannerService {
             actionsGroup: config.actionsGroup ?? [],
             enterAnimationClass,
             leaveAnimationClass,
-            onLeaveAnimationDone: null,
         };
 
         // Create component portal with injected data

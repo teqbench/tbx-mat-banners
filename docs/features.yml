@@ -21,4 +21,4 @@
 - name: Responsive layout
   summary: CSS container queries reflow the actions group onto a second row on narrow viewports.
 - name: Zoneless ready
-  summary: Built for Angular 21+ zoneless applications using signal inputs.
+  summary: Built for Angular zoneless applications using signal inputs.

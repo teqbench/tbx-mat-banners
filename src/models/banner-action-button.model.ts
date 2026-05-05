@@ -138,8 +138,8 @@ export interface TbxMatBannerActionButton {
      *
      * @remarks
      * Required when `icon` is set and the resolved appearance renders
-     * an icon. If not provided and `icon` is set, the service logs an
-     * error and does not render the button's icon.
+     * an icon. If not provided and `icon` is set, the icon is silently
+     * omitted (the button still functions as text-only).
      *
      * @public
      */

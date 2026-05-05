@@ -9,9 +9,9 @@ import { type TbxMatBannerConfig } from '../models/banner-config.model';
  * `message` argument respectively.
  *
  * The convenience methods on {@link TbxMatBannerService} (`success()`,
- * `error()`, `warning()`, `information()`, `help()`) accept this type as an
- * optional second argument to override duration, actions group,
- * and visibility options.
+ * `error()`, `warning()`, `information()`, `help()`, `default()`) accept
+ * this type as an optional second argument to override duration, actions
+ * group, and visibility options.
  *
  * @example Override duration and add actions group:
  * ```typescript

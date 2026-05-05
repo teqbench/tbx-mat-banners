@@ -11,8 +11,8 @@ import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-gr
  * severity level, message, duration, actions group,
  * icon visibility, and close button visibility.
  * The convenience methods (`success()`, `error()`, `warning()`, `information()`,
- * `help()`) set `type` automatically — use this interface directly when
- * you need to specify all options.
+ * `help()`, `default()`) set `type` automatically — use this interface
+ * directly when you need to specify all options.
  *
  * @example Full control via show():
  * ```typescript

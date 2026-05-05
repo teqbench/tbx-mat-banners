@@ -6,6 +6,7 @@ import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMB
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
+import { TbxMatBannerCloseFontIconService } from '../services/banner-close-font-icon.service';
 import { TbxMatBannerSeverityFontIconService } from '../services/banner-severity-font-icon.service';
 import { TbxMatBannerComponent } from './banner.component';
 import { type BannerDataDto } from '../models/banner-data-dto.model';
@@ -27,7 +28,6 @@ function buildData(overrides: Partial<BannerDataDto> = {}): BannerDataDto {
         actionsGroup: [],
         enterAnimationClass: '',
         leaveAnimationClass: '',
-        onLeaveAnimationDone: null,
         ...overrides,
     };
 }
@@ -542,8 +542,8 @@ describe('TbxMatBannerComponent', () => {
             fixture.detectChanges();
 
             const data = fixture.componentInstance.resolvedData();
-            expect(data.closeIconResolverService).toBeDefined();
-            expect(data.closeIconResolverService.iconType).toBe(TbxMatIconType.Font);
+            const resolver = data.closeIconResolverService as TbxMatBannerCloseFontIconService;
+            expect(resolver.fontSet).toBe(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED);
         });
 
         it('should default checkbox defaultValue to false when omitted', () => {

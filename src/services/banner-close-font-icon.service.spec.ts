@@ -24,10 +24,6 @@ describe('TbxMatBannerCloseFontIconService', () => {
             service = TestBed.inject(TbxMatBannerCloseFontIconService);
         });
 
-        it('should be created', () => {
-            expect(service).toBeTruthy();
-        });
-
         it('should have Font icon type', () => {
             expect(service.iconType).toBe(TbxMatIconType.Font);
         });

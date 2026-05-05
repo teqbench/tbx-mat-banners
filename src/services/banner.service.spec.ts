@@ -1,16 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { type Provider } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED, TbxMatIconType } from '@teqbench/tbx-mat-icons';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { TbxMatBannerService } from './banner.service';
+import { TbxMatBannerCloseFontIconService } from './banner-close-font-icon.service';
 import { TbxMatBannerSeverityFontIconService } from './banner-severity-font-icon.service';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { TbxMatBannerAnimation } from '../enums/banner-animation.enum';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
-import { BANNER_DEFAULT_DURATION_MS } from '../constants/banner.constants';
 
 describe('TbxMatBannerService', () => {
     let service: TbxMatBannerService;
@@ -76,6 +77,31 @@ describe('TbxMatBannerService', () => {
         vi.useRealTimers();
     });
 
+    /**
+     * Reset and reconfigure the TestBed with the standard provider set
+     * (Overlay spy + font-set token + severity icon resolver) plus any
+     * extra providers the caller needs. Returns a fresh service instance.
+     *
+     * Use for tests that override the provider config (custom close icon,
+     * defaultAnimation, etc.). Do NOT use for the "no fontSet" test —
+     * that one omits the font-set token on purpose.
+     */
+    function reconfigureServiceWith(extraProviders: ReadonlyArray<Provider>): TbxMatBannerService {
+        TestBed.resetTestingModule();
+        TestBed.configureTestingModule({
+            providers: [
+                TbxMatBannerService,
+                { provide: Overlay, useValue: overlaySpy },
+                {
+                    provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
+                    useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
+                },
+                ...extraProviders,
+            ],
+        });
+        return TestBed.inject(TbxMatBannerService);
+    }
+
     describe('show()', () => {
         it('should create an overlay and attach the component', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Saved' });
@@ -97,8 +123,6 @@ describe('TbxMatBannerService', () => {
 
             service.show({ type: TbxMatSeverityLevel.Information, message: 'Hello' });
 
-            // BANNER_DEFAULT_DURATION_MS is 0; the service skips setTimeout in that case.
-            expect(BANNER_DEFAULT_DURATION_MS).toBe(0);
             expect(setTimeoutSpy).not.toHaveBeenCalled();
 
             setTimeoutSpy.mockRestore();
@@ -201,25 +225,15 @@ describe('TbxMatBannerService', () => {
         });
 
         it('should use provider defaultAnimation when config.animation is omitted', () => {
-            TestBed.resetTestingModule();
-            TestBed.configureTestingModule({
-                providers: [
-                    TbxMatBannerService,
-                    { provide: Overlay, useValue: overlaySpy },
-                    {
-                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-                    },
-                    {
-                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
-                        useFactory: () => ({
-                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
-                            defaultAnimation: TbxMatBannerAnimation.Slide,
-                        }),
-                    },
-                ],
-            });
-            const svc = TestBed.inject(TbxMatBannerService);
+            const svc = reconfigureServiceWith([
+                {
+                    provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                    useFactory: () => ({
+                        severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                        defaultAnimation: TbxMatBannerAnimation.Slide,
+                    }),
+                },
+            ]);
 
             svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
@@ -229,25 +243,15 @@ describe('TbxMatBannerService', () => {
         });
 
         it('should prefer per-call config.animation over provider defaultAnimation', () => {
-            TestBed.resetTestingModule();
-            TestBed.configureTestingModule({
-                providers: [
-                    TbxMatBannerService,
-                    { provide: Overlay, useValue: overlaySpy },
-                    {
-                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-                    },
-                    {
-                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
-                        useFactory: () => ({
-                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
-                            defaultAnimation: TbxMatBannerAnimation.Fade,
-                        }),
-                    },
-                ],
-            });
-            const svc = TestBed.inject(TbxMatBannerService);
+            const svc = reconfigureServiceWith([
+                {
+                    provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                    useFactory: () => ({
+                        severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                        defaultAnimation: TbxMatBannerAnimation.Fade,
+                    }),
+                },
+            ]);
 
             svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
 
@@ -259,22 +263,6 @@ describe('TbxMatBannerService', () => {
     });
 
     describe('exit animation coordination', () => {
-        it('should always set onLeaveAnimationDone to null (chaining is handled inline by dismissActive, not by the leave callback)', () => {
-            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test', animation: TbxMatBannerAnimation.Slide });
-
-            const portal = overlayRefSpy.attach.mock.calls[0][0];
-            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
-            expect(data.onLeaveAnimationDone).toBeNull();
-        });
-
-        it('should set onLeaveAnimationDone to null when animation is none', () => {
-            service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
-
-            const portal = overlayRefSpy.attach.mock.calls[0][0];
-            const data = portal.injector.get(TBX_MAT_BANNER_DATA);
-            expect(data.onLeaveAnimationDone).toBeNull();
-        });
-
         it('should chain to the next banner immediately on dismissByClose even with animation enabled (queue must not stall)', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'A', animation: TbxMatBannerAnimation.Slide });
             service.show({ type: TbxMatSeverityLevel.Success, message: 'B' });
@@ -340,8 +328,6 @@ describe('TbxMatBannerService', () => {
             vi.advanceTimersByTime(5000);
             expect(service.isActive()).toBe(false);
             expect(overlayRefSpy.dispose).toHaveBeenCalled();
-
-            vi.useRealTimers();
         });
 
         it('should clear duration timeout when dismissed before expiry', () => {
@@ -359,8 +345,6 @@ describe('TbxMatBannerService', () => {
             // Advance past the original timeout — should NOT create a second overlay
             vi.advanceTimersByTime(5000);
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
-
-            vi.useRealTimers();
         });
 
         it('should resolve result with Timeout after duration expires', async () => {
@@ -376,8 +360,6 @@ describe('TbxMatBannerService', () => {
 
             const result = await ref.result;
             expect(result.dismissReason).toBe(TbxMatBannerDismissReason.Timeout);
-
-            vi.useRealTimers();
         });
     });
 
@@ -631,32 +613,20 @@ describe('TbxMatBannerService', () => {
         });
 
         it('should use provider close icon service when specified', () => {
-            TestBed.resetTestingModule();
-
             const customCloseResolver = {
                 iconType: TbxMatIconType.Font,
                 resolve: () => 'cancel',
             };
 
-            TestBed.configureTestingModule({
-                providers: [
-                    TbxMatBannerService,
-                    { provide: Overlay, useValue: overlaySpy },
-                    {
-                        provide: TBX_MAT_FONT_ICON_DEFAULT_FONT_SET,
-                        useValue: TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED,
-                    },
-                    {
-                        provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
-                        useFactory: () => ({
-                            severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
-                            closeIconResolverService: customCloseResolver,
-                        }),
-                    },
-                ],
-            });
-
-            const svc = TestBed.inject(TbxMatBannerService);
+            const svc = reconfigureServiceWith([
+                {
+                    provide: TBX_MAT_BANNER_PROVIDER_CONFIG,
+                    useFactory: () => ({
+                        severityIconResolverService: new TbxMatBannerSeverityFontIconService(),
+                        closeIconResolverService: customCloseResolver,
+                    }),
+                },
+            ]);
             svc.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls.at(-1)![0];
@@ -664,7 +634,7 @@ describe('TbxMatBannerService', () => {
             expect(data.closeIconResolverService).toBe(customCloseResolver);
         });
 
-        it('should throw when neither TBX_MAT_FONT_ICON_DEFAULT_FONT_SET nor MAT_ICON_DEFAULT_OPTIONS is provided (covers the optional-chain undefined branch on line 106)', () => {
+        it('should throw when neither TBX_MAT_FONT_ICON_DEFAULT_FONT_SET nor MAT_ICON_DEFAULT_OPTIONS is provided', () => {
             TestBed.resetTestingModule();
             TestBed.configureTestingModule({
                 providers: [
@@ -708,13 +678,15 @@ describe('TbxMatBannerService', () => {
 
             const portal = overlayRefSpy.attach.mock.calls.at(-1)![0];
             const data = portal.injector.get(TBX_MAT_BANNER_DATA);
-            expect(data.closeIconResolverService).toBeDefined();
-            expect(data.closeIconResolverService.iconType).toBe(TbxMatIconType.Font);
+            const resolver = data.closeIconResolverService as TbxMatBannerCloseFontIconService;
+            // Asserting fontSet — not just iconType — proves the fallback chain
+            // actually consulted MAT_ICON_DEFAULT_OPTIONS rather than short-circuiting.
+            expect(resolver.fontSet).toBe(TBX_MAT_ICON_FONT_SET_MATERIAL_SYMBOLS_ROUNDED);
         });
     });
 
     describe('re-entrant dismiss guard', () => {
-        it('should ignore a second synchronous dismissByClose on the same banner', async () => {
+        it('should ignore a second synchronous dismissByClose on the same banner', () => {
             service.show({ type: TbxMatSeverityLevel.Success, message: 'Test' });
 
             const portal = overlayRefSpy.attach.mock.calls[0][0];
@@ -726,7 +698,7 @@ describe('TbxMatBannerService', () => {
             expect(overlayRefSpy.dispose).toHaveBeenCalledTimes(1);
         });
 
-        it('should ignore a second synchronous dismissByAction on the same banner', async () => {
+        it('should ignore a second synchronous dismissByAction on the same banner', () => {
             service.show({
                 type: TbxMatSeverityLevel.Success,
                 message: 'Test',
@@ -745,20 +717,25 @@ describe('TbxMatBannerService', () => {
 
     describe('stale banner dismiss race', () => {
         // Use distinct overlay refs per overlay.create call so we can tell A and B apart.
-        // Set up via beforeEach so the shared `overlaySpy.create` mock state is restored after each test.
+        // Each ref attaches its own componentInstance so a write to one cannot
+        // alias into the other (defends against future tests that mutate the
+        // instance between A's and B's dismiss paths).
         let overlayRefA: { attach: ReturnType<typeof vi.fn>; dispose: ReturnType<typeof vi.fn> };
         let overlayRefB: { attach: ReturnType<typeof vi.fn>; dispose: ReturnType<typeof vi.fn> };
 
         beforeEach(() => {
+            const componentInstanceA = { collectActionsGroupValues: vi.fn().mockReturnValue({}) };
+            const componentInstanceB = { collectActionsGroupValues: vi.fn().mockReturnValue({}) };
             overlayRefA = {
-                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                attach: vi.fn().mockReturnValue({ instance: componentInstanceA }),
                 dispose: vi.fn(),
             };
             overlayRefB = {
-                attach: vi.fn().mockReturnValue({ instance: mockComponentInstance }),
+                attach: vi.fn().mockReturnValue({ instance: componentInstanceB }),
                 dispose: vi.fn(),
             };
-            overlaySpy.create.mockReset();
+            // The outer `beforeEach` rebuilds `overlaySpy` for every test, so
+            // `overlaySpy.create` is brand-new here — no `mockReset()` needed.
             overlaySpy.create.mockReturnValueOnce(overlayRefA).mockReturnValueOnce(overlayRefB);
         });
 
@@ -853,8 +830,6 @@ describe('TbxMatBannerService', () => {
             const result = await ref.result;
             expect(result.actionsGroupValues).toEqual({});
             expect(result.dismissReason).toBe(TbxMatBannerDismissReason.Timeout);
-
-            vi.useRealTimers();
         });
     });
 

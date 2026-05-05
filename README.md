@@ -34,7 +34,7 @@ Two display modes are supported from a single component surface. In **overlay mo
 
 Severity (`default`, `success`, `error`, `warning`, `information`, `help`) drives both the icon and the color scheme. The six CSS custom-property pairs are aliased from the shared [`@teqbench/tbx-mat-severity-theme` ↗](https://github.com/teqbench/tbx-mat-severity-theme) tokens, so the five colored tiers stay independent of the active [M3 ↗](https://m3.material.io) theme palette while the `default` tier remains theme-responsive. Applications can opt into an inverted palette (white backgrounds with colored text) across every severity-aware `@teqbench` package by calling `provideTbxMatSeverityTheme({ invert: true, applyToRoot: true })` at bootstrap — the flag applies app-wide across every `@teqbench` severity-aware package, not banners alone. An optional actions group accepts any mix of buttons, checkboxes, toggles, radio groups, and toggle groups; on dismiss, all collected values are returned alongside the dismiss reason and the action key that triggered it.
 
-The library is designed for [Angular ↗](https://angular.dev) 21+ zoneless applications, uses [signal inputs ↗](https://angular.dev/guide/signals/inputs), honors `prefers-reduced-motion`, and exposes a pluggable icon resolver so consumers can use [Material Symbols ↗](https://fonts.google.com/icons) font icons or bundled SVG icons without changing component code.
+The library is designed for [Angular ↗](https://angular.dev) zoneless applications, uses [signal inputs ↗](https://angular.dev/guide/signals/inputs), honors `prefers-reduced-motion`, and exposes a pluggable icon resolver so consumers can use [Material Symbols ↗](https://fonts.google.com/icons) font icons or bundled SVG icons without changing component code.
 
 ## At a glance
 
@@ -48,7 +48,7 @@ The library is designed for [Angular ↗](https://angular.dev) 21+ zoneless appl
 - **Theming via CSS custom properties** — per-severity colors, gaps, padding, shadow, and z-index exposed as CSS variables.
 - **Pluggable icons** — [Material Symbols ↗](https://fonts.google.com/icons) font icons or SVG icon resolver service via DI token.
 - **Responsive layout** — CSS container queries reflow the actions group onto a second row on narrow viewports.
-- **Zoneless ready** — built for [Angular ↗](https://angular.dev) 21+ zoneless applications using [signal inputs ↗](https://angular.dev/guide/signals/inputs).
+- **Zoneless ready** — built for [Angular ↗](https://angular.dev) zoneless applications using [signal inputs ↗](https://angular.dev/guide/signals/inputs).
 
 ## When to use
 
@@ -101,6 +101,7 @@ void this.banner.error('Failed to load data. Please try again.');
 void this.banner.warning('Your session will expire in 5 minutes.');
 void this.banner.information('New version available.');
 void this.banner.help('Click the + button to add a new item.');
+void this.banner.default('Background sync paused.');
 ```
 
 ### Overlay — with actions group
@@ -178,7 +179,7 @@ Place the component directly in your template. No service needed. The component 
 />
 ```
 
-Available inputs: `type`, `message`, `duration`, `showSeverityIcon`, `showCloseButton`, `actionsGroup`. All are optional except `type`. The `(dismissed)` output emits a `TbxMatBannerResult` on dismiss. Animations are overlay-only — inline banners do not animate.
+Available inputs: `type`, `message`, `duration`, `showSeverityIcon`, `showCloseButton`, `actionsGroup`. All inline inputs are optional; if `type` is omitted the banner renders with the `default` severity. The `(dismissed)` output emits a `TbxMatBannerResult` on dismiss. Animations are overlay-only — inline banners do not animate.
 
 ### Queue state (reactive signals)
 
@@ -363,7 +364,7 @@ Returned synchronously from all service methods.
 <dl>
     <dt><code>severityIconResolverService</code> (<code>TbxMatSeverityResolver &amp; TbxMatIconResolver&lt;TbxMatSeverityLevel&gt; &amp; ...</code>)</dt>
     <dd>Severity icon resolver (required).</dd>
-    <dt><code>closeIconResolverService</code> (<code>TbxMatIconResolver&lt;string&gt; &amp; { iconType }</code>)</dt>
+    <dt><code>closeIconResolverService</code> (<code>TbxMatBannerIconResolver</code>)</dt>
     <dd>Close button icon resolver. Default: default font.</dd>
     <dt><code>defaultAnimation</code> (<code>TbxMatBannerAnimation</code>)</dt>
     <dd>App-wide default animation; per-banner <code>animation</code> takes precedence. Default: <code>None</code>.</dd>
@@ -400,9 +401,9 @@ Banner appearance is customizable via CSS custom properties. Set them globally o
     <dd>Overlay panel drop shadow (consumer override). Default: a three-stop level-3 elevation (<code>0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12)</code>); bottom-positioned banners flip the y-offset signs.</dd>
     <dt><code>--tbx-mat-banner-overlay-z-index</code></dt>
     <dd>Z-index of the overlay panel. Default: <code>1000</code>.</dd>
-    <dt><code>--tbx-mat-banner-narrow-breakpoint</code></dt>
-    <dd>Container width below which the layout switches to the two-row narrow form. Default: <code>600px</code>.</dd>
 </dl>
+
+The narrow-layout breakpoint (<code>600px</code>) is hardcoded in the component's container query. It is not exposed as a custom property because <code>var()</code> inside <code>@container</code> size conditions has incomplete cross-browser support; consumers who need a different breakpoint should fork the component styles.
 
 ### Animation
 

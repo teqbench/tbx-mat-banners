@@ -81,7 +81,6 @@ import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE, BANNER_PANEL_CLASS_MAP } from 
         '[attr.aria-live]': 'hostAriaLive()',
         '[animate.enter]': 'resolvedData().enterAnimationClass',
         '[animate.leave]': 'resolvedData().leaveAnimationClass',
-        '(animate.leave)': 'resolvedData().onLeaveAnimationDone?.()',
     },
     template: `
         <!-- Shared icon template — handles font ligature vs SVG branching -->
@@ -242,7 +241,9 @@ import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE, BANNER_PANEL_CLASS_MAP } from 
 
         /* ── Two-row layout (narrow) ── */
 
-        @container (max-width: var(--tbx-mat-banner-narrow-breakpoint, 600px)) {
+        /* Hardcoded breakpoint. Older browsers may invalidate container rules
+         * whose size conditions use a CSS custom property, so keep the literal. */
+        @container (max-width: 600px) {
             :host {
                 grid-template-columns: 1fr auto;
                 grid-template-rows: auto auto;
@@ -355,7 +356,6 @@ export class TbxMatBannerComponent implements OnInit {
             actionsGroup: this.actionsGroup() ?? [],
             enterAnimationClass: '',
             leaveAnimationClass: '',
-            onLeaveAnimationDone: null,
         };
     });
 
