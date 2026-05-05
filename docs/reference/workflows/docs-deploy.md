@@ -56,7 +56,7 @@ The reusable workflow:
 
 <dl>
     <dt>CI / Release on <code>main</code></dt>
-    <dd>Run independently of docs-deploy. The docs build does not block tests, the build, or release publication.</dd>
+    <dd>Run independently of docs-deploy. The docs build does not block tests, the build, or release publication; all three workflows run in parallel as side effects of the same push to <code>main</code>.</dd>
     <dt>Sync workflow</dt>
-    <dd>Sync's <code>chore: sync main into dev [skip ci]</code> commits trigger another <code>push</code> to <code>main</code>. The <code>[skip ci]</code> directive applies to CI; the docs-deploy workflow may still run depending on the org-wide configuration. Refer to <code>teqbench/.github</code> for current behavior.</dd>
+    <dd>Sync also runs on push to <code>main</code> and merges <code>main</code> into <code>dev</code>. Its resulting push lands on <code>dev</code> (not <code>main</code>), so it does not re-trigger docs-deploy. The two workflows are siblings, not chained.</dd>
 </dl>
