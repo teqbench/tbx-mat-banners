@@ -100,7 +100,6 @@ export interface TbxMatBannerActionButton {
      * @remarks
      * The resolved icon renders inside the action button. Required when
      * `appearance` is `'icon'`. Optional for other appearance values.
-     * Ignored when `appearance` is `'text'`.
      *
      * The name is passed to the `resolve()` method of the
      * `actionIconResolverService`. For font icons, this is typically the
