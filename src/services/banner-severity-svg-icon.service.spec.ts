@@ -20,10 +20,6 @@ describe('TbxMatBannerSeveritySvgIconService', () => {
         service = TestBed.inject(TbxMatBannerSeveritySvgIconService);
     });
 
-    it('should be created', () => {
-        expect(service).toBeTruthy();
-    });
-
     it('should have SVG icon type', () => {
         expect(service.iconType).toBe(TbxMatIconType.Svg);
     });

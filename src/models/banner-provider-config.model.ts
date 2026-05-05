@@ -2,6 +2,7 @@ import { type TbxMatIconResolver, type TbxMatIconType } from '@teqbench/tbx-mat-
 import type { TbxMatSeverityResolver, TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 
 import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
 
 /**
  * Configuration for the banner component's injectable dependencies
@@ -58,6 +59,7 @@ import { type TbxMatBannerAnimation } from '../enums/banner-animation.enum';
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Provider Config
  * @order 11
  * @since 1.0.0
@@ -83,8 +85,8 @@ export interface TbxMatBannerProviderConfig {
      * Close button icon resolver — resolves the close/dismiss button icon
      *
      * @remarks
-     * Must implement `TbxMatIconResolver<string>` and expose `iconType`.
-     * When omitted, the package provides a default font-based resolver
+     * Must conform to {@link TbxMatBannerIconResolver}. When omitted, the
+     * package provides a default font-based resolver
      * ({@link TbxMatBannerCloseFontIconService}) that registers the
      * `'close'` {@link https://fonts.google.com/icons | Material Symbols}
      * ligature. Consumers who want SVG close icons must provide a custom
@@ -92,9 +94,7 @@ export interface TbxMatBannerProviderConfig {
      *
      * @public
      */
-    readonly closeIconResolverService?: TbxMatIconResolver<string> & {
-        readonly iconType: TbxMatIconType;
-    };
+    readonly closeIconResolverService?: TbxMatBannerIconResolver;
 
     /**
      * Default enter/exit animation mode for overlay banners

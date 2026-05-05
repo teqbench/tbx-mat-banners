@@ -1,7 +1,7 @@
 {
   "name": "@teqbench/tbx-mat-banners",
   "version": "0.10.0",
-  "description": "Opinionated Angular banner component and service. Provides severity-leveled methods (success, error, warning, information, help), inline or overlay display via CDK Overlay, FIFO queuing with signal-based state, indefinite duration by default, an actions group supporting buttons and form controls, optional severity icon and close button, and dismiss reason tracking with collected control values. Supports font and SVG icons via pluggable resolver services. Designed for Angular 21+ zoneless applications.",
+  "description": "Opinionated Angular banner component and service. Provides severity-leveled methods (success, error, warning, information, help), inline or overlay display via CDK Overlay, FIFO queuing with signal-based state, indefinite duration by default, an actions group supporting buttons and form controls, optional severity icon and close button, and dismiss reason tracking with collected control values. Supports font and SVG icons via pluggable resolver services. Designed for Angular zoneless applications.",
   "type": "module",
   "exports": {
     "./styles/*": {
@@ -64,8 +64,8 @@
     "@angular/platform-browser": "^21.2.6",
     "@angular/platform-browser-dynamic": "^21.2.6",
     "@storybook/angular": "^10.3.3",
-    "@teqbench/tbx-mat-icons": "^4.1.0",
-    "@teqbench/tbx-mat-severity-theme": "^8.0.1",
+    "@teqbench/tbx-mat-icons": "^4.2.0",
+    "@teqbench/tbx-mat-severity-theme": "^8.0.2",
     "@types/node": "~24.12.0",
     "@vitest/coverage-v8": "^4.1.1",
     "angular-eslint": "^21.3.1",
@@ -83,7 +83,7 @@
     "vitest": "^4.0.18",
     "zone.js": "^0.16.1"
   },
-  "//overrides": "Pin vite to 7.3.2 — @angular/build bundles vite internally but does not constrain the version tightly enough; 7.4+ causes build failures with ng-packagr. Remove when @angular/build supports vite 7.4+.",
+  "//overrides": "Pin vite to 7.3.2 — @angular/build bundles vite internally but does not constrain the version tightly enough; 7.4+ causes build failures with ng-packagr. Remove when @angular/build supports vite 7.4+. Tracking: https://github.com/teqbench/tbx-mat-banners/issues/131.",
   "overrides": {
     "@angular/build": {
       "vite": "7.3.2"

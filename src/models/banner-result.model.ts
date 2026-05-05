@@ -34,6 +34,7 @@ import { type TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.e
  * ```
  *
  * @category Models
+ * @category Interface
  * @displayName Banner Result
  * @order 3
  * @since 1.0.0

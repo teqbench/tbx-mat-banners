@@ -29,15 +29,19 @@ export default defineConfig({
                 'src/models/banner-provider-config.model.ts',
                 'src/models/banner-result.model.ts',
                 'src/models/banner-ref.model.ts',
+                'src/models/resolved-icon.model.ts',
                 // Type aliases — no runtime code
                 'src/types/banner-config-args.type.ts',
                 'src/types/banner-action-button-appearance.type.ts',
                 'src/types/banner-actions-group-control.type.ts',
+                'src/types/banner-icon-resolver.type.ts',
                 // Enums — no testable logic (pure value declarations)
+                'src/enums/banner-animation.enum.ts',
                 'src/enums/banner-dismiss-reason.enum.ts',
                 // Constants — no testable logic
                 'src/constants/banner.constants.ts',
                 // Tokens (InjectionToken declarations — no testable logic)
+                'src/tokens/banner-data.token.ts',
                 'src/tokens/banner-provider-config.token.ts',
             ],
             thresholds: {

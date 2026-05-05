@@ -7,32 +7,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
-import { TbxMatIconType } from '@teqbench/tbx-mat-icons';
-import { type TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
+import { TbxMatIconType, TBX_MAT_FONT_ICON_DEFAULT_FONT_SET } from '@teqbench/tbx-mat-icons';
+import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { type TbxMatBannerIconResolver } from '../types/banner-icon-resolver.type';
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import { TBX_MAT_BANNER_PROVIDER_CONFIG } from '../tokens/banner-provider-config.token';
 import { TBX_MAT_BANNER_DATA } from '../tokens/banner-data.token';
 import { type TbxMatBannerActionButton } from '../models/banner-action-button.model';
 import { type TbxMatBannerActionsGroupControl } from '../types/banner-actions-group-control.type';
 import { type TbxMatBannerResult } from '../models/banner-result.model';
+import { type BannerDataDto } from '../models/banner-data-dto.model';
+import { type ResolvedIcon } from '../models/resolved-icon.model';
 import { TbxMatBannerDismissReason } from '../enums/banner-dismiss-reason.enum';
 import { TbxMatBannerCloseFontIconService } from '../services/banner-close-font-icon.service';
-import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE } from '../constants/banner.constants';
-
-/** Panel CSS class mapping for inline banners. */
-const PANEL_CLASS_MAP: Readonly<Record<string, string>> = {
-    default: 'tbx-mat-banner-panel-default',
-    success: 'tbx-mat-banner-panel-success',
-    error: 'tbx-mat-banner-panel-error',
-    warning: 'tbx-mat-banner-panel-warning',
-    information: 'tbx-mat-banner-panel-information',
-    help: 'tbx-mat-banner-panel-help',
-};
-
-/** Resolved icon ready for template rendering. */
-interface ResolvedIcon {
-    readonly name: string;
-    readonly isSvg: boolean;
-}
+import { BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE, BANNER_PANEL_CLASS_MAP } from '../constants/banner.constants';
 
 /**
  * Banner content component for both inline and overlay display
@@ -88,10 +76,11 @@ interface ResolvedIcon {
     selector: 'tbx-mat-banner',
     imports: [NgTemplateOutlet, FormsModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatSlideToggleModule, MatRadioModule, MatButtonToggleModule],
     host: {
-        '[class]': 'hostPanelClass',
+        '[class]': 'hostPanelClass()',
+        '[attr.role]': 'hostAriaRole()',
+        '[attr.aria-live]': 'hostAriaLive()',
         '[animate.enter]': 'resolvedData().enterAnimationClass',
         '[animate.leave]': 'resolvedData().leaveAnimationClass',
-        '(animate.leave)': 'resolvedData().onLeaveAnimationDone?.()',
     },
     template: `
         <!-- Shared icon template — handles font ligature vs SVG branching -->
@@ -156,10 +145,10 @@ interface ResolvedIcon {
                     @for (control of actionButtons(); track control.key) {
                         @if (control.appearance === 'icon') {
                             <button mat-icon-button class="tbx-mat-banner-action-icon-button" (click)="onActionClick(control.key)" [attr.aria-label]="control.label">
-                                <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: resolveActionIcon(control) }"></ng-container>
+                                <ng-container *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: actionIcons().get(control.key) }"></ng-container>
                             </button>
                         } @else {
-                            @let icon = resolveActionIcon(control);
+                            @let icon = actionIcons().get(control.key);
                             <button class="tbx-mat-banner-action-button" [matButton]="control.appearance ?? defaultButtonAppearance" (click)="onActionClick(control.key)">
                                 @if ((control.iconPosition ?? 'before') === 'before') {
                                     <ng-container ngProjectAs="mat-icon:not([iconPositionEnd])" *ngTemplateOutlet="tbxNgIconTemplate; context: { icon: icon }"></ng-container>
@@ -252,6 +241,8 @@ interface ResolvedIcon {
 
         /* ── Two-row layout (narrow) ── */
 
+        /* Hardcoded breakpoint. Older browsers may invalidate container rules
+         * whose size conditions use a CSS custom property, so keep the literal. */
         @container (max-width: 600px) {
             :host {
                 grid-template-columns: 1fr auto;
@@ -294,55 +285,118 @@ export class TbxMatBannerComponent implements OnInit {
     private readonly config = inject(TBX_MAT_BANNER_PROVIDER_CONFIG);
     private readonly overlayData = inject(TBX_MAT_BANNER_DATA, { optional: true });
 
-    /** Default button appearance constant for template use. */
+    /**
+     * Default button appearance constant for template use.
+     *
+     * @internal
+     */
     readonly defaultButtonAppearance = BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE;
 
-    /** Apply severity panel class to host element for inline mode styling. */
-    get hostPanelClass(): string {
+    /**
+     * Apply severity panel class to host element for inline mode styling.
+     *
+     * @internal
+     */
+    readonly hostPanelClass = computed<string>(() => BANNER_PANEL_CLASS_MAP[this.resolvedData().type] ?? '');
+
+    /**
+     * Map severity to an ARIA live-region role.
+     *
+     * @remarks
+     * `error` and `warning` use `alert` so screen readers announce the
+     * banner immediately and interrupt other speech; the remaining
+     * severities use the politer `status` role.
+     *
+     * @internal
+     */
+    readonly hostAriaRole = computed<'alert' | 'status'>(() => {
         const type = this.resolvedData().type;
-        return PANEL_CLASS_MAP[type] ?? '';
-    }
+        return type === TbxMatSeverityLevel.Error || type === TbxMatSeverityLevel.Warning ? 'alert' : 'status';
+    });
+
+    /**
+     * Match `aria-live` politeness to the chosen role.
+     *
+     * @internal
+     */
+    readonly hostAriaLive = computed<'assertive' | 'polite'>(() => (this.hostAriaRole() === 'alert' ? 'assertive' : 'polite'));
 
     // ── Inline mode inputs ──
 
-    /** Severity level (inline mode). */
+    /**
+     * Severity level (inline mode).
+     *
+     * @public
+     */
     readonly type = input<TbxMatSeverityLevel>();
 
-    /** Message text (inline mode). */
+    /**
+     * Message text (inline mode).
+     *
+     * @public
+     */
     readonly message = input<string>();
 
-    /** Display duration in milliseconds (inline mode). */
+    /**
+     * Display duration in milliseconds (inline mode).
+     *
+     * @public
+     */
     readonly duration = input<number>();
 
-    /** Show severity icon (inline mode). */
+    /**
+     * Show severity icon (inline mode).
+     *
+     * @public
+     */
     readonly showSeverityIcon = input<boolean>();
 
-    /** Show close button (inline mode). */
+    /**
+     * Show close button (inline mode).
+     *
+     * @public
+     */
     readonly showCloseButton = input<boolean>();
 
-    /** Actions group controls (inline mode). */
-    readonly actionsGroup = input<TbxMatBannerActionsGroupControl[]>();
+    /**
+     * Actions group controls (inline mode).
+     *
+     * @public
+     */
+    readonly actionsGroup = input<ReadonlyArray<TbxMatBannerActionsGroupControl>>();
 
     // ── Inline mode outputs ──
 
-    /** Emitted when the banner is dismissed (inline mode). */
+    /**
+     * Emitted when the banner is dismissed (inline mode).
+     *
+     * @public
+     */
     readonly dismissed = output<TbxMatBannerResult>();
 
     // ── Internal state ──
 
-    /** Writable signals for form control values, keyed by control key. */
+    /**
+     * Writable signals for form control values, keyed by control key.
+     *
+     * @internal
+     */
     private readonly controlValues = new Map<string, WritableSignal<unknown>>();
 
     /**
      * Resolved data — overlay DTO takes precedence, inline inputs as fallback.
+     *
+     * @remarks
      * Returns a normalized shape usable by the template.
+     *
+     * @internal
      */
-    readonly resolvedData = computed(() => {
+    readonly resolvedData = computed<BannerDataDto>(() => {
         if (this.overlayData) {
             return this.overlayData;
         }
         return {
-            type: this.type()!,
+            type: this.type() ?? TbxMatSeverityLevel.Default,
             message: this.message() ?? '',
             dismissByClose: () => this.dismissInline(TbxMatBannerDismissReason.Close),
             dismissByAction: (actionKey: string) => this.dismissInline(TbxMatBannerDismissReason.Action, actionKey),
@@ -353,35 +407,73 @@ export class TbxMatBannerComponent implements OnInit {
             actionsGroup: this.actionsGroup() ?? [],
             enterAnimationClass: '',
             leaveAnimationClass: '',
-            onLeaveAnimationDone: null,
         };
     });
 
-    /** Input controls from the actions group (excluding action buttons). */
+    /**
+     * Input controls from the actions group (excluding action buttons).
+     *
+     * @internal
+     */
     readonly inputControls = computed(() => this.resolvedData().actionsGroup.filter((c): c is Exclude<TbxMatBannerActionsGroupControl, TbxMatBannerActionButton> => c.type !== 'button'));
 
-    /** Action-button controls from the actions group (excluding input controls). */
+    /**
+     * Action-button controls from the actions group (excluding input controls).
+     *
+     * @internal
+     */
     readonly actionButtons = computed(() => this.resolvedData().actionsGroup.filter((c): c is TbxMatBannerActionButton => c.type === 'button'));
 
-    private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService();
+    // Resolve the fontSet via DI here so the manually-constructed default close
+    // icon service does not run its own inject() chain.
+    private readonly defaultCloseIconService = new TbxMatBannerCloseFontIconService(inject(TBX_MAT_FONT_ICON_DEFAULT_FONT_SET, { optional: true }) ?? inject(MAT_ICON_DEFAULT_OPTIONS, { optional: true })?.fontSet);
 
-    /** Resolved severity icon. */
+    /**
+     * Resolved severity icon.
+     *
+     * @internal
+     */
     readonly severityIcon = computed(() => this.resolveIcon(this.config.severityIconResolverService, this.resolvedData().type));
 
-    /** Resolved close button icon. */
+    /**
+     * Resolved close button icon.
+     *
+     * @internal
+     */
     readonly closeIcon = computed(() => this.resolveIcon(this.resolvedData().closeIconResolverService, 'close'));
 
+    /**
+     * Resolved action-button icons keyed by control key.
+     *
+     * @remarks
+     * Memoizes per-control icon resolution so the template doesn't
+     * re-resolve icons on every change-detection pass.
+     *
+     * @internal
+     */
+    readonly actionIcons = computed<ReadonlyMap<string, ResolvedIcon | null>>(() => {
+        const map = new Map<string, ResolvedIcon | null>();
+        for (const control of this.actionButtons()) {
+            map.set(control.key, this.resolveActionIcon(control));
+        }
+        return map;
+    });
+
+    /**
+     * Initialize form control values from each control's `defaultValue`.
+     *
+     * The actions group is snapshotted once at component init. In inline
+     * mode, rebinding the `actionsGroup` input after init will not add
+     * new control entries to the value map — consumers should compose a
+     * stable `actionsGroup` array before the component renders.
+     */
     ngOnInit(): void {
-        // Initialize form control values from defaultValue
-        const controls = this.resolvedData().actionsGroup;
-        for (const control of controls) {
-            if (control.type === 'checkbox' || control.type === 'toggle') {
-                this.controlValues.set(control.key, signal(control.defaultValue ?? false));
-            } else if (control.type === 'radio-group') {
-                this.controlValues.set(control.key, signal(control.defaultValue));
-            } else if (control.type === 'toggle-group') {
-                this.controlValues.set(control.key, signal(control.defaultValue));
-            }
+        for (const control of this.resolvedData().actionsGroup) {
+            if (control.type === 'button') continue;
+            // Boolean controls (checkbox, toggle) default to `false`; the others
+            // (radio-group, toggle-group) preserve `undefined` if no default is set.
+            const fallback = control.type === 'checkbox' || control.type === 'toggle' ? false : undefined;
+            this.controlValues.set(control.key, signal(control.defaultValue ?? fallback));
         }
     }
 
@@ -437,13 +529,7 @@ export class TbxMatBannerComponent implements OnInit {
      *
      * @public
      */
-    resolveActionIcon(control: {
-        icon?: string;
-        actionIconResolverService?: {
-            readonly iconType: TbxMatIconType;
-            resolve(key: string): string | undefined;
-        };
-    }): ResolvedIcon | null {
+    resolveActionIcon(control: Pick<TbxMatBannerActionButton, 'icon' | 'actionIconResolverService'>): ResolvedIcon | null {
         if (!control.icon || !control.actionIconResolverService) {
             return null;
         }
@@ -451,7 +537,7 @@ export class TbxMatBannerComponent implements OnInit {
     }
 
     /** Resolve an icon from a resolver service. */
-    private resolveIcon(resolver: { readonly iconType: TbxMatIconType; resolve(key: string): string | undefined } | undefined, key: string | undefined): ResolvedIcon | null {
+    private resolveIcon(resolver: TbxMatBannerIconResolver | undefined, key: string | undefined): ResolvedIcon | null {
         /* v8 ignore start -- defensive guard; resolver and key are always present in normal flow */
         if (!resolver || !key) {
             return null;

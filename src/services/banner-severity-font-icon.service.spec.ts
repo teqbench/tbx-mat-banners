@@ -25,10 +25,6 @@ describe('TbxMatBannerSeverityFontIconService', () => {
             service = TestBed.inject(TbxMatBannerSeverityFontIconService);
         });
 
-        it('should be created', () => {
-            expect(service).toBeTruthy();
-        });
-
         it('should use the token fontSet', () => {
             expect(service.fontSet).toBe('material-symbols-rounded');
         });

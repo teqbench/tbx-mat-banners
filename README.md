@@ -34,7 +34,7 @@ Two display modes are supported from a single component surface. In **overlay mo
 
 Severity (`default`, `success`, `error`, `warning`, `information`, `help`) drives both the icon and the color scheme. The six CSS custom-property pairs are aliased from the shared [`@teqbench/tbx-mat-severity-theme` ↗](https://github.com/teqbench/tbx-mat-severity-theme) tokens, so the five colored tiers stay independent of the active [M3 ↗](https://m3.material.io) theme palette while the `default` tier remains theme-responsive. Applications can opt into an inverted palette (white backgrounds with colored text) across every severity-aware `@teqbench` package by calling `provideTbxMatSeverityTheme({ invert: true, applyToRoot: true })` at bootstrap — the flag applies app-wide across every `@teqbench` severity-aware package, not banners alone. An optional actions group accepts any mix of buttons, checkboxes, toggles, radio groups, and toggle groups; on dismiss, all collected values are returned alongside the dismiss reason and the action key that triggered it.
 
-The library is designed for [Angular ↗](https://angular.dev) 21+ zoneless applications, uses [signal inputs ↗](https://angular.dev/guide/signals/inputs), honors `prefers-reduced-motion`, and exposes a pluggable icon resolver so consumers can use [Material Symbols ↗](https://fonts.google.com/icons) font icons or bundled SVG icons without changing component code.
+The library is designed for [Angular ↗](https://angular.dev) zoneless applications, uses [signal inputs ↗](https://angular.dev/guide/signals/inputs), honors `prefers-reduced-motion`, and exposes a pluggable icon resolver so consumers can use [Material Symbols ↗](https://fonts.google.com/icons) font icons or bundled SVG icons without changing component code.
 
 ## At a glance
 
@@ -48,7 +48,7 @@ The library is designed for [Angular ↗](https://angular.dev) 21+ zoneless appl
 - **Theming via CSS custom properties** — per-severity colors, gaps, padding, shadow, and z-index exposed as CSS variables.
 - **Pluggable icons** — [Material Symbols ↗](https://fonts.google.com/icons) font icons or SVG icon resolver service via DI token.
 - **Responsive layout** — CSS container queries reflow the actions group onto a second row on narrow viewports.
-- **Zoneless ready** — built for [Angular ↗](https://angular.dev) 21+ zoneless applications using [signal inputs ↗](https://angular.dev/guide/signals/inputs).
+- **Zoneless ready** — built for [Angular ↗](https://angular.dev) zoneless applications using [signal inputs ↗](https://angular.dev/guide/signals/inputs).
 
 ## When to use
 
@@ -101,6 +101,7 @@ void this.banner.error('Failed to load data. Please try again.');
 void this.banner.warning('Your session will expire in 5 minutes.');
 void this.banner.information('New version available.');
 void this.banner.help('Click the + button to add a new item.');
+void this.banner.default('Background sync paused.');
 ```
 
 ### Overlay — with actions group
@@ -178,7 +179,7 @@ Place the component directly in your template. No service needed. The component 
 />
 ```
 
-Available inputs: `type`, `message`, `duration`, `showSeverityIcon`, `showCloseButton`, `actionsGroup`. All are optional except `type`. The `(dismissed)` output emits a `TbxMatBannerResult` on dismiss. Animations are overlay-only — inline banners do not animate.
+Available inputs: `type`, `message`, `duration`, `showSeverityIcon`, `showCloseButton`, `actionsGroup`. All inline inputs are optional; if `type` is omitted the banner renders with the `default` severity. The `(dismissed)` output emits a `TbxMatBannerResult` on dismiss. Animations are overlay-only — inline banners do not animate.
 
 ### Queue state (reactive signals)
 
@@ -262,76 +263,112 @@ providers: [
 
 ### TbxMatBannerService
 
-| Method                          | Returns           | Description                                                                                                |
-| ------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
-| `success(message, config?)`     | `TbxMatBannerRef` | Show a success banner                                                                                      |
-| `error(message, config?)`       | `TbxMatBannerRef` | Show an error banner                                                                                       |
-| `warning(message, config?)`     | `TbxMatBannerRef` | Show a warning banner                                                                                      |
-| `information(message, config?)` | `TbxMatBannerRef` | Show an information banner                                                                                 |
-| `help(message, config?)`        | `TbxMatBannerRef` | Show a help banner                                                                                         |
-| `default(message, config?)`     | `TbxMatBannerRef` | Show a default banner (no severity styling)                                                                |
-| `show(config)`                  | `TbxMatBannerRef` | Show a banner with full config                                                                             |
-| `dismiss()`                     | `void`            | Dismiss the current banner; its `result` promise resolves with `ProgrammaticDismissCurrent`                |
-| `dismissAll()`                  | `void`            | Dismiss current and clear the queue; each banner's `result` promise resolves with `ProgrammaticDismissAll` |
-| `isActive()`                    | `Signal<boolean>` | Whether a banner is visible                                                                                |
-| `pendingCount()`                | `Signal<number>`  | Count of queued banners                                                                                    |
+<dl>
+    <dt><code>success(message, config?)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show a success banner.</dd>
+    <dt><code>error(message, config?)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show an error banner.</dd>
+    <dt><code>warning(message, config?)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show a warning banner.</dd>
+    <dt><code>information(message, config?)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show an information banner.</dd>
+    <dt><code>help(message, config?)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show a help banner.</dd>
+    <dt><code>default(message, config?)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show a default banner (no severity styling).</dd>
+    <dt><code>show(config)</code> → <code>TbxMatBannerRef</code></dt>
+    <dd>Show a banner with full config.</dd>
+    <dt><code>dismiss()</code> → <code>void</code></dt>
+    <dd>Dismiss the current banner; its <code>result</code> promise resolves with <code>ProgrammaticDismissCurrent</code>.</dd>
+    <dt><code>dismissAll()</code> → <code>void</code></dt>
+    <dd>Dismiss current and clear the queue; each banner's <code>result</code> promise resolves with <code>ProgrammaticDismissAll</code>.</dd>
+    <dt><code>isActive()</code> → <code>Signal&lt;boolean&gt;</code></dt>
+    <dd>Whether a banner is visible.</dd>
+    <dt><code>pendingCount()</code> → <code>Signal&lt;number&gt;</code></dt>
+    <dd>Count of queued banners.</dd>
+</dl>
 
 ### TbxMatBannerRef
 
 Returned synchronously from all service methods.
 
-| Property | Type                          | Description                                              |
-| -------- | ----------------------------- | -------------------------------------------------------- |
-| `config` | `TbxMatBannerConfig`          | Consumer's config, available immediately                 |
-| `result` | `Promise<TbxMatBannerResult>` | Resolves on dismissal with reason, actionKey, and values |
+<dl>
+    <dt><code>config</code> (<code>TbxMatBannerConfig</code>)</dt>
+    <dd>Consumer's config, available immediately.</dd>
+    <dt><code>result</code> (<code>Promise&lt;TbxMatBannerResult&gt;</code>)</dt>
+    <dd>Resolves on dismissal with reason, actionKey, and values.</dd>
+</dl>
 
 ### TbxMatBannerResult
 
-| Property             | Type                        | Description                                      |
-| -------------------- | --------------------------- | ------------------------------------------------ |
-| `dismissReason`      | `TbxMatBannerDismissReason` | Why the banner was dismissed                     |
-| `actionKey`          | `string \| undefined`       | Key of the button that triggered dismissal       |
-| `actionsGroupValues` | `Record<string, unknown>`   | Collected form control values at time of dismiss |
+<dl>
+    <dt><code>dismissReason</code> (<code>TbxMatBannerDismissReason</code>)</dt>
+    <dd>Why the banner was dismissed.</dd>
+    <dt><code>actionKey</code> (<code>string | undefined</code>)</dt>
+    <dd>Key of the button that triggered dismissal.</dd>
+    <dt><code>actionsGroupValues</code> (<code>Record&lt;string, unknown&gt;</code>)</dt>
+    <dd>Collected form control values at time of dismiss.</dd>
+</dl>
 
 ### TbxMatBannerDismissReason
 
-| Value                        | Trigger                       |
-| ---------------------------- | ----------------------------- |
-| `Action`                     | User clicked an action button |
-| `Close`                      | User clicked the close button |
-| `Timeout`                    | Auto-dismissed after duration |
-| `ProgrammaticDismissAll`     | `dismissAll()` called         |
-| `ProgrammaticDismissCurrent` | `dismiss()` called            |
+<dl>
+    <dt><code>Action</code></dt>
+    <dd>User clicked an action button.</dd>
+    <dt><code>Close</code></dt>
+    <dd>User clicked the close button.</dd>
+    <dt><code>Timeout</code></dt>
+    <dd>Auto-dismissed after duration.</dd>
+    <dt><code>ProgrammaticDismissAll</code></dt>
+    <dd><code>dismissAll()</code> called.</dd>
+    <dt><code>ProgrammaticDismissCurrent</code></dt>
+    <dd><code>dismiss()</code> called.</dd>
+</dl>
 
 ### TbxMatBannerAnimation
 
-| Value   | Description                                                              |
-| ------- | ------------------------------------------------------------------------ |
-| `None`  | No animation — instant show/hide (default)                               |
-| `Slide` | Slides in/out from the closest viewport edge based on `verticalPosition` |
-| `Fade`  | Fades in/out via opacity                                                 |
+<dl>
+    <dt><code>None</code></dt>
+    <dd>No animation — instant show/hide (default).</dd>
+    <dt><code>Slide</code></dt>
+    <dd>Slides in/out from the closest viewport edge based on <code>verticalPosition</code>.</dd>
+    <dt><code>Fade</code></dt>
+    <dd>Fades in/out via opacity.</dd>
+</dl>
 
 ### TbxMatBannerConfig
 
-| Property           | Type                                | Default | Description                                    |
-| ------------------ | ----------------------------------- | ------- | ---------------------------------------------- |
-| `type`             | `TbxMatSeverityLevel`               | -       | Severity level (required)                      |
-| `message`          | `string`                            | -       | Message text (required)                        |
-| `duration`         | `number`                            | `0`     | Duration in ms. Zero or negative = indefinite. |
-| `showSeverityIcon` | `boolean`                           | `true`  | Show severity icon                             |
-| `showCloseButton`  | `boolean`                           | `true`  | Show close/dismiss button                      |
-| `actionsGroup`     | `TbxMatBannerActionsGroupControl[]` | -       | Array of buttons and form controls             |
-| `panelClass`       | `string \| string[]`                | -       | Additional CSS classes for the overlay panel   |
-| `verticalPosition` | `'top' \| 'bottom'`                 | `'top'` | Overlay position (overlay mode only)           |
-| `animation`        | `TbxMatBannerAnimation`             | `None`  | Enter/exit animation (overlay mode only)       |
+<dl>
+    <dt><code>type</code> (<code>TbxMatSeverityLevel</code>)</dt>
+    <dd>Severity level (required).</dd>
+    <dt><code>message</code> (<code>string</code>)</dt>
+    <dd>Message text (required).</dd>
+    <dt><code>duration</code> (<code>number</code>)</dt>
+    <dd>Duration in ms. Zero or negative = indefinite. Default: <code>0</code>.</dd>
+    <dt><code>showSeverityIcon</code> (<code>boolean</code>)</dt>
+    <dd>Show severity icon. Default: <code>true</code>.</dd>
+    <dt><code>showCloseButton</code> (<code>boolean</code>)</dt>
+    <dd>Show close/dismiss button. Default: <code>true</code>.</dd>
+    <dt><code>actionsGroup</code> (<code>TbxMatBannerActionsGroupControl[]</code>)</dt>
+    <dd>Array of buttons and form controls.</dd>
+    <dt><code>panelClass</code> (<code>string | string[]</code>)</dt>
+    <dd>Additional CSS classes for the overlay panel.</dd>
+    <dt><code>verticalPosition</code> (<code>'top' | 'bottom'</code>)</dt>
+    <dd>Overlay position (overlay mode only). Default: <code>'top'</code>.</dd>
+    <dt><code>animation</code> (<code>TbxMatBannerAnimation</code>)</dt>
+    <dd>Enter/exit animation (overlay mode only). Default: <code>None</code>.</dd>
+</dl>
 
 ### TbxMatBannerProviderConfig
 
-| Property                      | Type                                                                     | Default      | Description                                                         |
-| ----------------------------- | ------------------------------------------------------------------------ | ------------ | ------------------------------------------------------------------- |
-| `severityIconResolverService` | `TbxMatSeverityResolver & TbxMatIconResolver<TbxMatSeverityLevel> & ...` | -            | Severity icon resolver (required)                                   |
-| `closeIconResolverService`    | `TbxMatIconResolver<string> & { iconType }`                              | Default font | Close button icon resolver                                          |
-| `defaultAnimation`            | `TbxMatBannerAnimation`                                                  | `None`       | App-wide default animation; per-banner `animation` takes precedence |
+<dl>
+    <dt><code>severityIconResolverService</code> (<code>TbxMatSeverityResolver &amp; TbxMatIconResolver&lt;TbxMatSeverityLevel&gt; &amp; ...</code>)</dt>
+    <dd>Severity icon resolver (required).</dd>
+    <dt><code>closeIconResolverService</code> (<code>TbxMatBannerIconResolver</code>)</dt>
+    <dd>Close button icon resolver. Default: default font.</dd>
+    <dt><code>defaultAnimation</code> (<code>TbxMatBannerAnimation</code>)</dt>
+    <dd>App-wide default animation; per-banner <code>animation</code> takes precedence. Default: <code>None</code>.</dd>
+</dl>
 
 ## Styling
 
@@ -339,46 +376,74 @@ Banner appearance is customizable via CSS custom properties. Set them globally o
 
 ### Layout
 
-| Property                           | Default       | Description                                   |
-| ---------------------------------- | ------------- | --------------------------------------------- |
-| `--tbx-mat-banner-padding`         | `0.5rem 1rem` | Host element padding                          |
-| `--tbx-mat-banner-font-size`       | `inherit`     | Message text size                             |
-| `--tbx-mat-banner-icon-size`       | `1.5rem`      | Severity icon size                            |
-| `--tbx-mat-banner-label-gap`       | `1rem`        | Gap between icon and message                  |
-| `--tbx-mat-banner-actions-gap`     | `0.5rem`      | Gap between controls in actions group         |
-| `--tbx-mat-banner-actions-padding` | `1rem`        | Padding before actions area                   |
-| `--tbx-mat-banner-close-gap`       | `0.5rem`      | Gap between actions and close button          |
-| `--tbx-mat-banner-controls-gap`    | `0.75rem`     | Gap between input controls                    |
-| `--tbx-mat-banner-buttons-gap`     | `0.5rem`      | Gap between action buttons                    |
-| `--tbx-mat-banner-actions-row-gap` | `0.5rem`      | Gap between rows in narrow layout             |
-| `--tbx-mat-banner-overlay-shadow`  | M3 level 3    | Overlay panel drop shadow (consumer override) |
-| `--tbx-mat-banner-overlay-z-index` | `1000`        | Z-index of the overlay panel                  |
+<dl>
+    <dt><code>--tbx-mat-banner-padding</code></dt>
+    <dd>Host element padding. Default: <code>0.5rem 1rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-font-size</code></dt>
+    <dd>Message text size. Default: <code>inherit</code>.</dd>
+    <dt><code>--tbx-mat-banner-icon-size</code></dt>
+    <dd>Severity icon size. Default: <code>1.5rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-label-gap</code></dt>
+    <dd>Gap between icon and message. Default: <code>1rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-actions-gap</code></dt>
+    <dd>Gap between controls in actions group. Default: <code>0.5rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-actions-padding</code></dt>
+    <dd>Padding before actions area. Default: <code>1rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-close-gap</code></dt>
+    <dd>Gap between actions and close button. Default: <code>0.5rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-controls-gap</code></dt>
+    <dd>Gap between input controls. Default: <code>0.75rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-buttons-gap</code></dt>
+    <dd>Gap between action buttons. Default: <code>0.5rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-actions-row-gap</code></dt>
+    <dd>Gap between rows in narrow layout. Default: <code>0.5rem</code>.</dd>
+    <dt><code>--tbx-mat-banner-overlay-shadow</code></dt>
+    <dd>Overlay panel drop shadow (consumer override). Default: a three-stop level-3 elevation (<code>0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12)</code>); bottom-positioned banners flip the y-offset signs.</dd>
+    <dt><code>--tbx-mat-banner-overlay-z-index</code></dt>
+    <dd>Z-index of the overlay panel. Default: <code>1000</code>.</dd>
+</dl>
+
+The narrow-layout breakpoint (<code>600px</code>) is hardcoded in the component's container query. It is not exposed as a custom property because <code>var()</code> inside <code>@container</code> size conditions has incomplete cross-browser support; consumers who need a different breakpoint should fork the component styles.
 
 ### Animation
 
 Effective only when `animation` is `Slide` or `Fade`. Ignored when `None`.
 
-| Property                               | Default                            | Description            |
-| -------------------------------------- | ---------------------------------- | ---------------------- |
-| `--tbx-mat-banner-anim-enter-duration` | `300ms`                            | Enter animation length |
-| `--tbx-mat-banner-anim-enter-easing`   | `cubic-bezier(0.25, 0.8, 0.25, 1)` | Enter easing curve     |
-| `--tbx-mat-banner-anim-exit-duration`  | `250ms`                            | Exit animation length  |
-| `--tbx-mat-banner-anim-exit-easing`    | `cubic-bezier(0.4, 0, 0.6, 1)`     | Exit easing curve      |
+<dl>
+    <dt><code>--tbx-mat-banner-anim-enter-duration</code></dt>
+    <dd>Enter animation length. Default: <code>300ms</code>.</dd>
+    <dt><code>--tbx-mat-banner-anim-enter-easing</code></dt>
+    <dd>Enter easing curve. Default: <code>cubic-bezier(0.25, 0.8, 0.25, 1)</code>.</dd>
+    <dt><code>--tbx-mat-banner-anim-exit-duration</code></dt>
+    <dd>Exit animation length. Default: <code>250ms</code>.</dd>
+    <dt><code>--tbx-mat-banner-anim-exit-easing</code></dt>
+    <dd>Exit easing curve. Default: <code>cubic-bezier(0.4, 0, 0.6, 1)</code>.</dd>
+</dl>
 
 ### Colors
 
-| Property                                  | Default   | Description                 |
-| ----------------------------------------- | --------- | --------------------------- |
-| `--tbx-mat-banner-success-background`     | `#2E7D32` | Success background          |
-| `--tbx-mat-banner-success-text`           | `#FFFFFF` | Success text/icon color     |
-| `--tbx-mat-banner-error-background`       | `#C62828` | Error background            |
-| `--tbx-mat-banner-error-text`             | `#FFFFFF` | Error text/icon color       |
-| `--tbx-mat-banner-warning-background`     | `#F9A825` | Warning background          |
-| `--tbx-mat-banner-warning-text`           | `#FFFFFF` | Warning text/icon color     |
-| `--tbx-mat-banner-information-background` | `#1565C0` | Information background      |
-| `--tbx-mat-banner-information-text`       | `#FFFFFF` | Information text/icon color |
-| `--tbx-mat-banner-help-background`        | `#1976D2` | Help background             |
-| `--tbx-mat-banner-help-text`              | `#FFFFFF` | Help text/icon color        |
+<dl>
+    <dt><code>--tbx-mat-banner-success-background</code></dt>
+    <dd>Success background. Default: <code>#2E7D32</code>.</dd>
+    <dt><code>--tbx-mat-banner-success-text</code></dt>
+    <dd>Success text/icon color. Default: <code>#FFFFFF</code>.</dd>
+    <dt><code>--tbx-mat-banner-error-background</code></dt>
+    <dd>Error background. Default: <code>#C62828</code>.</dd>
+    <dt><code>--tbx-mat-banner-error-text</code></dt>
+    <dd>Error text/icon color. Default: <code>#FFFFFF</code>.</dd>
+    <dt><code>--tbx-mat-banner-warning-background</code></dt>
+    <dd>Warning background. Default: <code>#F9A825</code>.</dd>
+    <dt><code>--tbx-mat-banner-warning-text</code></dt>
+    <dd>Warning text/icon color. Default: <code>#FFFFFF</code>.</dd>
+    <dt><code>--tbx-mat-banner-information-background</code></dt>
+    <dd>Information background. Default: <code>#1565C0</code>.</dd>
+    <dt><code>--tbx-mat-banner-information-text</code></dt>
+    <dd>Information text/icon color. Default: <code>#FFFFFF</code>.</dd>
+    <dt><code>--tbx-mat-banner-help-background</code></dt>
+    <dd>Help background. Default: <code>#1976D2</code>.</dd>
+    <dt><code>--tbx-mat-banner-help-text</code></dt>
+    <dd>Help text/icon color. Default: <code>#FFFFFF</code>.</dd>
+</dl>
 
 ### Styling Font Icons
 
@@ -453,6 +518,8 @@ Effective only when `animation` is `Slide` or `Fade`. Ignored when `None`.
 
 ## Compatibility
 
+<!-- Kept as a pipe table until teqbench/.github#22 lands; the centralized CI README version-check regex extracts versions from this exact shape. -->
+
 | Dependency                                                                               | Version  |
 | ---------------------------------------------------------------------------------------- | -------- |
 | [Angular ↗](https://angular.dev)                                                         | >=21.0.0 |
@@ -476,11 +543,11 @@ This package follows [Semantic Versioning ↗](https://semver.org). Versions and
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, [GitHub Packages ↗](https://github.com/orgs/teqbench/packages) authentication, branch conventions, commit format, and the PR workflow.
+Contributions are welcome. See the [contributing guide ↗](https://github.com/teqbench/.github/blob/main/CONTRIBUTING.md) for local setup, [GitHub Packages ↗](https://github.com/orgs/teqbench/packages) authentication, branch conventions, commit format, and the PR workflow.
 
 ## Security
 
-See [SECURITY.md](SECURITY.md) for the supported-version policy and how to report a vulnerability privately.
+See the [security policy ↗](https://github.com/teqbench/.github/blob/main/SECURITY.md) for the supported-version policy and how to report a vulnerability privately.
 
 ## Feedback
 

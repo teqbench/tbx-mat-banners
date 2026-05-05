@@ -1,3 +1,4 @@
+import { TbxMatSeverityLevel } from '@teqbench/tbx-mat-severity-theme';
 import type { TbxMatBannerActionButtonAppearance } from '../types/banner-action-button-appearance.type';
 
 /**
@@ -32,3 +33,22 @@ export const BANNER_DEFAULT_DURATION_MS = 0;
  * @internal
  */
 export const BANNER_DEFAULT_ACTION_BUTTON_APPEARANCE: TbxMatBannerActionButtonAppearance = 'text';
+
+/**
+ * Panel CSS class mapping for inline banners
+ *
+ * @remarks
+ * Maps each {@link TbxMatSeverityLevel} member to the matching
+ * `tbx-mat-banner-panel-*` host class applied by
+ * {@link TbxMatBannerComponent} in inline mode.
+ *
+ * @internal
+ */
+export const BANNER_PANEL_CLASS_MAP: Readonly<Record<TbxMatSeverityLevel, string>> = {
+    [TbxMatSeverityLevel.Default]: 'tbx-mat-banner-panel-default',
+    [TbxMatSeverityLevel.Success]: 'tbx-mat-banner-panel-success',
+    [TbxMatSeverityLevel.Error]: 'tbx-mat-banner-panel-error',
+    [TbxMatSeverityLevel.Warning]: 'tbx-mat-banner-panel-warning',
+    [TbxMatSeverityLevel.Information]: 'tbx-mat-banner-panel-information',
+    [TbxMatSeverityLevel.Help]: 'tbx-mat-banner-panel-help',
+};
