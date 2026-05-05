@@ -34,7 +34,7 @@ This is a `@teqbench` [npm ↗](https://www.npmjs.com) package built with [TypeS
 - `src/` — Source code (all `.ts` files live here)
 - `src/index.ts` — Barrel file (public API exports)
 - `dist/` — Compiled output (git-ignored, only this directory is published)
-- `docs/` — Documentation (placeholder for package-specific guides)
+- `docs/` — Per-package docs pipeline inputs (`overview.md`, `concepts.yml`, `features.yml`, `accessibility.md`) used to build the README and published with the package via `ng-package.json` assets. Also contains `reference/workflows/` describing each CI/CD pipeline.
 - `.github/workflows/` — Thin callers delegating to org-wide reusable workflows in `teqbench/.github`
 
 ## Publishing
