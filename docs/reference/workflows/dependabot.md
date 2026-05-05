@@ -28,32 +28,42 @@ All [Dependabot ↗](https://docs.github.com/en/code-security/dependabot) PRs ta
 
 ### npm Dependencies
 
-| Setting           | Value          |
-| ----------------- | -------------- |
-| Package ecosystem | `npm`          |
-| Directory         | `/`            |
-| Commit prefix     | `chore(deps):` |
-| Labels            | `dependencies` |
+<dl>
+    <dt>Package ecosystem</dt>
+    <dd><code>npm</code></dd>
+    <dt>Directory</dt>
+    <dd><code>/</code></dd>
+    <dt>Commit prefix</dt>
+    <dd><code>chore(deps):</code></dd>
+    <dt>Labels</dt>
+    <dd><code>dependencies</code></dd>
+</dl>
 
 #### Grouping
 
 Related packages are grouped into single PRs to reduce noise:
 
-| Group        | Packages                                                                                                                                       |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `typescript` | `typescript`                                                                                                                                   |
-| `tooling`    | `prettier`, `prettier-*`, `@prettier/*`, `husky`, `lint-staged`, `vitest`, `@vitest/*`, `eslint`, `eslint-*`, `@eslint/*`, `typescript-eslint` |
+<dl>
+    <dt><code>typescript</code></dt>
+    <dd><code>typescript</code></dd>
+    <dt><code>tooling</code></dt>
+    <dd><code>prettier</code>, <code>prettier-*</code>, <code>@prettier/*</code>, <code>husky</code>, <code>lint-staged</code>, <code>vitest</code>, <code>@vitest/*</code>, <code>eslint</code>, <code>eslint-*</code>, <code>@eslint/*</code>, <code>typescript-eslint</code></dd>
+</dl>
 
 Ungrouped packages (e.g., `@types/node`) get individual PRs.
 
 ### GitHub Actions
 
-| Setting           | Value                |
-| ----------------- | -------------------- |
-| Package ecosystem | `github-actions`     |
-| Directory         | `/`                  |
-| Commit prefix     | `chore(ci):`         |
-| Labels            | `dependencies`, `ci` |
+<dl>
+    <dt>Package ecosystem</dt>
+    <dd><code>github-actions</code></dd>
+    <dt>Directory</dt>
+    <dd><code>/</code></dd>
+    <dt>Commit prefix</dt>
+    <dd><code>chore(ci):</code></dd>
+    <dt>Labels</dt>
+    <dd><code>dependencies</code>, <code>ci</code></dd>
+</dl>
 
 ---
 
