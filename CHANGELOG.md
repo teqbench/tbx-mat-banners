@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.2](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.1...v0.10.2) (2026-05-08)
+
+
+### Bug Fixes
+
+* **styles:** decouple close-icon opacity from action-button opacity ([fff9cf1](https://github.com/teqbench/tbx-mat-banners/commit/fff9cf13a1e23d2276a0a10ec70483ec9a03c4bd))
+* **styles:** decouple close-icon opacity from action-button opacity ([e508d93](https://github.com/teqbench/tbx-mat-banners/commit/e508d93d362275ace6308a4c2a4a3023e13deeaa))
+* **styles:** decouple close-icon opacity from action-button opacity ([98c62e2](https://github.com/teqbench/tbx-mat-banners/commit/98c62e2b57ce7638890c0ef0f9f0a3802d8d7ddd))
+
 ## [0.10.1](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.0...v0.10.1) (2026-05-05)
 
 
