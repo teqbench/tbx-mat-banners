@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.3](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.2...v0.10.3) (2026-05-09)
+
+
+### Bug Fixes
+
+* **ci:** pin reusable workflows to [@v2](https://github.com/v2).6.0 ([e8ac614](https://github.com/teqbench/tbx-mat-banners/commit/e8ac614a28c3102652ddb184a2c1306efd75e523))
+* **ci:** pin reusable workflows to [@v2](https://github.com/v2).6.0 + bump [@teqbench](https://github.com/teqbench) peerDeps ([eca3a38](https://github.com/teqbench/tbx-mat-banners/commit/eca3a38a3006a9af934d896ecadf149e5fa85723))
+* **deps:** bump [@teqbench](https://github.com/teqbench) peerDeps to latest patches ([b538dd6](https://github.com/teqbench/tbx-mat-banners/commit/b538dd6b08e73c0ca175b81f31355e837e01082e))
+
 ## [0.10.2](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.1...v0.10.2) (2026-05-08)
 
 
