@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* **ci:** pin reusable workflows to [@v2](https://github.com/v2).9.3 ([324cd96](https://github.com/teqbench/tbx-mat-banners/commit/324cd962d370d0a87264ffa8328c7410f91f58c9)), closes [#28](https://github.com/teqbench/tbx-mat-banners/issues/28)
+* **ci:** pin reusable workflows to v2.9.3 ([324cd96](https://github.com/teqbench/tbx-mat-banners/commit/324cd962d370d0a87264ffa8328c7410f91f58c9)), closes [#28](https://github.com/teqbench/tbx-mat-banners/issues/28)
 * **deps:** bump tbx-mat-icons and tbx-mat-severity-theme peerDeps ([bb08bf2](https://github.com/teqbench/tbx-mat-banners/commit/bb08bf27fec4849ceeef7fa534f557f6072a78d0))
 * **deps:** bump tbx-mat-icons and tbx-mat-severity-theme peerDeps ([bd70577](https://github.com/teqbench/tbx-mat-banners/commit/bd7057764567b80d09a85d0ed5a11f0d354efc95)), closes [#28](https://github.com/teqbench/tbx-mat-banners/issues/28)
 
@@ -14,9 +14,9 @@
 
 ### Bug Fixes
 
-* **ci:** pin reusable workflows to [@v2](https://github.com/v2).6.0 ([e8ac614](https://github.com/teqbench/tbx-mat-banners/commit/e8ac614a28c3102652ddb184a2c1306efd75e523))
-* **ci:** pin reusable workflows to [@v2](https://github.com/v2).6.0 + bump [@teqbench](https://github.com/teqbench) peerDeps ([eca3a38](https://github.com/teqbench/tbx-mat-banners/commit/eca3a38a3006a9af934d896ecadf149e5fa85723))
-* **deps:** bump [@teqbench](https://github.com/teqbench) peerDeps to latest patches ([b538dd6](https://github.com/teqbench/tbx-mat-banners/commit/b538dd6b08e73c0ca175b81f31355e837e01082e))
+* **ci:** pin reusable workflows to v2.6.0 ([e8ac614](https://github.com/teqbench/tbx-mat-banners/commit/e8ac614a28c3102652ddb184a2c1306efd75e523))
+* **ci:** pin reusable workflows to v2.6.0 + bump teqbench peerDeps ([eca3a38](https://github.com/teqbench/tbx-mat-banners/commit/eca3a38a3006a9af934d896ecadf149e5fa85723))
+* **deps:** bump teqbench peerDeps to latest patches ([b538dd6](https://github.com/teqbench/tbx-mat-banners/commit/b538dd6b08e73c0ca175b81f31355e837e01082e))
 
 ## [0.10.2](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.1...v0.10.2) (2026-05-08)
 
@@ -214,7 +214,7 @@
 ### Bug Fixes
 
 * **security:** switch reporting channel to email for private template repo ([5d0309d](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/5d0309dbb948341cd83a8f39e05cba4d6648ccf4))
-* **tsdoc:** set [@related](https://github.com/related) tag to allowMultiple matching CLAUDE.md convention ([3e346a2](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/3e346a21c052ccbd02b76b49714a716d28238ad3))
+* **tsdoc:** set related tag to allowMultiple matching CLAUDE.md convention ([3e346a2](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/3e346a21c052ccbd02b76b49714a716d28238ad3))
 
 ## [0.6.1](https://github.com/teqbench/teqbench.dev.templates.tbx-package/compare/v0.6.0...v0.6.1) (2026-03-25)
 
@@ -312,7 +312,7 @@
 
 ### Features
 
-* scaffold [@teqbench](https://github.com/teqbench) package template ([47fb9c7](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/47fb9c7a708581e9d6188ceaef1ff1214938cc83))
+* scaffold teqbench package template ([47fb9c7](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/47fb9c7a708581e9d6188ceaef1ff1214938cc83))
 * **template:** harden package template to production-grade ([20cd619](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/20cd6191c9248171f3542b82c381e8ed5c5d1d20))
 * **template:** harden package template to production-grade ([b0ec3a2](https://github.com/teqbench/teqbench.dev.templates.tbx-package/commit/b0ec3a21eab0c23eb1ccfeed83908ba63db436a3))
 
