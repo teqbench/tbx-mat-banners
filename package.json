@@ -1,6 +1,6 @@
 {
   "name": "@teqbench/tbx-mat-banners",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "description": "Opinionated Angular banner component and service. Provides severity-leveled methods (success, error, warning, information, help), inline or overlay display via CDK Overlay, FIFO queuing with signal-based state, indefinite duration by default, an actions group supporting buttons and form controls, optional severity icon and close button, and dismiss reason tracking with collected control values. Supports font and SVG icons via pluggable resolver services. Designed for Angular zoneless applications.",
   "type": "module",
   "exports": {
