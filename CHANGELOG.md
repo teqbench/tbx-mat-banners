@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.5](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.4...v0.10.5) (2026-05-11)
+
+
+### Bug Fixes
+
+* **changelog:** strip broken at-mention autolinks from history ([6742429](https://github.com/teqbench/tbx-mat-banners/commit/67424298fbb4c48ef0a2a69cf05738fde5443e2a))
+* **changelog:** strip broken at-mention autolinks from history ([49c78c5](https://github.com/teqbench/tbx-mat-banners/commit/49c78c5ed9c73ccd1d1db4557f3ab293a92764c5))
+* **deps:** bump tbx-mat peerDep floors and advance .shared-skills ([2cc9aec](https://github.com/teqbench/tbx-mat-banners/commit/2cc9aece1692434d825a83bb6bbb0f0f70d4e9e0))
+* **deps:** bump tbx-mat peerDep floors and advance .shared-skills (wave 4 of changelog remediation) ([8961675](https://github.com/teqbench/tbx-mat-banners/commit/8961675a34dda7d6bf94722299c6d1a773703a54))
+
 ## [0.10.4](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.3...v0.10.4) (2026-05-10)
 
 
