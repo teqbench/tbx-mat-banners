@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.6](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.5...v0.10.6) (2026-05-14)
+
+
+### Bug Fixes
+
+* **deps:** Update teqbench packages ([#216](https://github.com/teqbench/tbx-mat-banners/issues/216)) ([9c25f8d](https://github.com/teqbench/tbx-mat-banners/commit/9c25f8db7003ccd9a767beed296536d23b9a73a6))
+
 ## [0.10.5](https://github.com/teqbench/tbx-mat-banners/compare/v0.10.4...v0.10.5) (2026-05-11)
 
 
